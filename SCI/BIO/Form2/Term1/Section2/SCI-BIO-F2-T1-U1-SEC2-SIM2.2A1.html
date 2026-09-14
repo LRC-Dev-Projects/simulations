@@ -565,20 +565,22 @@
         }
 
         .tap-btn {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
+            width: 260px;
+            height: 100px;
+            border-radius: 22px;
             border: 4px solid color-mix(in srgb, var(--accent) 50%, var(--border));
             background: color-mix(in srgb, var(--accent) 14%, var(--surface));
             color: var(--text);
-            font-size: 1.3rem;
+            font-size: 1.6rem;
             font-weight: 800;
             cursor: pointer;
             user-select: none;
             transition: transform 0.08s ease, background 0.12s ease;
-            display: grid;
-            place-items: center;
-            line-height: 1.3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.15;
         }
 
         .tap-btn:active:not(:disabled) {
@@ -597,7 +599,7 @@
             font-size: 0.78rem;
             font-weight: 400;
             color: var(--muted);
-            margin-top: 4px;
+            margin-top: 0px;
         }
 
         .sim-start-row {
@@ -608,6 +610,19 @@
         .sim-start-row .primary-btn {
             font-size: 1.15rem;
             padding: 16px 40px;
+        }
+
+        .simContainer-btn:disabled,
+        .sim-card button:disabled,
+        .sim-layout button:disabled {
+            background: var(--surface-2);
+            background-image: none;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            box-shadow: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* Results */
@@ -777,6 +792,76 @@
             color: var(--muted);
             text-align: center;
             margin-top: -8px;
+        }
+
+        .graph-container {
+            width: 100%;
+            max-width: 520px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: color-mix(in srgb, var(--surface-2) 35%, transparent);
+            padding: 10px 12px 8px;
+        }
+
+        #pulseGraph {
+            width: 100%;
+            height: 120px;
+            display: block;
+        }
+
+        #pulseGraph .grid-line {
+            stroke: var(--border);
+            stroke-width: 1;
+        }
+
+        #pulseGraph .axis-line {
+            stroke: var(--muted);
+            stroke-width: 2;
+        }
+
+        #pulseGraph .ekg-line {
+            stroke: var(--success);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        #pulseGraph .tap-mark {
+            fill: var(--accent);
+        }
+
+        #pulseGraph .now-line {
+            stroke: var(--warning);
+            stroke-width: 2;
+        }
+
+        .graph-legend {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: var(--text-soft);
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-swatch {
+            width: 14px;
+            height: 10px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .legend-actual {
+            background: var(--success);
+        }
+
+        .legend-taps {
+            background: var(--accent);
         }
 
     </style>
@@ -1362,6 +1447,7 @@
             tapTimes: [],
             pulseStartTime: 0,
             lastTapTime: 0,
+            graphFrame: null,
         };
 
         const simContent = document.getElementById("simContent");
@@ -1383,6 +1469,13 @@
                     </select>
                 </div>
                 <div class="pulse-stage">
+                    <div class="graph-container" id="graphContainer">
+                        <svg id="pulseGraph" viewBox="0 0 600 120" preserveAspectRatio="none"></svg>
+                        <div class="graph-legend">
+                            <span class="legend-item"><span class="legend-swatch legend-actual"></span> Actual pulse</span>
+                            <span class="legend-item"><span class="legend-swatch legend-taps"></span> Your taps</span>
+                        </div>
+                    </div>
                     <div class="timer-display" id="timerDisplay">1:00</div>
                     <div class="pulse-ring-wrap">
                         <div class="pulse-outer-ring"></div>
@@ -1429,6 +1522,10 @@
             simState.pulseStartTime = performance.now();
             scheduleBeats();
             simState.timerId = setInterval(timerTick, 1000);
+            startGraphLoop();
+
+            const graph = document.getElementById("graphContainer");
+            if (graph) graph.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 
         function scheduleBeats() {
@@ -1509,11 +1606,90 @@
             }
         }
 
+        function startGraphLoop() {
+            stopGraphLoop();
+            const loop = () => {
+                renderGraph();
+                simState.graphFrame = requestAnimationFrame(loop);
+            };
+            loop();
+        }
+
+        function stopGraphLoop() {
+            if (simState.graphFrame) {
+                cancelAnimationFrame(simState.graphFrame);
+                simState.graphFrame = null;
+            }
+        }
+
+        function renderGraph() {
+            const svg = document.getElementById("pulseGraph");
+            if (!svg) return;
+            const W = 600, H = 120;
+            const padL = 6, padR = 6, padB = 14, padT = 10;
+            const plotW = W - padL - padR;
+            const plotH = H - padT - padB;
+            const windowSecs = 8;
+            const beatInt = 60000 / simState.bpm / 1000;
+            const yBase = padT + plotH * 0.72;
+
+            const nowSecs = simState.phase === "running"
+                ? (performance.now() - simState.pulseStartTime) / 1000
+                : 0;
+            const wEnd = Math.max(nowSecs, 0);
+            const wStart = wEnd - windowSecs;
+            const x = (t) => padL + ((t - wStart) / windowSecs) * plotW;
+
+            function ekgAmp(t) {
+                const k = Math.floor(t / beatInt);
+                const loc = t - k * beatInt;
+                if (loc <= 0 || loc > 0.3) return 0;
+                let a = 0;
+                if (loc >= 0.045 && loc < 0.085) a += Math.sin((loc - 0.045) / 0.04 * Math.PI) * 9;
+                if (loc >= 0.1 && loc < 0.115) a += Math.sin((loc - 0.1) / 0.015 * Math.PI) * -10;
+                if (loc >= 0.115 && loc < 0.132) a += Math.sin((loc - 0.115) / 0.017 * Math.PI) * 58;
+                if (loc >= 0.132 && loc < 0.15) a += Math.sin((loc - 0.132) / 0.018 * Math.PI) * 58;
+                if (loc >= 0.15 && loc < 0.168) a += Math.sin((loc - 0.15) / 0.018 * Math.PI) * -24;
+                if (loc >= 0.2 && loc < 0.285) a += Math.sin((loc - 0.2) / 0.085 * Math.PI) * 16;
+                return a;
+            }
+
+            let d = [];
+            const dt = 0.004;
+            for (let t = Math.max(wStart, 0); t <= wEnd; t += dt) {
+                const amp = ekgAmp(t);
+                d.push(x(t).toFixed(1) + "," + (yBase - amp).toFixed(1));
+            }
+
+            let marks = "";
+            for (let s = Math.max(Math.ceil(wStart), 0); s <= wEnd; s++) {
+                marks += `<line class="grid-line" x1="${x(s).toFixed(1)}" y1="${padT}" x2="${x(s).toFixed(1)}" y2="${yBase}"/>`;
+            }
+
+            let taps = "";
+            simState.tapTimes.forEach((t) => {
+                const ts = (t - simState.pulseStartTime) / 1000;
+                if (ts >= wStart && ts <= wEnd) {
+                    taps += `<rect class="tap-mark" x="${(x(ts) - 1).toFixed(1)}" y="${(yBase - 72).toFixed(1)}" width="2" height="72"/>`;
+                }
+            });
+
+            const nowX = x(wEnd);
+            svg.innerHTML = `
+                <g>${marks}</g>
+                ${taps}
+                <path class="ekg-line" d="M${d.join(" L")}" fill="none"/>
+                <line class="now-line" x1="${nowX.toFixed(1)}" y1="${padT}" x2="${nowX.toFixed(1)}" y2="${yBase}"/>
+                <line class="axis-line" x1="${padL}" y1="${yBase}" x2="${padL + plotW}" y2="${yBase}"/>
+            `;
+        }
+
         function endTimer() {
             clearInterval(simState.timerId);
             clearInterval(simState.pulseId);
             simState.timerId = null;
             simState.pulseId = null;
+            stopGraphLoop();
             simState.phase = "results";
 
             const circle = document.getElementById("pulseCircle");
@@ -1608,7 +1784,7 @@
                         </div>
 
                         <div class="assessment-actions">
-                            <button class="primary-btn" id="checkAssessmentBtn">Check Answers</button>
+                            <button class="primary-btn" id="checkAssessmentBtn" disabled>Check Answers</button>
                             <button class="secondary-btn hidden" id="retrySimBtn">Try Pulse Counting Again</button>
                         </div>
                     </div>
@@ -1623,6 +1799,7 @@
                     q.querySelectorAll(".choice-item").forEach((c) => c.classList.remove("selected"));
                     item.classList.add("selected");
                     input.checked = true;
+                    updateCheckButton();
                 });
             });
 
@@ -1630,6 +1807,14 @@
             document.getElementById("retrySimBtn").addEventListener("click", () => {
                 openResetConfirmModal();
             });
+        }
+
+        function updateCheckButton() {
+            const btn = document.getElementById("checkAssessmentBtn");
+            if (!btn) return;
+            const total = document.querySelectorAll(".assessment-q").length;
+            const answered = document.querySelectorAll(".assessment-q input:checked").length;
+            btn.disabled = answered < total;
         }
 
         function checkAssessment() {
@@ -1689,6 +1874,7 @@
             clearInterval(simState.pulseId);
             simState.timerId = null;
             simState.pulseId = null;
+            stopGraphLoop();
             simState.phase = "config";
             simState.tapCount = 0;
             simState.totalBeats = 0;
