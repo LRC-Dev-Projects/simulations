@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag the Capitals to Match the Countries</title>
+
+  <style>
+    :root {
+      --bg: #111827;
+      --panel: #1f2937;
+      --panel-2: #273449;
+      --text: #f9fafb;
+      --muted: #cbd5e1;
+      --border: #475569;
+      --accent: #60a5fa;
+      --accent-2: #3b82f6;
+      --success: #22c55e;
+      --success-bg: #14532d;
+      --error: #ef4444;
+      --error-bg: #7f1d1d;
+      --white: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    [data-theme="light"] {
+      --bg: #f3f4f6;
+      --panel: #ffffff;
+      --panel-2: #e5e7eb;
+      --text: #111827;
+      --muted: #4b5563;
+      --border: #cbd5e1;
+      --accent: #2563eb;
+      --accent-2: #1d4ed8;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --error: #dc2626;
+      --error-bg: #fee2e2;
+      --white: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .topbar {
+      min-height: 64px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar button {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .toolbar button:hover {
+      border-color: var(--accent);
+    }
+
+    main {
+      width: min(1400px, 96%);
+      margin: 0 auto;
+      padding: 28px 0 50px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .home-card {
+      max-width: 850px;
+      margin: 50px auto;
+      padding: 40px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .home-card h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 5vw, 46px);
+    }
+
+    .home-card h2 {
+      color: var(--accent);
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .home-card p {
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 14px auto;
+    }
+
+    .primary-btn {
+      margin-top: 20px;
+      padding: 13px 26px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent-2);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .game-header {
+      margin-bottom: 20px;
+    }
+
+    .game-header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 4vw, 36px);
+    }
+
+    .game-header p {
+      margin: 5px 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .spanish-instructions {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .progress-wrap {
+      margin: 20px 0;
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: var(--panel-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--success);
+      transition: width 0.3s ease;
+    }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .capital-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .capital-panel h2,
+    .map-panel h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .capital-panel p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 0;
+    }
+
+    .capital-cards {
+      display: grid;
+      gap: 10px;
+    }
+
+    .capital-card {
+      padding: 14px 16px;
+      background: var(--panel-2);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+      text-align: center;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .capital-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .capital-card.dragging {
+      opacity: 0.55;
+      transform: scale(1.03);
+    }
+
+    .capital-card.matched {
+      cursor: default;
+      opacity: 0.45;
+      border-color: var(--success);
+      text-decoration: line-through;
+    }
+
+    .map-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .map-area {
+      position: relative;
+      width: 100%;
+      min-height: 680px;
+      border-radius: 18px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(96,165,250,.15), transparent 25%),
+        radial-gradient(circle at 70% 70%, rgba(34,197,94,.12), transparent 25%),
+        var(--panel-2);
+      border: 2px solid var(--border);
+    }
+
+    .map-title {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 22px;
+      font-weight: 900;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    /*
+      The following areas form a simplified interactive map.
+      They are deliberately large enough for drag-and-drop practice.
+    */
+
+    .country {
+      position: absolute;
+      min-width: 125px;
+      min-height: 78px;
+      padding: 10px;
+      border: 2px dashed var(--border);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 7px;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .country-name {
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .drop-hint {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .country.drag-over {
+      border-color: var(--accent);
+      background: rgba(96,165,250,0.18);
+      transform: scale(1.04);
+    }
+
+    .country.correct {
+      border-color: var(--success);
+      background: rgba(34,197,94,0.15);
+    }
+
+    .country.incorrect {
+      animation: shake 0.3s ease;
+    }
+
+    .placed-card {
+      width: 95%;
+      padding: 7px 5px;
+      border-radius: 7px;
+      background: var(--success);
+      color: white;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    /* Approximate map positions */
+
+    #country-spain {
+      left: 7%;
+      top: 18%;
+    }
+
+    #country-mexico {
+      left: 14%;
+      top: 42%;
+    }
+
+    #country-cuba {
+      left: 43%;
+      top: 35%;
+      min-width: 145px;
+    }
+
+    #country-dominican {
+      left: 59%;
+      top: 41%;
+      min-width: 175px;
+    }
+
+    #country-colombia {
+      left: 39%;
+      top: 58%;
+    }
+
+    #country-venezuela {
+      left: 58%;
+      top: 58%;
+    }
+
+    #country-ecuador {
+      left: 29%;
+      top: 70%;
+    }
+
+    #country-peru {
+      left: 39%;
+      top: 76%;
+    }
+
+    #country-chile {
+      left: 53%;
+      top: 82%;
+    }
+
+    #country-argentina {
+      left: 65%;
+      top: 79%;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: none;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.correct {
+      background: var(--success-bg);
+      border-color: var(--success);
+    }
+
+    .feedback.incorrect {
+      background: var(--error-bg);
+      border-color: var(--error);
+    }
+
+    .review-card {
+      max-width: 900px;
+      margin: 40px auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .review-card h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .completion-message {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 25px;
+      color: var(--success);
+    }
+
+    .review-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .review-table th,
+    .review-table td {
+      padding: 13px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .review-table th {
+      background: var(--panel-2);
+      font-weight: 900;
+    }
+
+    .review-actions {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .small-note {
+      margin-top: 14px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      max-width: 650px;
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+    }
+
+    .modal p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .modal-close {
+      margin-top: 10px;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent-2);
+      color: white;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1000px) {
+      .game-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .capital-panel {
+        order: 2;
+      }
+
+      .map-panel {
+        order: 1;
+      }
+
+      .capital-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .map-area {
+        min-height: 650px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .toolbar {
+        width: 100%;
+      }
+
+      .toolbar button {
+        flex: 1;
+      }
+
+      .home-card {
+        padding: 25px 18px;
+        margin: 20px auto;
+      }
+
+      .capital-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .map-area {
+        min-height: 780px;
+      }
+
+      .country {
+        min-width: 105px;
+        min-height: 70px;
+      }
+
+      #country-spain {
+        left: 4%;
+        top: 10%;
+      }
+
+      #country-mexico {
+        left: 5%;
+        top: 29%;
+      }
+
+      #country-cuba {
+        left: 50%;
+        top: 27%;
+      }
+
+      #country-dominican {
+        left: 42%;
+        top: 40%;
+      }
+
+      #country-colombia {
+        left: 5%;
+        top: 50%;
+      }
+
+      #country-venezuela {
+        left: 53%;
+        top: 50%;
+      }
+
+      #country-ecuador {
+        left: 5%;
+        top: 64%;
+      }
+
+      #country-peru {
+        left: 50%;
+        top: 63%;
+      }
+
+      #country-chile {
+        left: 8%;
+        top: 79%;
+      }
+
+      #country-argentina {
+        left: 54%;
+        top: 78%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-badge">SPAN</span>
+      <span class="brand-title">Recipe &amp; Geography Practice</span>
+    </div>
+
+    <div class="toolbar">
+      <button id="themeBtn" type="button">☀️ Tema</button>
+      <button id="helpBtn" type="button">❓ Ayuda</button>
+      <button id="resetBtn" type="button">↻ Reiniciar</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HOME SCREEN -->
+    <section id="homeScreen" class="screen active">
+      <div class="home-card">
+        <h1>Actividad 2</h1>
+        <h2>Drag the Capitals to Match the Countries</h2>
+
+        <p class="spanish-instructions">
+          ¡Relaciona las capitales con los países!
+        </p>
+
+        <p>
+          Lee el nombre de cada capital y arrastra la tarjeta hasta el país
+          correcto en el mapa. Si tu respuesta es incorrecta, la tarjeta
+          volverá a su posición para que puedas intentarlo de nuevo.
+        </p>
+
+        <p>
+          Match all ten capital cities with their countries.
+        </p>
+
+        <button id="startBtn" class="primary-btn" type="button">
+          Comenzar
+        </button>
+      </div>
+    </section>
+
+
+    <!-- GAME SCREEN -->
+    <section id="gameScreen" class="screen">
+
+      <div class="game-header">
+        <h1>¡Relaciona las capitales con los países!</h1>
+
+        <p class="spanish-instructions">
+          Lee el nombre de cada capital y arrastra la tarjeta hasta el país correcto en el mapa.
+        </p>
+
+        <p>
+          Read each capital city and drag the card to the correct country.
+          If your answer is incorrect, try again.
+        </p>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-top">
+          <span>Progreso</span>
+          <span id="progressText">0 de 10</span>
+        </div>
+
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="game-layout">
+
+        <!-- CAPITAL CARDS -->
+        <aside class="capital-panel">
+          <h2>Capitales</h2>
+
+          <p>
+            Arrastra cada tarjeta hasta el país correspondiente.
+          </p>
+
+          <div id="capitalCards" class="capital-cards"></div>
+        </aside>
+
+
+        <!-- MAP -->
+        <section class="map-panel">
+          <h2>Mapa de práctica</h2>
+
+          <div id="mapArea" class="map-area">
+
+            <div class="map-title">
+              España • América Latina • Caribe
+            </div>
+
+            <div class="country" id="country-spain" data-country="España">
+              <div class="country-name">España</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-mexico" data-country="México">
+              <div class="country-name">México</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-cuba" data-country="Cuba">
+              <div class="country-name">Cuba</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-dominican" data-country="República Dominicana">
+              <div class="country-name">República Dominicana</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-colombia" data-country="Colombia">
+              <div class="country-name">Colombia</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-venezuela" data-country="Venezuela">
+              <div class="country-name">Venezuela</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-ecuador" data-country="Ecuador">
+              <div class="country-name">Ecuador</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-peru" data-country="Perú">
+              <div class="country-name">Perú</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-chile" data-country="Chile">
+              <div class="country-name">Chile</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+            <div class="country" id="country-argentina" data-country="Argentina">
+              <div class="country-name">Argentina</div>
+              <div class="drop-hint">Suelta aquí</div>
+            </div>
+
+          </div>
+
+          <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+        </section>
+
+      </div>
+
+    </section>
+
+
+    <!-- REVIEW SCREEN -->
+    <section id="reviewScreen" class="screen">
+
+      <div class="review-card">
+
+        <h1>🎉 Actividad completada</h1>
+
+        <div class="completion-message">
+          ¡Muy bien! Has relacionado correctamente las capitales con sus países.
+        </div>
+
+        <p>
+          Aquí está tu revisión de las parejas correctas:
+        </p>
+
+        <table class="review-table">
+          <thead>
+            <tr>
+              <th>País</th>
+              <th>Capital</th>
+            </tr>
+          </thead>
+
+          <tbody id="reviewTableBody"></tbody>
+        </table>
+
+        <div class="review-actions">
+          <button id="playAgainBtn" class="primary-btn" type="button">
+            Intentarlo de nuevo
+          </button>
+        </div>
+
+        <div class="small-note">
+          Puedes reiniciar la actividad para practicar otra vez.
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    SPAN-F1-T1-U4-SEC11-SIM1 • Activity 2
+  </footer>
+
+
+  <!-- HELP MODAL -->
+  <div id="helpModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>¿Cómo jugar?</h2>
+
+      <p>
+        1. Lee una tarjeta de capital.
+      </p>
+
+      <p>
+        2. Arrastra la tarjeta hasta el país que corresponde.
+      </p>
+
+      <p>
+        3. Si es correcta, la tarjeta permanecerá en el país.
+      </p>
+
+      <p>
+        4. Si es incorrecta, la tarjeta volverá al panel de capitales.
+      </p>
+
+      <p>
+        5. Continúa hasta relacionar las diez capitales correctamente.
+      </p>
+
+      <button id="closeHelpBtn" class="modal-close" type="button">
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+
+  <script>
+    "use strict";
+
+    /*
+      ============================================================
+      SPAN-F1-T1-U4-SEC11-SIM1
+      Activity 2: Drag the Capitals to Match the Countries
+      ============================================================
+    */
+
+    const capitalData = [
+      {
+        capital: "Madrid",
+        country: "España",
+        feedback: "Correcto. Madrid es la capital de España."
+      },
+      {
+        capital: "Bogotá",
+        country: "Colombia",
+        feedback: "Correcto. Bogotá es la capital de Colombia."
+      },
+      {
+        capital: "Buenos Aires",
+        country: "Argentina",
+        feedback: "Correcto. Buenos Aires es la capital de Argentina."
+      },
+      {
+        capital: "Lima",
+        country: "Perú",
+        feedback: "Correcto. Lima es la capital del Perú."
+      },
+      {
+        capital: "Quito",
+        country: "Ecuador",
+        feedback: "Correcto. Quito es la capital del Ecuador."
+      },
+      {
+        capital: "La Habana",
+        country: "Cuba",
+        feedback: "Correcto. La Habana es la capital de Cuba."
+      },
+      {
+        capital: "Santo Domingo",
+        country: "República Dominicana",
+        feedback: "Correcto. Santo Domingo es la capital de la República Dominicana."
+      },
+      {
+        capital: "Santiago",
+        country: "Chile",
+        feedback: "Correcto. Santiago es la capital de Chile."
+      },
+      {
+        capital: "Caracas",
+        country: "Venezuela",
+        feedback: "Correcto. Caracas es la capital de Venezuela."
+      },
+      {
+        capital: "Ciudad de México",
+        country: "México",
+        feedback: "Correcto. Ciudad de México es la capital de México."
+      }
+    ];
+
+
+    const state = {
+      matched: new Set(),
+      draggedCapital: null,
+      started: false
+    };
+
+
+    const homeScreen = document.getElementById("homeScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const reviewScreen = document.getElementById("reviewScreen");
+
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const playAgainBtn = document.getElementById("playAgainBtn");
+
+    const capitalCards = document.getElementById("capitalCards");
+    const feedback = document.getElementById("feedback");
+
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+
+    const helpBtn = document.getElementById("helpBtn");
+    const helpModal = document.getElementById("helpModal");
+    const closeHelpBtn = document.getElementById("closeHelpBtn");
+
+    const themeBtn = document.getElementById("themeBtn");
+
+
+    function shuffle(array) {
+      const copy = [...array];
+
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+
+      return copy;
+    }
+
+
+    function showScreen(screen) {
+      homeScreen.classList.remove("active");
+      gameScreen.classList.remove("active");
+      reviewScreen.classList.remove("active");
+
+      screen.classList.add("active");
+    }
+
+
+    function startGame() {
+      state.started = true;
+      state.matched.clear();
+      state.draggedCapital = null;
+
+      clearFeedback();
+      clearCountryPlacements();
+
+      renderCapitalCards();
+      updateProgress();
+
+      showScreen(gameScreen);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    function renderCapitalCards() {
+      capitalCards.innerHTML = "";
+
+      const shuffled = shuffle(capitalData);
+
+      shuffled.forEach((item) => {
+        const card = document.createElement("div");
+
+        card.className = "capital-card";
+        card.textContent = item.capital;
+
+        card.draggable = true;
+        card.dataset.capital = item.capital;
+        card.dataset.country = item.country;
+
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-label", `Capital ${item.capital}`);
+
+        card.addEventListener("dragstart", handleDragStart);
+        card.addEventListener("dragend", handleDragEnd);
+
+        /*
+          Pointer/touch support.
+          Desktop drag-and-drop uses native HTML5 drag events.
+          The pointer listeners make the card usable on touch devices.
+        */
+        card.addEventListener("pointerdown", handlePointerDown);
+
+        capitalCards.appendChild(card);
+      });
+    }
+
+
+    function handleDragStart(event) {
+      const card = event.currentTarget;
+
+      state.draggedCapital = card.dataset.capital;
+
+      card.classList.add("dragging");
+
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", state.draggedCapital);
+    }
+
+
+    function handleDragEnd(event) {
+      event.currentTarget.classList.remove("dragging");
+
+      document.querySelectorAll(".country").forEach((country) => {
+        country.classList.remove("drag-over");
+      });
+    }
+
+
+    function setupDropZones() {
+      document.querySelectorAll(".country").forEach((country) => {
+
+        country.addEventListener("dragover", (event) => {
+          event.preventDefault();
+
+          if (country.classList.contains("correct")) {
+            return;
+          }
+
+          country.classList.add("drag-over");
+
+          event.dataTransfer.dropEffect = "move";
+        });
+
+
+        country.addEventListener("dragleave", () => {
+          country.classList.remove("drag-over");
+        });
+
+
+        country.addEventListener("drop", (event) => {
+          event.preventDefault();
+
+          country.classList.remove("drag-over");
+
+          const capital =
+            event.dataTransfer.getData("text/plain") ||
+            state.draggedCapital;
+
+          if (!capital) {
+            return;
+          }
+
+          handleDrop(country, capital);
+        });
+
+      });
+    }
+
+
+    function handleDrop(countryElement, capital) {
+
+      if (state.matched.size === capitalData.length) {
+        return;
+      }
+
+      if (countryElement.classList.contains("correct")) {
+        return;
+      }
+
+      const selected = capitalData.find(
+        item => item.capital === capital
+      );
+
+      if (!selected) {
+        return;
+      }
+
+      const targetCountry = countryElement.dataset.country;
+
+      if (selected.country === targetCountry) {
+
+        handleCorrectPlacement(
+          countryElement,
+          selected
+        );
+
+      } else {
+
+        handleIncorrectPlacement(
+          countryElement
+        );
+      }
+    }
+
+
+    function handleCorrectPlacement(countryElement, selected) {
+
+      state.matched.add(selected.capital);
+
+      countryElement.classList.add("correct");
+
+      const hint = countryElement.querySelector(".drop-hint");
+
+      if (hint) {
+        hint.style.display = "none";
+      }
+
+      const placed = document.createElement("div");
+
+      placed.className = "placed-card";
+      placed.textContent = selected.capital;
+
+      placed.setAttribute(
+        "aria-label",
+        `${selected.capital} - ${selected.country}`
+      );
+
+      countryElement.appendChild(placed);
+
+      const originalCard = [...capitalCards.children].find(
+        card => card.dataset.capital === selected.capital
+      );
+
+      if (originalCard) {
+        originalCard.classList.add("matched");
+        originalCard.draggable = false;
+        originalCard.setAttribute("aria-disabled", "true");
+      }
+
+      showFeedback(
+        selected.feedback,
+        true
+      );
+
+      updateProgress();
+
+      if (state.matched.size === capitalData.length) {
+        setTimeout(showReview, 700);
+      }
+    }
+
+
+    function handleIncorrectPlacement(countryElement) {
+
+      countryElement.classList.remove("incorrect");
+
+      /*
+        Force browser to restart the animation.
+      */
+      void countryElement.offsetWidth;
+
+      countryElement.classList.add("incorrect");
+
+      showFeedback(
+        "No exactamente. Otra vez.",
+        false
+      );
+
+      /*
+        The dragged card has not been removed from the capital panel,
+        so it automatically remains in its original position.
+      */
+      state.draggedCapital = null;
+    }
+
+
+    function showFeedback(message, correct) {
+      feedback.textContent = message;
+
+      feedback.classList.remove(
+        "correct",
+        "incorrect"
+      );
+
+      feedback.classList.add(
+        "show",
+        correct ? "correct" : "incorrect"
+      );
+    }
+
+
+    function clearFeedback() {
+      feedback.textContent = "";
+
+      feedback.classList.remove(
+        "show",
+        "correct",
+        "incorrect"
+      );
+    }
+
+
+    function clearCountryPlacements() {
+      document.querySelectorAll(".country").forEach((country) => {
+
+        country.classList.remove(
+          "correct",
+          "incorrect",
+          "drag-over"
+        );
+
+        const placed = country.querySelector(".placed-card");
+
+        if (placed) {
+          placed.remove();
+        }
+
+        const hint = country.querySelector(".drop-hint");
+
+        if (hint) {
+          hint.style.display = "";
+        }
+      });
+    }
+
+
+    function updateProgress() {
+      const count = state.matched.size;
+
+      progressText.textContent =
+        `${count} de ${capitalData.length}`;
+
+      progressFill.style.width =
+        `${(count / capitalData.length) * 100}%`;
+    }
+
+
+    function showReview() {
+
+      const reviewBody =
+        document.getElementById("reviewTableBody");
+
+      reviewBody.innerHTML = "";
+
+      capitalData.forEach((item) => {
+
+        const row = document.createElement("tr");
+
+        const countryCell = document.createElement("td");
+        const capitalCell = document.createElement("td");
+
+        countryCell.textContent = item.country;
+        capitalCell.textContent = item.capital;
+
+        row.appendChild(countryCell);
+        row.appendChild(capitalCell);
+
+        reviewBody.appendChild(row);
+      });
+
+      showScreen(reviewScreen);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    function resetGame() {
+      state.started = false;
+      state.matched.clear();
+      state.draggedCapital = null;
+
+      clearFeedback();
+      clearCountryPlacements();
+
+      progressText.textContent = "0 de 10";
+      progressFill.style.width = "0%";
+
+      capitalCards.innerHTML = "";
+
+      showScreen(homeScreen);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    /*
+      ------------------------------------------------------------
+      Touch / pointer support
+      ------------------------------------------------------------
+      The primary interaction is standard drag-and-drop.
+      For touch screens, a simple tap-to-select + tap-to-place
+      fallback is provided.
+    */
+
+    let touchSelectedCard = null;
+
+
+    function handlePointerDown(event) {
+
+      if (event.pointerType !== "touch") {
+        return;
+      }
+
+      const card = event.currentTarget;
+
+      if (card.classList.contains("matched")) {
+        return;
+      }
+
+      if (touchSelectedCard === card) {
+
+        card.style.outline = "";
+
+        touchSelectedCard = null;
+
+      } else {
+
+        if (touchSelectedCard) {
+          touchSelectedCard.style.outline = "";
+        }
+
+        touchSelectedCard = card;
+
+        card.style.outline = `3px solid var(--accent)`;
+
+        showFeedback(
+          `Seleccionada: ${card.dataset.capital}. Toca un país para colocarla.`,
+          true
+        );
+      }
+    }
+
+
+    function setupTouchDrop() {
+
+      document.querySelectorAll(".country").forEach((country) => {
+
+        country.addEventListener("pointerdown", (event) => {
+
+          if (event.pointerType !== "touch") {
+            return;
+          }
+
+          if (!touchSelectedCard) {
+            return;
+          }
+
+          if (country.classList.contains("correct")) {
+            return;
+          }
+
+          const capital =
+            touchSelectedCard.dataset.capital;
+
+          handleDrop(country, capital);
+
+          if (state.matched.has(capital)) {
+            touchSelectedCard.style.outline = "";
+            touchSelectedCard = null;
+          }
+        });
+
+      });
+    }
+
+
+    /*
+      ------------------------------------------------------------
+      Theme
+      ------------------------------------------------------------
+    */
+
+    function toggleTheme() {
+
+      const html = document.documentElement;
+
+      const current =
+        html.getAttribute("data-theme");
+
+      const next =
+        current === "dark"
+          ? "light"
+          : "dark";
+
+      html.setAttribute(
+        "data-theme",
+        next
+      );
+
+      localStorage.setItem(
+        "span-theme",
+        next
+      );
+    }
+
+
+    function loadTheme() {
+
+      const saved =
+        localStorage.getItem("span-theme");
+
+      if (saved === "light" || saved === "dark") {
+        document.documentElement.setAttribute(
+          "data-theme",
+          saved
+        );
+      }
+    }
+
+
+    /*
+      ------------------------------------------------------------
+      Help modal
+      ------------------------------------------------------------
+    */
+
+    function openHelp() {
+      helpModal.classList.add("show");
+    }
+
+
+    function closeHelp() {
+      helpModal.classList.remove("show");
+    }
+
+
+    /*
+      ------------------------------------------------------------
+      Event listeners
+      ------------------------------------------------------------
+    */
+
+    startBtn.addEventListener(
+      "click",
+      startGame
+    );
+
+    resetBtn.addEventListener(
+      "click",
+      resetGame
+    );
+
+    playAgainBtn.addEventListener(
+      "click",
+      startGame
+    );
+
+    themeBtn.addEventListener(
+      "click",
+      toggleTheme
+    );
+
+    helpBtn.addEventListener(
+      "click",
+      openHelp
+    );
+
+    closeHelpBtn.addEventListener(
+      "click",
+      closeHelp
+    );
+
+    helpModal.addEventListener(
+      "click",
+      (event) => {
+
+        if (event.target === helpModal) {
+          closeHelp();
+        }
+
+      }
+    );
+
+
+    /*
+      ------------------------------------------------------------
+      Initialisation
+      ------------------------------------------------------------
+    */
+
+    loadTheme();
+    setupDropZones();
+    setupTouchDrop();
+
+  </script>
+
+</body>
+</html>
