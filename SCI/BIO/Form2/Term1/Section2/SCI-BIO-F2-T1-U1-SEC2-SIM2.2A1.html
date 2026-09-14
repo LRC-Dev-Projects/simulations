@@ -527,9 +527,14 @@
             animation: pulseBeat var(--beat-duration, 0.75s) ease-in-out infinite;
         }
 
-        .pulse-circle.flash {
+        .pulse-circle.flash-green {
             background: var(--success);
             box-shadow: 0 0 40px color-mix(in srgb, var(--success) 50%, transparent);
+        }
+
+        .pulse-circle.flash-red {
+            background: var(--danger);
+            box-shadow: 0 0 40px color-mix(in srgb, var(--danger) 50%, transparent);
         }
 
         @keyframes pulseBeat {
@@ -1196,6 +1201,7 @@
             dom.startBtn.addEventListener("click", () => {
                 showScreen("sim");
                 devInit();
+                openInstructionsModal();
             });
             dom.openInstructionsBtn.addEventListener("click", openInstructionsModal);
             dom.helpBtn.addEventListener("click", () => {
@@ -1471,16 +1477,36 @@
         function handleTap() {
             if (simState.phase !== "running") return;
             simState.tapCount++;
-            simState.tapTimes.push(performance.now());
+            const now = performance.now();
+            simState.tapTimes.push(now);
             const countEl = document.getElementById("tapCountDisplay");
             if (countEl) countEl.textContent = simState.tapCount;
 
+            const beatInterval = 60000 / simState.bpm;
+            const tolerance = beatInterval / 3;
+            let synced = false;
+            if (simState.beatTimes.length > 0) {
+                const elapsed = now - simState.pulseStartTime;
+                const beatIndex = Math.floor(elapsed / beatInterval);
+                const nextBeatTime = simState.pulseStartTime + (beatIndex + 1) * beatInterval;
+                const prevBeatTime = simState.pulseStartTime + beatIndex * beatInterval;
+                const gapPrev = Math.abs(now - prevBeatTime);
+                const gapNext = Math.abs(now - nextBeatTime);
+                synced = gapPrev <= tolerance || gapNext <= tolerance;
+            }
+
             const circle = document.getElementById("pulseCircle");
             if (circle) {
-                circle.classList.add("flash");
-                setTimeout(() => circle.classList.remove("flash"), 100);
+                const cls = synced ? "flash-green" : "flash-red";
+                circle.classList.add(cls);
+                setTimeout(() => circle.classList.remove(cls), 200);
             }
-            playSound("click");
+
+            if (synced) {
+                playSound("click");
+            } else {
+                playTone(220, 100, "square", 0.08 * volumeFor("click"));
+            }
         }
 
         function endTimer() {
