@@ -505,6 +505,8 @@
         .assessment-choice { padding: 12px 16px; background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-md); cursor: pointer; font-size: 0.92rem; color: var(--text-soft); text-align: left; transition: border-color 0.2s, background 0.2s; min-height: 44px; }
         .assessment-choice:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
         .assessment-choice:focus-visible { box-shadow: var(--focus); outline: none; }
+        .gas-row.clickable:focus-visible,
+        [role="button"]:focus-visible { box-shadow: var(--focus); outline: none; }
         .assessment-choice.correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 15%, var(--surface)); color: var(--text); }
         .assessment-choice.incorrect { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, var(--surface)); color: var(--text); }
         .assessment-choice.disabled { pointer-events: none; opacity: 0.6; }
@@ -962,18 +964,54 @@
 
         function openInstructionsModal() {
             dom.instructionsModal.classList.add("show");
+            openModalFocus(dom.instructionsModal);
         }
 
         function closeInstructionsModal() {
+            closeModalFocus(dom.instructionsModal);
             dom.instructionsModal.classList.remove("show");
         }
 
         function openResetConfirmModal() {
             dom.resetConfirmModal.classList.add("show");
+            openModalFocus(dom.resetConfirmModal);
         }
 
         function closeResetConfirmModal() {
+            closeModalFocus(dom.resetConfirmModal);
             dom.resetConfirmModal.classList.remove("show");
+        }
+
+        let lastFocusedEl = null;
+
+        function openModalFocus(modal) {
+            lastFocusedEl = document.activeElement;
+            requestAnimationFrame(function () {
+                var first = modal.querySelector("button");
+                if (first) first.focus();
+            });
+        }
+
+        function closeModalFocus(modal) {
+            if (lastFocusedEl && lastFocusedEl.focus) {
+                try { lastFocusedEl.focus(); } catch (err) { /* ignore */ }
+            }
+            lastFocusedEl = null;
+        }
+
+        function trapModalFocus(event, modal) {
+            if (event.key !== "Tab") return;
+            var focusables = modal.querySelectorAll("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
+            if (!focusables.length) return;
+            var first = focusables[0];
+            var last = focusables[focusables.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
         }
 
         function showScreen(screenName) {
@@ -988,6 +1026,7 @@
             dom.html.setAttribute("data-theme", state.theme);
             updateThemeToggleLabel();
             storageSet(SIM_CONFIG.simId + "-theme", state.theme);
+            redrawStaticPies();
         }
 
         function loadTheme() {
@@ -1028,9 +1067,16 @@
         }
 
         function handleKeyShortcuts(event) {
+            var instrOpen = dom.instructionsModal.classList.contains("show");
+            var resetOpen = dom.resetConfirmModal.classList.contains("show");
+            if (instrOpen) {
+                trapModalFocus(event, dom.instructionsModal);
+            } else if (resetOpen) {
+                trapModalFocus(event, dom.resetConfirmModal);
+            }
             if (event.key === "Escape") {
-                closeInstructionsModal();
-                closeResetConfirmModal();
+                if (instrOpen) closeInstructionsModal();
+                if (resetOpen) closeResetConfirmModal();
             }
         }
 
@@ -1065,6 +1111,7 @@
         var allFirstTry = true;
         var questionAnswered = false;
         var questionAttempts = 0;
+        var questionEverWrong = false;
         var walkthroughStep = 0;
 
         var GAS = {
@@ -1374,12 +1421,12 @@
             ["gasRowN2", "gasRowO2", "gasRowCO2"].forEach(function (id) {
                 var row = document.getElementById(id);
                 if (!row) return;
-                var cls = "open";
-                row.addEventListener("click", function () { toggleWhy(id); });
+                var gasKey = id.replace("gasRow", "").toLowerCase();
+                row.addEventListener("click", function () { toggleWhy(gasKey); });
                 row.addEventListener("keydown", function (e) {
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
-                        toggleWhy(id);
+                        toggleWhy(gasKey);
                     }
                 });
             });
@@ -1424,6 +1471,67 @@
             }
         }
 
+        function redrawStaticPies() {
+            var inhCanvas = document.getElementById("inhaledPie");
+            if (inhCanvas) drawStaticPie(inhCanvas, getGasValues(0));
+            var exhCanvas = document.getElementById("exhaledPie");
+            if (exhCanvas) drawStaticPie(exhCanvas, getGasValues(1));
+        }
+
+        function pieIsDark() {
+            return document.documentElement.getAttribute("data-theme") === "dark";
+        }
+
+        function drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size) {
+            var pctText = slice.pct < 0.1 ? slice.pct.toFixed(2) + "%" : slice.pct.toFixed(1) + "%";
+            var fontBold = Math.max(9, size * 0.055);
+            var fontPct = Math.max(8, size * 0.042);
+
+            if (sweep >= 0.35) {
+                var labelR = r * 0.62;
+                var lx = cx + Math.cos(midAngle) * labelR;
+                var ly = cy + Math.sin(midAngle) * labelR;
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold " + fontBold + "px Arial, Helvetica, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(slice.label, lx, ly - size * 0.022);
+                ctx.font = fontPct + "px Arial, Helvetica, sans-serif";
+                ctx.fillText(pctText, lx, ly + size * 0.022);
+                return;
+            }
+
+            /* Small slice: put the label outside the pie with a short leader line. */
+            var dirX = Math.cos(midAngle);
+            var dirY = Math.sin(midAngle);
+            var ex = cx + dirX * (r + 2);
+            var ey = cy + dirY * (r + 2);
+            var lx = ex + dirX * 16;
+            var ly = ey + dirY * 16;
+
+            ctx.font = "bold " + fontBold + "px Arial, Helvetica, sans-serif";
+            var line1 = slice.label + "  " + pctText;
+            ctx.strokeStyle = pieIsDark() ? "rgba(210,220,255,0.5)" : "rgba(45,58,95,0.45)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(ex, ey);
+            ctx.lineTo(lx, ly);
+            ctx.stroke();
+
+            ctx.fillStyle = pieIsDark() ? "#dbe4ff" : "#2a3558";
+            ctx.textBaseline = "middle";
+            if (dirX < -0.3) {
+                ctx.textAlign = "right";
+                ctx.fillText(line1, lx - 6, ly);
+            } else if (dirX > 0.3) {
+                ctx.textAlign = "left";
+                ctx.fillText(line1, lx + 6, ly);
+            } else {
+                ctx.textAlign = "center";
+                ctx.fillText(line1, lx, ly);
+            }
+        }
+
         function drawStaticPie(canvas, vals) {
             if (!canvas) return;
             var ctx = canvas.getContext("2d");
@@ -1460,19 +1568,7 @@
 
                 drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
 
-                if (sweep > 0.15) {
-                    var labelR = r * 0.62;
-                    var lx = cx + Math.cos(midAngle) * labelR;
-                    var ly = cy + Math.sin(midAngle) * labelR;
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold " + Math.max(9, size * 0.055) + "px Arial, Helvetica, sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    var pctText = slice.pct < 0.1 ? slice.pct.toFixed(2) + "%" : slice.pct.toFixed(1) + "%";
-                    ctx.fillText(slice.label, lx, ly - size * 0.022);
-                    ctx.font = Math.max(8, size * 0.042) + "px Arial, Helvetica, sans-serif";
-                    ctx.fillText(pctText, lx, ly + size * 0.022);
-                }
+                drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
 
                 startAngle = endAngle;
             });
@@ -1515,19 +1611,7 @@
 
                 drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
 
-                if (sweep > 0.15) {
-                    var labelR = r * 0.62;
-                    var lx = cx + Math.cos(midAngle) * labelR;
-                    var ly = cy + Math.sin(midAngle) * labelR;
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold " + Math.max(11, size * 0.055) + "px Arial, Helvetica, sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    var pctText = slice.pct < 0.1 ? slice.pct.toFixed(2) + "%" : slice.pct.toFixed(1) + "%";
-                    ctx.fillText(slice.label, lx, ly - size * 0.022);
-                    ctx.font = Math.max(9, size * 0.042) + "px Arial, Helvetica, sans-serif";
-                    ctx.fillText(pctText, lx, ly + size * 0.022);
-                }
+                drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
 
                 startAngle = endAngle;
             });
@@ -1606,6 +1690,9 @@
             document.getElementById("walkthroughText").textContent = WALKTHROUGH_STEPS[walkthroughStep];
             var nextBtn = document.getElementById("walkthroughNextBtn");
             nextBtn.textContent = walkthroughStep === WALKTHROUGH_STEPS.length - 1 ? "Got it!" : "Next";
+            requestAnimationFrame(function () {
+                if (nextBtn && nextBtn.focus) nextBtn.focus();
+            });
         }
 
         function walkthroughNext() {
@@ -1639,10 +1726,11 @@
             playSound("click");
         }
 
-        function loadQuestion(idx) {
+        function loadQuestion(idx, focusChoice) {
             currentQuestion = idx;
             questionAnswered = false;
             questionAttempts = 0;
+            questionEverWrong = false;
 
             var q = QUESTIONS[idx];
 
@@ -1675,6 +1763,11 @@
                     handleChoice(parseInt(this.getAttribute("data-index")));
                 });
             });
+
+            if (focusChoice) {
+                var firstChoice = document.querySelector("#assessmentChoices .assessment-choice");
+                if (firstChoice) firstChoice.focus();
+            }
         }
 
         function handleChoice(choiceIdx) {
@@ -1703,10 +1796,15 @@
                 nav.classList.remove("hidden");
                 document.getElementById("nextQBtn").textContent =
                     currentQuestion < QUESTIONS.length - 1 ? "Next Question" : "See Results";
+                requestAnimationFrame(function () {
+                    var nb = document.getElementById("nextQBtn");
+                    if (nb && nb.focus) nb.focus();
+                });
 
                 simState.qResults[currentQuestion] = true;
-                if (questionAttempts === 1) simState.qFirstTry[currentQuestion] = true;
+                if (questionAttempts === 1 && !questionEverWrong) simState.qFirstTry[currentQuestion] = true;
             } else {
+                questionEverWrong = true;
                 if (questionAttempts === 1) {
                     choiceButtons[choiceIdx].classList.add("incorrect");
                     playSound("wrong");
@@ -1733,6 +1831,10 @@
                     nav2.classList.remove("hidden");
                     document.getElementById("nextQBtn").textContent =
                         currentQuestion < QUESTIONS.length - 1 ? "Next Question" : "See Results";
+                    requestAnimationFrame(function () {
+                        var nb = document.getElementById("nextQBtn");
+                        if (nb && nb.focus) nb.focus();
+                    });
 
                     simState.qResults[currentQuestion] = false;
                 }
@@ -1767,7 +1869,7 @@
 
         function nextQuestion() {
             if (currentQuestion < QUESTIONS.length - 1) {
-                loadQuestion(currentQuestion + 1);
+                loadQuestion(currentQuestion + 1, true);
                 playSound("click");
             } else {
                 saveCompletionState();
@@ -1962,6 +2064,7 @@
                     devInit();
                     playSound("click");
                 });
+                resBtn.focus();
             }
             if (allFirstTry) playConfetti();
         }
