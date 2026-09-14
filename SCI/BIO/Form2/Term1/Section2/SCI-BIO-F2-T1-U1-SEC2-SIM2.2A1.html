@@ -1613,6 +1613,12 @@
                 "Correct. The wrist is the safest and most accessible point for student self-measurement.",
                 "Correct. This is the standard scientific unit used for recording both heart rate and pulse rate."
             ];
+            const wrongFeedback = [
+                "Not quite. If 72 beats are counted in exactly 60 seconds, the pulse rate is 72 beats per minute — the count in one minute is the rate.",
+                "Not quite. Talking or losing focus can cause you to miss a beat or add an extra count, making your data inaccurate.",
+                "Not quite. The inside of the wrist is the safest and most accessible point for student self-measurement.",
+                "Not quite. bpm stands for beats per minute — the standard scientific unit for recording heart rate and pulse rate."
+            ];
             document.querySelectorAll(".assessment-q input[type='radio']").forEach((r) => r.disabled = true);
             const questions = document.querySelectorAll(".assessment-q");
             questions.forEach((q, i) => {
@@ -1636,7 +1642,7 @@
                     fb.textContent = correctFeedback[i];
                 } else {
                     fb.className = "assessment-feedback show wrong";
-                    fb.textContent = "Not quite. The correct answer is highlighted above.";
+                    fb.textContent = wrongFeedback[i];
                 }
             });
 
