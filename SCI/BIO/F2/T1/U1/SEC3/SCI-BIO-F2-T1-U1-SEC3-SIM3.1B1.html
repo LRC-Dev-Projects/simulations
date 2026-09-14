@@ -111,7 +111,7 @@
         .slider-col label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); writing-mode: vertical-lr; text-orientation: mixed; transform: rotate(180deg); margin-bottom: 4px; }
         .vert-slider { writing-mode: vertical-lr; direction: rtl; width: 44px; height: 300px; accent-color: var(--accent); cursor: pointer; }
         .slider-row { position: relative; display: flex; align-items: flex-start; }
-        .slider-end-labels { position: absolute; left: calc(100% + 3px); top: 13px; bottom: 13px; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.7rem; line-height: 1.2; color: var(--muted); text-align: center; }
+        .slider-end-labels { position: absolute; left: calc(100% + 3px); top: 13px; bottom: 13px; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.7rem; line-height: 1.2; color: var(--muted); text-align: center; }
         .slider-end-labels span { width: max-content; max-width: 92px; }
 
         .cavity-col { position: relative; }
@@ -1461,6 +1461,7 @@
                 } else {
                     feedback.innerHTML = "<strong>Not quite.</strong> The correct answer is: " + q.choices[q.correctIndex] + ". " + q.feedbackCorrect;
                     simState.questionResults[qi] = false;
+                    document.getElementById("retryBtn").classList.add("hidden");
                     onQuestionDone();
                 }
             }
@@ -1487,6 +1488,7 @@
         }
 
         function retryQuestion() {
+            if (simState.questionAnswered) return;
             simState.questionAnswered = false;
             document.getElementById("retryBtn").classList.add("hidden");
             document.getElementById("hintBtn").classList.remove("hidden");
