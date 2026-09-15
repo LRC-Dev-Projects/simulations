@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     BLANK SIMULATION TEMPLATE
+     Search "DEV-EDIT" to find all 6 zones you need to edit:
+       1. DEV-EDIT: SIM CONFIG
+       2. DEV-EDIT: PAGE TITLE
+       3. DEV-EDIT: SIM AREA
+       4. DEV-EDIT: SIM STYLES
+       5. DEV-EDIT: SIM LOGIC
+       6. DEV-EDIT: FOOTER
+     Everything else is chrome (theme/fullscreen/help/reset) —
+     DO NOT EDIT unless you know what you're doing.
+     ============================================================ -->
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ============================================================
+         DEV-EDIT: PAGE TITLE
+         Change the browser tab title here.
+         Search "DEV-EDIT" to find every place you need to change.
+         ============================================================ -->
+    <title>Snack Stack</title>
+    <style>
+        /* ============================================================
+           CHROME — DO NOT EDIT
+           Theme variables, base layout, topbar, buttons, modal, footer.
+           ============================================================ */
+
+        :root {
+            color-scheme: dark;
+            --bg: #0f1222;
+            --bg-soft: #171b31;
+            --surface: #1d2340;
+            --surface-2: #252d52;
+            --text: #eef2ff;
+            --text-soft: #c7d0f0;
+            --muted: #98a4c8;
+            --border: rgba(255, 255, 255, 0.12);
+            --accent: #7dd3fc;
+            --accent-2: #a78bfa;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #fb7185;
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+            --radius-xl: 24px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --focus: 0 0 0 3px rgba(125, 211, 252, 0.35);
+        }
+
+        html[data-theme="light"] {
+            color-scheme: light;
+            --bg: #f4f7ff;
+            --bg-soft: #e7edff;
+            --surface: #ffffff;
+            --surface-2: #eef3ff;
+            --text: #17203f;
+            --text-soft: #344267;
+            --muted: #5d6b95;
+            --border: rgba(23, 32, 63, 0.12);
+            --accent: #0ea5e9;
+            --accent-2: #7c3aed;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #e11d48;
+            --shadow: 0 18px 40px rgba(46, 64, 112, 0.14);
+            --focus: 0 0 0 3px rgba(14, 165, 233, 0.22);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(167, 139, 250, 0.12), transparent 30%),
+                radial-gradient(circle at top left, rgba(125, 211, 252, 0.12), transparent 25%),
+                var(--bg);
+            color: var(--text);
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+            cursor: pointer;
+            transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        select:focus-visible {
+            outline: none;
+            box-shadow: var(--focus);
+        }
+
+        .app-shell {
+            max-width: 1180px;
+            margin: 0 auto;
+            min-height: calc(100vh - 32px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+            background: color-mix(in srgb, var(--surface) 92%, transparent);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .brand-badge {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: white;
+            font-weight: 700;
+            box-shadow: var(--shadow);
+        }
+
+        .brand-copy {
+            min-width: 0;
+        }
+
+        .brand-copy h1,
+        .brand-copy p {
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand-copy h1 {
+            font-size: 1.08rem;
+        }
+
+        .brand-copy p {
+            color: var(--muted);
+            margin-top: 2px;
+            font-size: 0.92rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .control-btn,
+        .primary-btn,
+        .secondary-btn,
+        .ghost-btn,
+        .danger-btn,
+        .nav-btn {
+            border-radius: 999px;
+            padding: 11px 16px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .control-btn,
+        .secondary-btn,
+        .nav-btn {
+            background: var(--surface-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #ffffff;
+            box-shadow: var(--shadow);
+        }
+
+        .ghost-btn {
+            background: transparent;
+            color: var(--text-soft);
+            border: 1px dashed var(--border);
+        }
+
+        .danger-btn {
+            background: color-mix(in srgb, var(--danger) 18%, var(--surface));
+            color: var(--text);
+            border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+        }
+
+        .pulse-help {
+            position: relative;
+        }
+
+        .pulse-help::after {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            border-radius: 999px;
+            border: 2px solid color-mix(in srgb, var(--warning) 70%, transparent);
+            animation: pulseRing 1.7s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulseRing {
+            0% {
+                opacity: 0.9;
+                transform: scale(0.98);
+            }
+
+            70% {
+                opacity: 0;
+                transform: scale(1.12);
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .center-stage {
+            flex: 1;
+            display: grid;
+            place-items: center;
+            padding: 8px;
+        }
+
+        .hero-card,
+        .modal-card {
+            width: min(100%, 920px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card {
+            padding: clamp(24px, 4vw, 42px);
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+            color: var(--text-soft);
+            border: 1px solid var(--border);
+        }
+
+        .hero-card h2 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.08;
+        }
+
+        .hero-card p {
+            width: min(100%, 700px);
+            margin: 0 auto;
+            color: var(--text-soft);
+            font-size: 1.05rem;
+            line-height: 1.65;
+        }
+
+        .hero-actions {
+            margin-top: 26px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .sim-layout {
+            flex: 1;
+            display: grid;
+            place-items: center;
+            padding: 8px;
+        }
+
+        .sim-card {
+            width: min(100%, 960px);
+            padding: clamp(18px, 3vw, 28px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(6, 10, 20, 0.64);
+            z-index: 60;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-card {
+            padding: clamp(18px, 3vw, 30px);
+            position: relative;
+            /* Keep tall modals usable on short screens: cap the card height
+               and let its body scroll so the footer buttons stay reachable. */
+            max-height: min(90vh, 90dvh);
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .modal-card h3 {
+            margin: 0 0 12px;
+            font-size: clamp(1.35rem, 2vw, 1.8rem);
+        }
+
+        .modal-card p,
+        .modal-card li {
+            color: var(--text-soft);
+            line-height: 1.65;
+        }
+
+        .modal-card ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .volume-sliders {
+            margin-top: 18px;
+        }
+
+        .volume-sliders h3 {
+            margin: 0 0 10px;
+            font-size: 1.05rem;
+        }
+
+        .volume-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .volume-row label {
+            flex: 0 0 150px;
+            color: var(--text-soft);
+            font-size: 0.92rem;
+        }
+
+        .volume-row input[type="range"] {
+            flex: 1;
+            accent-color: var(--accent);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .button-row {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: var(--muted);
+            padding-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 12px;
+            }
+
+            .topbar {
+                padding: 12px;
+            }
+
+            .controls {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+        /* ============================================================
+           DEV-EDIT: SIM STYLES
+           Add your simulation CSS below. Do not modify chrome CSS above.
+           Search "DEV-EDIT" to find every place you need to change.
+           ============================================================ */
+
+        .ss-layout { max-width: 860px; margin: 0 auto; }
+        .ss-progress { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+        .ss-progress-label { font-weight: 700; color: var(--accent); font-size: 0.95rem; }
+        .ss-progress-msg { color: var(--muted); font-size: 0.85rem; }
+        .ss-screen { display: none; }
+        .ss-screen.active { display: block; }
+
+        .ss-panel { padding: 20px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+        .ss-panel h2 { margin: 0 0 8px; font-size: clamp(1.3rem, 2.4vw, 1.7rem); }
+        .ss-panel > p { margin: 0 0 16px; color: var(--text-soft); line-height: 1.6; }
+        .ss-panel .ss-note { font-size: 0.88rem; color: var(--muted); margin-bottom: 14px; }
+
+        .ss-mission-layout { display: flex; gap: 20px; align-items: stretch; flex-wrap: wrap; margin-bottom: 6px; }
+        .ss-mission-stack { flex: 1 1 260px; }
+        .ss-mission-cup { flex: 1 1 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border: 1px dashed var(--border); border-radius: var(--radius-lg); padding: 18px; background: var(--surface); }
+
+        .ss-stack-slots { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .ss-slot { min-height: 62px; border: 2px dashed var(--border); border-radius: var(--radius-md); background: var(--surface); display: flex; align-items: center; justify-content: center; position: relative; transition: all 0.2s ease; }
+        .ss-slot.filled { border-style: solid; border-color: var(--accent); }
+        .ss-slot.checked-correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 8%, var(--surface)); }
+        .ss-slot.checked-wrong { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 8%, var(--surface)); }
+        .ss-slot.drag-over { border-color: var(--accent-2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 30%, transparent); }
+        .ss-slot-number { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); font-size: 0.72rem; font-weight: 700; display: grid; place-items: center; }
+
+        .ss-card { border-radius: var(--radius-md); padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s ease; }
+        .ss-card:hover { border-color: var(--accent); }
+        .ss-card.selected { border-color: var(--accent-2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 25%, transparent); }
+        .ss-card.correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 8%, var(--surface)); }
+        .ss-card.incorrect { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 8%, var(--surface)); animation: ssShake 0.4s ease; }
+        .ss-card.disabled { opacity: 0.55; pointer-events: none; }
+        .ss-card:focus-visible { outline: none; box-shadow: var(--focus); }
+
+        @keyframes ssShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .ss-card-icon { font-size: 1.5rem; margin-right: 10px; line-height: 1; }
+        .ss-card-label { font-weight: 700; color: var(--text); font-size: 0.92rem; line-height: 1.45; }
+
+        .ss-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; }
+        .ss-badge.imperative { background: color-mix(in srgb, var(--accent) 15%, var(--surface)); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+        .ss-badge.indictive { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent); }
+        .ss-badge.seqword { background: color-mix(in srgb, var(--accent-2) 14%, var(--surface)); color: var(--accent-2); border: 1px solid color-mix(in srgb, var(--accent-2) 35%, transparent); }
+
+        .ss-tray { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-top: 16px; align-items: stretch; }
+        .ss-tray-title { width: 100%; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 2px; }
+        .ss-tray .ss-card { flex: 0 1 calc(33.333% - 10px); min-width: 150px; }
+
+        .ss-guided-cards { display: flex; flex-direction: column; gap: 10px; }
+        .ss-guided-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; min-height: 44px; }
+
+        .ss-feedback { margin-top: 14px; padding: 12px 16px; border-radius: var(--radius-md); font-size: 0.92rem; line-height: 1.6; display: none; }
+        .ss-feedback.show { display: block; }
+        .ss-feedback.correct { background: color-mix(in srgb, var(--success) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--success) 30%, transparent); color: var(--text-soft); }
+        .ss-feedback.incorrect { background: color-mix(in srgb, var(--danger) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent); color: var(--text-soft); }
+        .ss-feedback .fb-title { display: block; font-weight: 700; margin-bottom: 4px; }
+        .ss-feedback.correct .fb-title { color: var(--success); }
+        .ss-feedback.incorrect .fb-title { color: var(--danger); }
+        .ss-feedback .fb-model { display: block; margin-top: 6px; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); font-style: italic; color: var(--text); }
+
+        .ss-hint { margin-top: 12px; padding: 10px 14px; background: color-mix(in srgb, var(--warning) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-soft); line-height: 1.5; display: none; }
+        .ss-hint.show { display: block; }
+        .ss-hint .hint-title { font-weight: 700; color: var(--warning); display: block; margin-bottom: 2px; }
+
+        .ss-navbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+        .ss-nav-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+        .ss-verb-row { margin-bottom: 18px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+        .ss-verb-picture { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+        .ss-verb-icon { font-size: 2.4rem; line-height: 1; padding: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-md); min-width: 76px; text-align: center; }
+        .ss-verb-question { font-weight: 700; color: var(--text); }
+        .ss-verb-options { display: flex; flex-direction: column; gap: 8px; }
+        .ss-verb-option { padding: 12px 16px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius-md); cursor: pointer; font-size: 0.92rem; text-align: left; color: var(--text-soft); transition: all 0.2s ease; min-height: 44px; }
+        .ss-verb-option:hover { border-color: var(--accent); }
+        .ss-verb-option.correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 15%, var(--surface)); color: var(--text); }
+        .ss-verb-option.incorrect { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, var(--surface)); color: var(--text); }
+        .ss-verb-option.disabled { pointer-events: none; opacity: 0.6; }
+
+        .ss-repair-stack { display: flex; flex-direction: column; gap: 8px; }
+        .ss-repair-card { display: flex; align-items: center; gap: 10px; padding: 10px 14px; min-height: 54px; background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-md); }
+        .ss-repair-card.error { border-color: var(--warning); background: color-mix(in srgb, var(--warning) 6%, var(--surface)); }
+        .ss-repair-card.fixed { border-color: var(--success); background: color-mix(in srgb, var(--success) 8%, var(--surface)); }
+        .ss-repair-card .ss-card-label { flex: 1; }
+        .ss-repair-move { display: flex; flex-direction: column; gap: 4px; }
+        .ss-repair-btn { width: 44px; height: 44px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); font-size: 1rem; font-weight: 700; display: grid; place-items: center; cursor: pointer; }
+        .ss-repair-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 15%, var(--surface-2)); }
+        .ss-repair-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .ss-repair-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+
+        .ss-replace-options { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .ss-replace-option { padding: 10px 14px; border-radius: var(--radius-md); border: 2px solid var(--border); background: var(--surface-2); text-align: left; cursor: pointer; font-size: 0.9rem; color: var(--text-soft); }
+        .ss-replace-option:hover { border-color: var(--warning); }
+        .ss-replace-option.correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 15%, var(--surface)); color: var(--text); }
+        .ss-replace-option.incorrect { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, var(--surface)); }
+
+        .ss-cup-preview { font-size: 3.4rem; line-height: 1; }
+
+        .ss-completion-wrap { text-align: center; padding: 24px 12px; }
+        .ss-completion-icon { font-size: 4rem; margin-bottom: 12px; }
+        .ss-completion-title { font-size: clamp(1.5rem, 3vw, 2.2rem); margin: 0 0 10px; }
+        .ss-recipe-card { max-width: 420px; margin: 18px auto; padding: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); text-align: left; }
+        .ss-recipe-card h3 { margin: 0 0 12px; font-size: 1.05rem; color: var(--accent); text-align: center; }
+        .ss-recipe-step { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.92rem; }
+        .ss-recipe-step:last-child { border-bottom: 0; }
+        .ss-recipe-step .ss-card-icon { margin-right: 0; }
+
+        .ss-results { margin: 18px auto 0; max-width: 480px; text-align: left; }
+        .ss-results table { width: 100%; border-collapse: collapse; }
+        .ss-results td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 0.92rem; }
+        .ss-results td:first-child { color: var(--muted); width: 55%; }
+        .ss-results td:last-child { color: var(--text); font-weight: 700; text-align: right; }
+        .ss-confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
+
+        @media (max-width: 600px) {
+            .ss-tray .ss-card { flex: 0 1 100%; min-width: unset; }
+            .ss-verb-icon { font-size: 2rem; min-width: 60px; }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="brand-wrap">
+                <div class="brand-badge" id="brandBadge">SIM</div>
+                <div class="brand-copy">
+                    <h1 id="brandTitle">Simulation Title Placeholder</h1>
+                    <p id="brandSubtitle">Offline interactive learning shell</p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <!-- ===== AUDIO REMOVED: this sim is silent by design (#63) ===== -->
+                <button class="control-btn pulse-help" id="helpBtn" aria-label="Open instructions">❔ Help</button>
+                <button class="control-btn" id="themeToggleBtn" aria-label="Switch theme">🌙 Dark</button>
+                <button class="control-btn" id="fullscreenBtn" aria-label="Toggle fullscreen"><svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg> Full Screen</button>
+                <button class="danger-btn" id="resetBtn" aria-label="Reset simulation"><svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg> Reset</button>
+            </div>
+        </header>
+
+        <main class="screen active" id="homeScreen">
+            <div class="center-stage">
+                <section class="hero-card">
+                    <div class="eyebrow" id="homeEyebrow">Template Shell Ready</div>
+                    <h2 id="homeTitle">Replace This Title With Your Simulation Name</h2>
+                    <p id="homeDescription">
+                        This is a blank offline-ready template. Build your simulation logic in the DEV AREA.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="primary-btn" id="startBtn">Start</button>
+                        <button class="secondary-btn" id="openInstructionsBtn">Read Instructions</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <main class="screen" id="simScreen">
+            <div class="sim-layout">
+                <section class="sim-card" id="simContainer">
+                    <!-- DEV-EDIT: SIM AREA — populated dynamically by buildSimUI() -->
+                </section>
+            </div>
+        </main>
+
+        <!-- ============================================================
+             DEV-EDIT: FOOTER
+             Change the footer text below.
+             Search "DEV-EDIT" to find every place you need to change.
+             ============================================================ -->
+        <div class="footer-note">
+            Snack Stack — ELA-F1-T1-U11-SEC1-SIM1 #63
+        </div>
+    </div>
+
+    <div class="modal" id="instructionsModal" role="dialog" aria-modal="true" aria-labelledby="instructionsHeading">
+        <section class="modal-card">
+            <button class="close-btn" id="closeInstructionsBtn" aria-label="Close instructions">×</button>
+            <h3 id="instructionsHeading">How to Use This Simulation</h3>
+            <div id="instructionsBody"></div>
+            <div class="button-row" style="margin-top: 18px; justify-content: flex-start;">
+                <button class="primary-btn" id="gotItBtn">Got it</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal" id="resetConfirmModal" role="dialog" aria-modal="true" aria-labelledby="resetConfirmHeading">
+        <section class="modal-card">
+            <button class="close-btn" id="closeResetConfirmBtn" aria-label="Close reset confirmation">×</button>
+            <h3 id="resetConfirmHeading">Reset simulation?</h3>
+            <p>This will clear your current progress and return you to the home screen.</p>
+            <div class="button-row" style="margin-top: 18px; justify-content: flex-start;">
+                <button class="secondary-btn" id="cancelResetBtn">Cancel</button>
+                <button class="danger-btn" id="confirmResetBtn">Reset</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        "use strict";
+
+        /* Safety net: never allow a native form submission. Builders often
+           add forms to this shell; without a JS handler a submit navigates
+           the page to its own URL, which Chrome blocks with an "Unsafe
+           attempt to load URL" error when the file runs from file:// inside
+           an iframe. Capture-phase, unconditional. */
+        document.addEventListener("submit", function (event) {
+            event.preventDefault();
+        }, true);
+
+        /* ============================================================
+           DEV-EDIT: SIM CONFIG
+           Change title, subtitle, description, instructions here.
+           Search "DEV-EDIT" to find every place you need to change.
+
+           Field notes:
+             simId          - must be UNIQUE per sim. Used as the
+                               sessionStorage key prefix (theme, help-seen,
+                               and any state you persist). Colliding
+                               simIds will clobber each other's saved data.
+             title           - shown in <title>, topbar, and home screen.
+             subtitle        - shown under the title in the topbar.
+             badgeText       - short text in the topbar logo badge.
+             homeEyebrow     - small pill label above the home title.
+             homeDescription - paragraph text on the home screen.
+             instructions    - array of strings rendered as a bullet list
+                                in the Help/Instructions modal.
+           ============================================================ */
+        const SIM_CONFIG = {
+            templateVersion: "2.2.1",
+            simId: "snack-stack-ela-f1-t1-u11-sec1-sim1",
+            title: "Snack Stack",
+            subtitle: "ELA — Giving Directions and Instructions",
+            badgeText: "ELA",
+            homeEyebrow: "English Language Arts",
+            homeDescription: "Build the steps for making a fruit cup. Use imperative verbs and sequence words to give clear, safe instructions.",
+            instructions: [
+                "Read each step carefully before placing it in the stack.",
+                "Instructions tell someone what to do — use imperative verbs.",
+                "Put steps in a safe, logical order.",
+                "Use sequence words: First, Next, Then, Finally.",
+                "Click Hint if you need help on any screen.",
+                "Use the Reset button to start over from the beginning."
+            ]
+        };
+
+        /* AUDIO ENGINE REMOVED — this sim is silent by design (#63).
+           The #audioBtn header button and the DEV-EDIT: AUDIO section
+           were deleted. All chrome code that referenced audio is null-safe
+           or wrapped in try/catch, so nothing breaks without it. */
+
+        /* ============================================================
+           CHROME — DO NOT EDIT
+           ============================================================ */
+        const state = {
+            currentScreen: "home",
+            theme: "dark"
+        };
+
+        const dom = {
+            html: document.documentElement,
+            brandBadge: document.getElementById("brandBadge"),
+            brandTitle: document.getElementById("brandTitle"),
+            brandSubtitle: document.getElementById("brandSubtitle"),
+            homeEyebrow: document.getElementById("homeEyebrow"),
+            homeTitle: document.getElementById("homeTitle"),
+            homeDescription: document.getElementById("homeDescription"),
+            homeScreen: document.getElementById("homeScreen"),
+            simScreen: document.getElementById("simScreen"),
+            simContainer: document.getElementById("simContainer"),
+            startBtn: document.getElementById("startBtn"),
+            openInstructionsBtn: document.getElementById("openInstructionsBtn"),
+            audioBtn: document.getElementById("audioBtn"), // null if audio section removed — safe
+            helpBtn: document.getElementById("helpBtn"),
+            themeToggleBtn: document.getElementById("themeToggleBtn"),
+            fullscreenBtn: document.getElementById("fullscreenBtn"),
+            resetBtn: document.getElementById("resetBtn"),
+            instructionsModal: document.getElementById("instructionsModal"),
+            instructionsBody: document.getElementById("instructionsBody"),
+            closeInstructionsBtn: document.getElementById("closeInstructionsBtn"),
+            gotItBtn: document.getElementById("gotItBtn"),
+            resetConfirmModal: document.getElementById("resetConfirmModal"),
+            closeResetConfirmBtn: document.getElementById("closeResetConfirmBtn"),
+            cancelResetBtn: document.getElementById("cancelResetBtn"),
+            confirmResetBtn: document.getElementById("confirmResetBtn")
+        };
+
+        initializeApp();
+
+        function initializeApp() {
+            // One-time cleanup: earlier template versions saved to
+            // localStorage, which outlives the tab. Remove any of this sim's
+            // stale keys so shared machines carry no leftover learner data.
+            try {
+                Object.keys(localStorage)
+                    .filter((k) => k.indexOf(SIM_CONFIG.simId + "-") === 0)
+                    .forEach((k) => localStorage.removeItem(k));
+            } catch (err) { /* storage unavailable */ }
+            applyConfigToUI();
+            bindEvents();
+            renderInstructions();
+            loadTheme();
+            loadHelpSeen();
+        }
+
+        function loadHelpSeen() {
+            const seen = storageGet(SIM_CONFIG.simId + "-help-seen");
+            if (seen === "true") {
+                dom.helpBtn.classList.remove("pulse-help");
+            }
+        }
+
+        function applyConfigToUI() {
+            document.title = SIM_CONFIG.title;
+            dom.brandBadge.textContent = SIM_CONFIG.badgeText;
+            dom.brandTitle.textContent = SIM_CONFIG.title;
+            dom.brandSubtitle.textContent = SIM_CONFIG.subtitle;
+            dom.homeEyebrow.textContent = SIM_CONFIG.homeEyebrow;
+            dom.homeTitle.textContent = SIM_CONFIG.title;
+            dom.homeDescription.textContent = SIM_CONFIG.homeDescription;
+        }
+
+        function bindEvents() {
+            if (dom.audioBtn) dom.audioBtn.addEventListener("click", toggleAudio);
+            dom.startBtn.addEventListener("click", () => {
+                showScreen("sim");
+                devInit();
+            });
+            dom.openInstructionsBtn.addEventListener("click", openInstructionsModal);
+            dom.helpBtn.addEventListener("click", () => {
+                dom.helpBtn.classList.remove("pulse-help");
+                storageSet(SIM_CONFIG.simId + "-help-seen", "true");
+                openInstructionsModal();
+            });
+            dom.closeInstructionsBtn.addEventListener("click", closeInstructionsModal);
+            dom.gotItBtn.addEventListener("click", closeInstructionsModal);
+            dom.instructionsModal.addEventListener("click", (event) => {
+                if (event.target === dom.instructionsModal) {
+                    closeInstructionsModal();
+                }
+            });
+
+            dom.themeToggleBtn.addEventListener("click", toggleTheme);
+            dom.fullscreenBtn.addEventListener("click", toggleFullscreen);
+            dom.resetBtn.addEventListener("click", openResetConfirmModal);
+            dom.closeResetConfirmBtn.addEventListener("click", closeResetConfirmModal);
+            dom.cancelResetBtn.addEventListener("click", closeResetConfirmModal);
+            dom.confirmResetBtn.addEventListener("click", () => {
+                devReset();
+                showScreen("home");
+                closeResetConfirmModal();
+            });
+            dom.resetConfirmModal.addEventListener("click", (event) => {
+                if (event.target === dom.resetConfirmModal) {
+                    closeResetConfirmModal();
+                }
+            });
+            document.addEventListener("fullscreenchange", updateFullscreenButton);
+            document.addEventListener("keydown", handleKeyShortcuts);
+        }
+
+        function renderInstructions() {
+            const intro = document.createElement("p");
+            intro.textContent = "Here is how this simulation works:";
+            const list = document.createElement("ul");
+
+            SIM_CONFIG.instructions.forEach((item) => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                list.appendChild(li);
+            });
+
+            dom.instructionsBody.replaceChildren(intro, list);
+        }
+
+        function openInstructionsModal() {
+            dom.instructionsModal.classList.add("show");
+        }
+
+        function closeInstructionsModal() {
+            dom.instructionsModal.classList.remove("show");
+        }
+
+        function openResetConfirmModal() {
+            dom.resetConfirmModal.classList.add("show");
+        }
+
+        function closeResetConfirmModal() {
+            dom.resetConfirmModal.classList.remove("show");
+        }
+
+        function showScreen(screenName) {
+            state.currentScreen = screenName;
+            dom.homeScreen.classList.toggle("active", screenName === "home");
+            dom.simScreen.classList.toggle("active", screenName === "sim");
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === "dark" ? "light" : "dark";
+            dom.html.setAttribute("data-theme", state.theme);
+            updateThemeToggleLabel();
+            storageSet(SIM_CONFIG.simId + "-theme", state.theme);
+        }
+
+        function loadTheme() {
+            const saved = storageGet(SIM_CONFIG.simId + "-theme");
+            if (saved === "light" || saved === "dark") {
+                state.theme = saved;
+            } else {
+                const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+                state.theme = prefersLight ? "light" : "dark";
+            }
+            dom.html.setAttribute("data-theme", state.theme);
+            updateThemeToggleLabel();
+        }
+
+        function updateThemeToggleLabel() {
+            const switchToLight = state.theme === "dark";
+            dom.themeToggleBtn.textContent = switchToLight ? "☀️ Light Mode" : "🌙 Dark Mode";
+            dom.themeToggleBtn.setAttribute("aria-label", switchToLight ? "Switch to light mode" : "Switch to dark mode");
+        }
+
+        async function toggleFullscreen() {
+            try {
+                if (!document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen();
+                } else {
+                    await document.exitFullscreen();
+                }
+            } catch (error) {
+                console.error("Fullscreen is not available in this browser right now.", error);
+            }
+        }
+
+        const FS_ENTER_HTML = '<svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg> Full Screen';
+        const FS_EXIT_HTML = '<svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg> Exit Full Screen';
+
+        function updateFullscreenButton() {
+            dom.fullscreenBtn.innerHTML = document.fullscreenElement ? FS_EXIT_HTML : FS_ENTER_HTML;
+        }
+
+        function handleKeyShortcuts(event) {
+            if (event.key === "Escape") {
+                closeInstructionsModal();
+                closeResetConfirmModal();
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function storageGet(key) {
+            try { return sessionStorage.getItem(key); } catch (err) { return null; }
+        }
+        function storageSet(key, value) {
+            try { sessionStorage.setItem(key, value); } catch (err) { /* storage unavailable (e.g. sandboxed iframe) */ }
+        }
+
+        /* ============================================================
+           DEV-EDIT: SIM LOGIC
+           Snack Stack — build the fruit-cup recipe step by step.
+           Screens: 1 Mission, 2 Guided Stack, 3 Main Stack,
+                    4 Verb Check, 5 Final Stack Repair, 6 Completion.
+           Silent, keyboard accessible, British English.
+           ============================================================ */
+
+        /* ---- Correct recipe steps (the exact safe order) ---- */
+        var STEPS = [
+            { id: 1, text: "First, wash your hands.", icon: "\uD83E\uDDFC", seq: "First", badge: "imperative" },
+            { id: 2, text: "Next, rinse the fruit.", icon: "\uD83D\uDCA7", seq: "Next", badge: "imperative" },
+            { id: 3, text: "Then, place the fruit on a clean board.", icon: "\uD83D\uDCCB", seq: "Then", badge: "imperative" },
+            { id: 4, text: "Ask an adult to cut the fruit into small pieces.", icon: "\uD83D\uDD2A", seq: "", badge: "imperative" },
+            { id: 5, text: "Place the pieces in a clean cup.", icon: "\uD83E\uDD64", seq: "", badge: "imperative" },
+            { id: 6, text: "Finally, add a spoon and serve.", icon: "\uD83E\uDD44", seq: "Finally", badge: "imperative" }
+        ];
+
+        var GUIDED_CARDS = [
+            { text: "First, wash your hands.", icon: "\uD83E\uDDFC", correct: true,
+              feedback: "\u201CFirst, wash your hands.\u201D uses the imperative verb \u201Cwash\u201D to give a command, and the sequence word \u201CFirst\u201D tells us it belongs at the start. The stack begins with clean hands." },
+            { text: "Finally, wash your hands.", icon: "\uD83E\uDDFC", correct: false,
+              feedback: "\u201CFinally\u201D tells someone this step belongs at the END, not the start. The imperative verb \u201Cwash\u201D is fine, but the sequence word is wrong for step one.",
+              model: "\u201CFirst, wash your hands.\u201D" },
+            { text: "The hands are clean.", icon: "\uD83E\uDDFC", correct: false,
+              feedback: "\u201CThe hands are clean\u201D states information (indicative mood) instead of giving a command. An instruction uses an imperative verb that tells someone what to do.",
+              model: "\u201CWash your hands.\u201D" }
+        ];
+
+        var VERB_QUESTIONS = [
+            { icon: "\uD83E\uDDFC\uD83D\uDC4B", label: "the hand-washing picture",
+              options: [
+                { text: "Wash your hands.", correct: true },
+                { text: "Your hands are washed.", correct: false }
+              ],
+              model: "\u201CWash your hands.\u201D starts with the action verb \u201Cwash\u201D. The other caption only describes the hands." },
+            { icon: "\uD83D\uDCA7\uD83C\uDF61", label: "the rinsing picture",
+              options: [
+                { text: "Rinse the fruit.", correct: true },
+                { text: "The fruit is rinsed.", correct: false }
+              ],
+              model: "\u201CRinse the fruit.\u201D uses the imperative verb \u201Crinse\u201D. \u201CThe fruit is rinsed\u201D only reports a fact." },
+            { icon: "\uD83E\uDD64\uD83C\uDF4E", label: "the cup picture",
+              options: [
+                { text: "Place the pieces in the cup.", correct: true },
+                { text: "The pieces are in the cup.", correct: false }
+              ],
+              model: "\u201CPlace the pieces in the cup.\u201D gives a precise command with the verb \u201Cplace\u201D. The other caption is a fact, not a step." },
+            { icon: "\uD83C\uDF7D\uD83D\uDD25", label: "the serving picture",
+              options: [
+                { text: "Serve the fruit cup.", correct: true },
+                { text: "The fruit cup is served.", correct: false }
+              ],
+              model: "\u201CServe the fruit cup.\u201D is the imperative caption. \u201CThe fruit cup is served\u201D only describes what happened." }
+        ];
+
+        var REPAIR_INITIAL = [
+            { id: 1, text: "First, wash your hands.", icon: "\uD83E\uDDFC" },
+            { id: 2, text: "Next, rinse the fruit.", icon: "\uD83D\uDCA7" },
+            { id: 3, text: "Then, place the fruit on a clean board.", icon: "\uD83D\uDCCB" },
+            { id: 4, text: "Do the fruit thing", icon: "\u2753", vague: true },
+            { id: 6, text: "Finally, add a spoon and serve.", icon: "\uD83E\uDD44" },
+            { id: 5, text: "Place the pieces in a clean cup.", icon: "\uD83E\uDD64" }
+        ];
+
+        var REPAIR_REPLACEMENTS = [
+            { text: "Ask an adult to cut the fruit into small pieces.", correct: true },
+            { text: "Cut the fruit.", correct: false },
+            { text: "The fruit is cut into small pieces.", correct: false }
+        ];
+
+        var HINTS = {
+            1: "Your mission: build one clear, safe fruit-cup recipe from preparation to serving.",
+            2: "A good first step gives a command (imperative verb) AND belongs at the start. Look for the action verb \u201Cwash\u201D paired with the sequence word \u201CFirst\u201D.",
+            3: "Think from preparation to serving. Wash and rinse first, cut the fruit safely, place the pieces in a clean cup, then serve last.",
+            4: "An imperative sentence starts with an action verb and gives a command. Watch out for captions that only describe a fact, like \u201Cis washed\u201D or \u201Cis served\u201D.",
+            5: "Two things are wrong: one step is too vague and needs replacing, and the serving step is in the wrong place \u2014 \u201CServe\u201D must come last."
+        };
+
+        /* ---- Game state ---- */
+        var ssStep = 1;
+        var ssHints = 0;
+        var ssAttempts = 0;
+        var ssActions = [];          // scored actions: { label, skill, firstTry }
+        var ssMissedSkills = [];
+        var ssTray = [];
+        var ssSlots = [];
+        var ssSelected = null;
+        var ssStackChecked = false;
+        var ssVerbIdx = 0;
+        var ssVerbDone = [];
+        var ssRepair = [];
+        var ssGuidedOK = false;
+        var ssStartTime = 0;
+
+        /* ---- Helpers ---- */
+        function ssShuffle(arr) {
+            var a = arr.slice();
+            for (var i = a.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var t = a[i]; a[i] = a[j]; a[j] = t;
+            }
+            return a;
+        }
+
+        function ssMakeAction(label, skill) {
+            ssActions.push({ label: label, skill: skill, firstTry: null });
+        }
+
+        function ssJudgeAction(index, correct) {
+            if (index >= ssActions.length) return;
+            if (ssActions[index].firstTry === null) {
+                ssActions[index].firstTry = correct;
+                if (!correct) {
+                    ssAttempts++;
+                    if (ssActions[index].skill && ssMissedSkills.indexOf(ssActions[index].skill) === -1) {
+                        ssMissedSkills.push(ssActions[index].skill);
+                    }
+                }
+            }
+        }
+
+        var ssLive = null;
+        function ssAnnounce(message) {
+            if (!ssLive) {
+                ssLive = document.createElement("div");
+                ssLive.setAttribute("role", "status");
+                ssLive.setAttribute("aria-live", "polite");
+                ssLive.style.cssText = "position:absolute;clip:rect(0 0 0 0);overflow:hidden;height:1px;width:1px;white-space:nowrap;";
+                dom.simContainer.appendChild(ssLive);
+            }
+            ssLive.textContent = "";
+            setTimeout(function () { ssLive.textContent = message; }, 20);
+        }
+
+        function ssShowHint(screenNum) {
+            ssHints++;
+            var text = HINTS[screenNum] || "";
+            var hintEl = document.getElementById("ssHint" + screenNum);
+            if (hintEl) {
+                hintEl.innerHTML = '<span class="hint-title">Hint</span>' + escapeHtml(text);
+                hintEl.classList.add("show");
+                ssAnnounce("Hint: " + text);
+            }
+        }
+
+        function ssStepById(id) {
+            for (var i = 0; i < STEPS.length; i++) {
+                if (STEPS[i].id === id) return STEPS[i];
+            }
+            return STEPS[0];
+        }
+
+        function ssStepText(id) {
+            return ssStepById(id).text;
+        }
+
+        /* ---- Screen showing ---- */
+        function ssShowScreen(n) {
+            ssStep = n;
+            var screens = document.querySelectorAll(".ss-screen");
+            for (var i = 0; i < screens.length; i++) {
+                screens[i].classList.toggle("active", i === n - 1);
+            }
+            var prog = document.getElementById("ssProgressLabel");
+            if (prog) prog.textContent = "Scene " + n + " of 6";
+            var msg = document.getElementById("ssProgressMsg");
+            if (msg) {
+                var m = { 1: "Mission brief", 2: "Guided stack", 3: "Main stack", 4: "Verb check", 5: "Final stack repair", 6: "Completion" };
+                msg.textContent = "Snack Stack \u2014 " + m[n];
+            }
+            var backs = document.querySelectorAll(".ss-back-btn");
+            for (var bk = 0; bk < backs.length; bk++) {
+                backs[bk].classList.toggle("hidden", n <= 1 || n === 6);
+            }
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+            var focusTarget = document.getElementById("ssFocus" + n);
+            if (focusTarget) {
+                setTimeout(function () { try { focusTarget.focus(); } catch (e) { /* ignore */ } }, 30);
+            }
+            ssAnnounce("Scene " + n + " of 6. " + m[n]);
+        }
+
+        /* ---- Navigation gates ---- */
+        function ssCanLeaveScreen(n) {
+            if (n === 2) return ssGuidedOK;
+            if (n === 3) {
+                for (var i = 0; i < 6; i++) if (ssSlots[i] !== STEPS[i].id) return false;
+                return true;
+            }
+            if (n === 4) {
+                for (var v = 0; v < 4; v++) if (!ssVerbDone[v]) return false;
+                return true;
+            }
+            if (n === 5) {
+                for (var r = 0; r < 6; r++) if (ssRepair[r].id !== STEPS[r].id) return false;
+                return true;
+            }
+            return true;
+        }
+
+        /* ---- Screen builders ---- */
+        function ssBuildMission() {
+            var slots = "";
+            for (var i = 0; i < 6; i++) {
+                slots += '<div class="ss-slot"><span class="ss-slot-number">' + (i + 1) + '</span><span class="muted" style="font-size:0.8rem;">Empty</span></div>';
+            }
+            return '<div class="ss-screen active" id="ssS1">' +
+                '<div class="ss-panel">' +
+                '<h2>Build the steps from preparation to serving.</h2>' +
+                '<p>You work at the school wellness booth. Your job is to build one clear, safe fruit-cup recipe by stacking six picture-step cards in the exact right order, using imperative verbs and sequence words.</p>' +
+                '<div class="ss-mission-layout">' +
+                    '<div class="ss-mission-stack">' +
+                        '<div class="ss-note">Your snack stack (empty for now):</div>' +
+                        '<div class="ss-stack-slots">' + slots + '</div>' +
+                    '</div>' +
+                    '<div class="ss-mission-cup">' +
+                        '<div class="ss-cup-preview" aria-hidden="true">\uD83E\uDD64\uD83C\uDF4E\uD83C\uDF4A\uD83C\uDF47</div>' +
+                        '<div><strong>Fruit cup target</strong></div>' +
+                        '<div class="muted" style="font-size:0.85rem;">Fresh fruit in a clean cup, ready to serve at the booth.</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="ss-hint" id="ssHint1"></div>' +
+                '</div>' +
+                ssNavbar(1, "Begin", "ssS1Begin") +
+                '</div>';
+        }
+
+        function ssBuildGuided() {
+            var cards = "";
+            for (var i = 0; i < GUIDED_CARDS.length; i++) {
+                cards += '<div class="ss-card ss-guided-card" data-guided="' + i + '" role="button" tabindex="0" aria-label="' + escapeHtml(GUIDED_CARDS[i].text) + '">' +
+                    '<span class="ss-card-icon">' + GUIDED_CARDS[i].icon + '</span>' +
+                    '<span class="ss-card-label">' + escapeHtml(GUIDED_CARDS[i].text) + '</span>' +
+                    '</div>';
+            }
+            return '<div class="ss-screen" id="ssS2">' +
+                '<div class="ss-panel">' +
+                '<h2>Guided stack \u2014 choose the correct first step</h2>' +
+                '<p class="ss-note">One of these cards is the correct first step because it gives a command (imperative verb) AND belongs at the start with the right sequence word. Select it.</p>' +
+                '<div class="ss-guided-cards" id="ssGuidedCards">' + cards + '</div>' +
+                '<div class="ss-feedback" id="ssGuidedFb" role="status"></div>' +
+                '<div class="ss-hint" id="ssHint2"></div>' +
+                '</div>' +
+                ssNavbar(2, "Continue", "ssS2Continue") +
+                '</div>';
+        }
+
+        function ssBuildStack() {
+            var slots = "";
+            for (var i = 0; i < 6; i++) {
+                slots += '<div class="ss-slot" data-slot="' + i + '" role="button" tabindex="0" aria-label="Stack slot ' + (i + 1) + '">' +
+                    '<span class="ss-slot-number">' + (i + 1) + '</span></div>';
+            }
+            return '<div class="ss-screen" id="ssS3">' +
+                '<div class="ss-panel">' +
+                '<h2>Main stack \u2014 build the full recipe</h2>' +
+                '<p class="ss-note">Tap a card below to pick it up, then tap the slot in the stack where it belongs. Tap a placed card to return it to the tray. Put all six steps in the exact safe order.</p>' +
+                '<div class="ss-stack-slots" id="ssStackSlots">' + slots + '</div>' +
+                '<div class="ss-tray" id="ssTray">' +
+                    '<div class="ss-tray-title">Picture-step cards \u2014 choose one and stack it</div>' +
+                    '<div id="ssTrayCards"></div>' +
+                '</div>' +
+                '<div class="ss-feedback" id="ssStackFb" role="status"></div>' +
+                '<div class="ss-hint" id="ssHint3"></div>' +
+                '</div>' +
+                ssNavbar(3, "Check Order", "ssS3Check") +
+                '</div>';
+        }
+
+        function ssBuildVerb() {
+            return '<div class="ss-screen" id="ssS4">' +
+                '<div class="ss-panel">' +
+                '<h2>Verb check \u2014 choose the imperative caption</h2>' +
+                '<p class="ss-note">Each picture needs a caption that gives a command. Choose the imperative sentence.</p>' +
+                '<div id="ssVerbArea"></div>' +
+                '<div class="ss-feedback" id="ssVerbFb" role="status"></div>' +
+                '<div class="ss-hint" id="ssHint4"></div>' +
+                '</div>' +
+                ssNavbar(4, "Continue", "ssS4Continue") +
+                '</div>';
+        }
+
+        function ssBuildRepair() {
+            return '<div class="ss-screen" id="ssS5">' +
+                '<div class="ss-panel">' +
+                '<h2>Final stack repair \u2014 fix the recipe</h2>' +
+                '<p class="ss-note">Two mistakes slipped into the stack. Use the arrows to reorder the cards, and replace the vague card with a precise instruction. Then check the stack.</p>' +
+                '<div class="ss-repair-stack" id="ssRepairCards"></div>' +
+                '<div class="ss-feedback" id="ssRepairFb" role="status"></div>' +
+                '<div class="ss-hint" id="ssHint5"></div>' +
+                '</div>' +
+                ssNavbar(5, "Check Stack", "ssS5Check") +
+                '</div>';
+        }
+
+        function ssBuildCompletion() {
+            var recipe = '';
+            recipe += '<div class="ss-recipe-step"><span class="ss-slot-number" style="position:static;">1</span><span class="ss-card-icon">\uD83E\uDDFC</span><span class="ss-card-label">First, wash your hands.</span></div>';
+            recipe += '<div class="ss-recipe-step"><span class="ss-slot-number" style="position:static;">2</span><span class="ss-card-icon">\uD83D\uDCA7</span><span class="ss-card-label">Next, rinse the fruit.</span></div>';
+            recipe += '<div class="ss-recipe-step"><span class="ss-slot-number" style="position:static;">3</span><span class="ss-card-icon">\uD83D\uDCCB</span><span class="ss-card-label">Then, place the fruit on a clean board.</span></div>';
+            recipe += '<div class="ss-recipe-step"><span class="ss-slot-number" style="position:static;">4</span><span class="ss-card-icon">\uD83D\uDD2A</span><span class="ss-card-label">Ask an adult to cut the fruit into small pieces.</span></div>';
+            recipe += '<div class="ss-recipe-step"><span class="ss-slot-number" style="position:static;">5</span><span class="ss-card-icon">\uD83E\uDD64</span><span class="ss-card-label">Place the pieces in a clean cup.</span></div>';
+            recipe += '<div class="ss-recipe-step"><span class="ss-slot-number" style="position:static;">6</span><span class="ss-card-icon">\uD83E\uDD44</span><span class="ss-card-label">Finally, add a spoon and serve.</span></div>';
+            return '<div class="ss-screen" id="ssS6">' +
+                '<div class="ss-panel">' +
+                '<div class="ss-completion-wrap">' +
+                '<div class="ss-completion-icon" aria-hidden="true">\uD83C\uDF89</div>' +
+                '<h2 class="ss-completion-title">Snack stack ready!</h2>' +
+                '<p>Your clear, safe fruit-cup recipe is complete. From clean hands to a served cup, every step uses an imperative verb in the right order.</p>' +
+                '<div class="ss-recipe-card"><h3>\uD83C\uDF61 Pictorial Recipe \u2014 Fruit Cup</h3>' + recipe + '</div>' +
+                '<div class="ss-results" id="ssResultTable"></div>' +
+                '<div class="button-row">' +
+                    '<button class="primary-btn" id="ssRestartBtn">\u21BA Build Another Stack</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+        }
+
+        function ssNavbar(n, primaryLabel, primaryId) {
+            var hintBtn = (n === 6) ? "" : '<button class="ghost-btn ss-hint-btn" data-hint="' + n + '">\uD83D\uDCA1 Hint</button>';
+            return '<div class="ss-navbar">' +
+                '<div class="ss-nav-group">' +
+                    '<button class="secondary-btn ss-back-btn">\u2190 Back</button>' +
+                    hintBtn +
+                '</div>' +
+                '<button class="primary-btn" id="' + primaryId + '">' + primaryLabel + '</button>' +
+                '</div>';
+        }
+
+        /* ---- Screen 2: Guided Stack ---- */
+        function ssGuidedPick(idx) {
+            var c = GUIDED_CARDS[idx];
+            var fb = document.getElementById("ssGuidedFb");
+            var cards = document.querySelectorAll(".ss-guided-card");
+            var i;
+            if (ssGuidedOK) return;
+            if (ssActions.length === 0) ssMakeAction("Guided first-step choice", "Imperative verbs and sequence words (11.1)");
+            if (c.correct) {
+                ssJudgeAction(0, true);
+                ssGuidedOK = true;
+                for (i = 0; i < cards.length; i++) {
+                    cards[i].classList.add("correct");
+                    cards[i].setAttribute("aria-disabled", "true");
+                }
+                fb.className = "ss-feedback show correct";
+                fb.innerHTML = '<span class="fb-title">Correct!</span>' + escapeHtml(c.feedback);
+                var cont = document.getElementById("ssS2Continue");
+                cont.disabled = false;
+                ssAnnounce("Correct. " + c.text);
+                cont.focus();
+            } else {
+                ssJudgeAction(0, false);
+                for (i = 0; i < cards.length; i++) cards[i].classList.add("incorrect");
+                fb.className = "ss-feedback show incorrect";
+                fb.innerHTML = '<span class="fb-title">Not quite</span>' + escapeHtml(c.feedback) +
+                    '<span class="fb-model">Correct model: ' + escapeHtml(c.model || "First, wash your hands.") + '</span>';
+                ssAnnounce(c.feedback);
+                var tryAgain = document.getElementById("ssGuidedTryAgain");
+                if (!tryAgain) {
+                    tryAgain = document.createElement("button");
+                    tryAgain.id = "ssGuidedTryAgain";
+                    tryAgain.className = "secondary-btn";
+                    tryAgain.textContent = "Try Again";
+                    tryAgain.style.marginTop = "12px";
+                    tryAgain.addEventListener("click", function () {
+                        for (var i2 = 0; i2 < cards.length; i2++) {
+                            cards[i2].classList.remove("incorrect");
+                            cards[i2].setAttribute("tabindex", "0");
+                        }
+                        fb.className = "ss-feedback";
+                        tryAgain.remove();
+                        if (cards[0]) cards[0].focus();
+                    });
+                    fb.appendChild(tryAgain);
+                }
+            }
+        }
+
+        /* ---- Screen 3: Main Stack ---- */
+        function ssPrepStack() {
+            ssTray = ssShuffle([1, 2, 3, 4, 5, 6]);
+            ssSlots = [null, null, null, null, null, null];
+            ssSelected = null;
+            ssStackChecked = false;
+            if (ssActions.length === 1) ssMakeAction("Full stack in exact order", "Safe order of instructions (11.4)");
+            ssRenderStack();
+        }
+
+        function ssRenderStack() {
+            var i;
+            var slotsEl = document.getElementById("ssStackSlots");
+            var slotDivs = slotsEl.querySelectorAll(".ss-slot");
+            for (i = 0; i < slotDivs.length; i++) {
+                var s = slotDivs[i];
+                s.classList.remove("filled", "checked-correct", "checked-wrong");
+                s.setAttribute("aria-label", "Stack slot " + (i + 1) + (ssSlots[i] ? ", holds " + ssStepText(ssSlots[i]) : ", empty"));
+                if (ssSlots[i]) {
+                    var step = ssStepById(ssSlots[i]);
+                    s.classList.add("filled");
+                    s.innerHTML = '<span class="ss-slot-number">' + (i + 1) + '</span>' +
+                        '<span class="ss-card-icon">' + step.icon + '</span>' +
+                        '<span class="ss-card-label" style="font-size:0.85rem;">' + escapeHtml(step.text) + '</span>';
+                } else {
+                    s.innerHTML = '<span class="ss-slot-number">' + (i + 1) + '</span><span class="muted" style="font-size:0.8rem;">Empty</span>';
+                }
+                if (ssStackChecked && ssSlots[i]) {
+                    if (ssSlots[i] === STEPS[i].id) s.classList.add("checked-correct");
+                    else s.classList.add("checked-wrong");
+                }
+            }
+
+            var trayWrap = document.getElementById("ssTrayCards");
+            trayWrap.innerHTML = "";
+            for (i = 0; i < ssTray.length; i++) {
+                var st = ssStepById(ssTray[i]);
+                var el = document.createElement("div");
+                el.className = "ss-card" + (ssSelected === ssTray[i] ? " selected" : "");
+                el.setAttribute("role", "button");
+                el.setAttribute("tabindex", "0");
+                el.setAttribute("data-trayid", ssTray[i]);
+                el.setAttribute("aria-label", "Pick up " + st.text);
+                el.innerHTML = '<span class="ss-card-icon">' + st.icon + '</span>' +
+                    '<span class="ss-card-label">' + escapeHtml(st.text) + '</span>';
+                el.addEventListener("click", function () {
+                    ssSelectTrayCard(Number(this.getAttribute("data-trayid")));
+                });
+                el.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        ssSelectTrayCard(Number(this.getAttribute("data-trayid")));
+                    }
+                });
+                trayWrap.appendChild(el);
+            }
+        }
+
+        function ssSelectTrayCard(id) {
+            if (ssStackChecked) return;
+            ssSelected = id;
+            ssRenderStack();
+            var fb = document.getElementById("ssStackFb");
+            if (fb) fb.className = "ss-feedback";
+            ssAnnounce(ssStepText(id) + " selected. Choose a slot in the stack.");
+        }
+
+        function ssSlotClick(idx) {
+            if (ssStackChecked) return;
+            if (ssSlots[idx]) {
+                if (ssSelected) return;
+                ssTray.push(ssSlots[idx]);
+                ssSlots[idx] = null;
+                ssRenderStack();
+                return;
+            }
+            if (ssSelected) {
+                ssSlots[idx] = ssSelected;
+                ssTray = ssTray.filter(function (id) { return id !== ssSelected; });
+                ssSelected = null;
+                ssRenderStack();
+                ssAnnounce("Placed " + ssStepText(ssSlots[idx]) + " in slot " + (idx + 1) + ".");
+            }
+        }
+
+        function ssCheckOrder() {
+            if (ssStackChecked) return;
+            var fb = document.getElementById("ssStackFb");
+            if (ssSlots.indexOf(null) !== -1) {
+                fb.className = "ss-feedback show incorrect";
+                fb.innerHTML = '<span class="fb-title">Stack not full yet</span>Place a card in every slot before you check the order.';
+                ssAnnounce("Please fill every slot before checking.");
+                return;
+            }
+            var allCorrect = true;
+            var i;
+            for (i = 0; i < 6; i++) {
+                if (ssSlots[i] !== STEPS[i].id) { allCorrect = false; break; }
+            }
+            ssStackChecked = true;
+            ssJudgeAction(1, allCorrect);
+            ssRenderStack();
+            if (allCorrect) {
+                fb.className = "ss-feedback show correct";
+                fb.innerHTML = '<span class="fb-title">Stack complete \u2014 perfect order!</span>Every step is in the exact safe order, from washing hands to serving the cup.';
+                ssAnnounce("Perfect order. The stack is complete.");
+                var go = document.getElementById("ssS3Continue");
+                if (!go) {
+                    go = document.createElement("button");
+                    go.id = "ssS3Continue";
+                    go.className = "primary-btn";
+                    go.textContent = "Continue \u2192";
+                    go.style.marginTop = "14px";
+                    go.addEventListener("click", function () {
+                        ssShowScreen(4);
+                        ssPrepVerb();
+                    });
+                    fb.appendChild(go);
+                }
+                setTimeout(function () { try { go.focus(); } catch (e) { /* ignore */ } }, 30);
+            } else {
+                var why, fix, model;
+                if (ssSlots[0] !== 1) {
+                    why = "A later action happens before a required preparation step.";
+                    fix = "Place preparation before cutting and serving.";
+                    model = "Wash hands before handling food.";
+                } else if (ssSlots[5] !== 6) {
+                    why = "A later action happens before a required preparation step.";
+                    fix = "The serving step must come last, after the pieces are already in the cup.";
+                    model = "Finally, add a spoon and serve.";
+                } else {
+                    why = "Some steps are in the wrong order in the middle of the stack.";
+                    fix = "Put steps in a safe, logical order from preparation to serving.";
+                    model = "Place the pieces in a clean cup, then finally add a spoon and serve.";
+                }
+                fb.className = "ss-feedback show incorrect";
+                fb.innerHTML = '<span class="fb-title">Not in the safe order yet</span>' +
+                    '<strong>Why:</strong> ' + escapeHtml(why) + ' <strong>Fix:</strong> ' + escapeHtml(fix) +
+                    '<span class="fb-model">Correct model: ' + escapeHtml(model) + '</span>';
+                ssAnnounce(why + " " + fix);
+                var tied = document.getElementById("ssTryAgainOrder");
+                if (!tied) {
+                    tied = document.createElement("button");
+                    tied.id = "ssTryAgainOrder";
+                    tied.className = "secondary-btn";
+                    tied.textContent = "Try Again";
+                    tied.style.marginTop = "12px";
+                    tied.addEventListener("click", function () {
+                        ssStackChecked = false;
+                        fb.className = "ss-feedback";
+                        tied.remove();
+                        ssTray = ssTray.concat(ssSlots.filter(function (x) { return x !== null; }));
+                        ssSlots = [null, null, null, null, null, null];
+                        ssSelected = null;
+                        ssRenderStack();
+                    });
+                    fb.appendChild(tied);
+                }
+            }
+        }
+
+        /* ---- Screen 4: Verb Check ---- */
+        function ssPrepVerb() {
+            ssVerbIdx = 0;
+            ssVerbDone = [false, false, false, false];
+            if (ssActions.length === 2) {
+                for (var i = 0; i < 4; i++) ssMakeAction("Verb caption " + (i + 1), "Imperative vs indicative mood (11.1)");
+            }
+            var cont = document.getElementById("ssS4Continue");
+            if (cont) cont.disabled = true;
+            ssRenderVerb();
+        }
+
+        function ssRenderVerb() {
+            var area = document.getElementById("ssVerbArea");
+            if (ssVerbIdx >= 4) {
+                area.innerHTML = '<div class="ss-feedback show correct" style="display:block;margin-top:0;">' +
+                    '<span class="fb-title">All captions correct!</span>Every picture now has an imperative caption that gives a clear command.</div>';
+                var cont = document.getElementById("ssS4Continue");
+                cont.disabled = false;
+                cont.focus();
+                ssAnnounce("All four verb captions are correct.");
+                return;
+            }
+            var q = VERB_QUESTIONS[ssVerbIdx];
+            var html = '<div class="ss-verb-picture">' +
+                '<div class="ss-verb-icon" aria-hidden="true">' + q.icon + '</div>' +
+                '<div class="ss-verb-question">Picture ' + (ssVerbIdx + 1) + ' of 4 \u2014 click the caption that matches ' + q.label + ' with an imperative command.</div>' +
+                '</div>' +
+                '<div class="ss-verb-options">';
+            for (var i = 0; i < q.options.length; i++) {
+                html += '<button class="ss-verb-option" data-vopt="' + i + '" type="button">' + escapeHtml(q.options[i].text) + '</button>';
+            }
+            html += '</div>';
+            area.innerHTML = html;
+            var opts = area.querySelectorAll(".ss-verb-option");
+            for (var o = 0; o < opts.length; o++) {
+                (function (oi, el) {
+                    el.addEventListener("click", function () { ssVerbPick(oi); });
+                })(o, opts[o]);
+            }
+            var first = area.querySelector(".ss-verb-option");
+            if (first) setTimeout(function () { try { first.focus(); } catch (e) { /* ignore */ } }, 30);
+        }
+
+        function ssVerbPick(oi) {
+            var q = VERB_QUESTIONS[ssVerbIdx];
+            var opt = q.options[oi];
+            var fb = document.getElementById("ssVerbFb");
+            var area = document.getElementById("ssVerbArea");
+            var opts = area.querySelectorAll(".ss-verb-option");
+            var actionIndex = 2 + ssVerbIdx;
+            if (ssActions[actionIndex]) ssJudgeAction(actionIndex, opt.correct);
+            if (opt.correct) {
+                ssVerbDone[ssVerbIdx] = true;
+                for (var i = 0; i < opts.length; i++) {
+                    opts[i].classList.add("disabled");
+                    if (opts[i].getAttribute("data-vopt") === String(oi)) opts[i].classList.add("correct");
+                }
+                fb.className = "ss-feedback show correct";
+                fb.innerHTML = '<span class="fb-title">Imperative caption \u2713</span>' + escapeHtml(q.model);
+                ssAnnounce("Correct. " + q.model);
+                ssVerbIdx++;
+                setTimeout(function () {
+                    fb.className = "ss-feedback";
+                    if (ssVerbIdx > 0) ssRenderVerb();
+                }, 1100);
+            } else {
+                opts[oi].classList.add("incorrect");
+                opts[oi].disabled = true;
+                fb.className = "ss-feedback show incorrect";
+                fb.innerHTML = '<span class="fb-title">Indicative, not imperative</span>' +
+                    '<strong>Why:</strong> The sentence states information instead of giving a step. ' +
+                    '<strong>Fix:</strong> Begin with the action verb to issue a command.' +
+                    '<span class="fb-model">Correct model: ' + escapeHtml(q.model) + '</span>';
+                ssAnnounce("That caption describes a fact. Choose the sentence that starts with an action verb.");
+            }
+        }
+
+        /* ---- Screen 5: Repair ---- */
+        function ssPrepRepair() {
+            ssRepair = REPAIR_INITIAL.map(function (c) { return { id: c.id, text: c.text, icon: c.icon, vague: !!c.vague }; });
+            ssVagueReplaced = false;
+            ssRepairChecked = false;
+            if (ssActions.length === 6) ssMakeAction("Replace vague instruction", "Precise directions and instructions (11.7)");
+            if (ssActions.length === 7) ssMakeAction("Repaired stack in exact order", "Safe order of instructions (11.4)");
+            ssRenderRepair();
+        }
+
+        var ssVagueReplaced = false;
+        var ssRepairChecked = false;
+
+        function ssRenderRepair() {
+            var wrap = document.getElementById("ssRepairCards");
+            wrap.innerHTML = "";
+            for (var i = 0; i < ssRepair.length; i++) {
+                (function (idx, card) {
+                    var row = document.createElement("div");
+                    var cls = "ss-repair-card";
+                    if (card.vague && !ssVagueReplaced) cls += " error";
+                    if (card.vague && ssVagueReplaced) cls += " fixed";
+                    if (idx === ssRepair.length - 1 && card.id === 6) cls += " fixed";
+                    row.className = cls;
+                    row.setAttribute("role", "group");
+                    row.setAttribute("aria-label", "Step " + (idx + 1) + ": " + card.text);
+                    var moves = '<div class="ss-repair-move">' +
+                        '<button class="ss-repair-btn" data-rep="up:' + idx + '" ' + (idx > 0 ? "" : "disabled") + ' aria-label="Move step ' + (idx + 1) + ' up">\u25B2</button>' +
+                        '<button class="ss-repair-btn" data-rep="down:' + idx + '" ' + (idx < ssRepair.length - 1 ? "" : "disabled") + ' aria-label="Move step ' + (idx + 1) + ' down">\u25BC</button>' +
+                        '</div>';
+                    row.innerHTML = moves +
+                        '<span class="ss-card-icon">' + card.icon + '</span>' +
+                        '<span class="ss-card-label">' + escapeHtml(card.text) + '</span>' +
+                        (card.vague && !ssVagueReplaced ? '<button class="ss-repair-btn" data-rep="replace:' + idx + '" aria-label="Replace the vague instruction">\u270E Replace</button>' : "") +
+                        (card.vague && ssVagueReplaced ? '<span class="ss-badge imperative">Fixed</span>' : "");
+                    wrap.appendChild(row);
+                    var btns = row.querySelectorAll("[data-rep]");
+                    for (var b = 0; b < btns.length; b++) {
+                        (function (btn) {
+                            btn.addEventListener("click", function () { ssRepairAction(btn.getAttribute("data-rep")); });
+                        })(btns[b]);
+                    }
+                })(i, ssRepair[i]);
+            }
+        }
+
+        function ssRepairAction(action) {
+            var parts = action.split(":");
+            var type = parts[0];
+            var idx = Number(parts[1]);
+            var fb = document.getElementById("ssRepairFb");
+            if (fb) fb.className = "ss-feedback";
+            if (type === "up" && idx > 0) {
+                var t = ssRepair[idx]; ssRepair[idx] = ssRepair[idx - 1]; ssRepair[idx - 1] = t;
+                ssRenderRepair();
+                var focusUp = document.querySelectorAll("[data-rep='up:" + (idx - 1) + "']")[0];
+                if (focusUp) focusUp.focus();
+            } else if (type === "down" && idx < ssRepair.length - 1) {
+                var t2 = ssRepair[idx]; ssRepair[idx] = ssRepair[idx + 1]; ssRepair[idx + 1] = t2;
+                ssRenderRepair();
+                var focusDown = document.querySelectorAll("[data-rep='down:" + (idx + 1) + "']")[0];
+                if (focusDown) focusDown.focus();
+            } else if (type === "replace") {
+                ssOpenReplacement(idx);
+            }
+        }
+
+        function ssOpenReplacement(idx) {
+            var existing = document.getElementById("ssReplaceMenu");
+            if (existing) existing.remove();
+            var rows = document.querySelectorAll("#ssRepairCards .ss-repair-card");
+            var menu = document.createElement("div");
+            menu.id = "ssReplaceMenu";
+            menu.className = "ss-replace-options";
+            menu.innerHTML = '<div class="ss-note" style="margin-bottom:6px;">Choose the precise instruction that replaces \u201CDo the fruit thing\u201D:</div>';
+            for (var i = 0; i < REPAIR_REPLACEMENTS.length; i++) {
+                (function (oi) {
+                    var btn = document.createElement("button");
+                    btn.className = "ss-replace-option";
+                    btn.textContent = REPAIR_REPLACEMENTS[oi].text;
+                    btn.addEventListener("click", function () { ssApplyReplacement(oi, idx); });
+                    menu.appendChild(btn);
+                })(i);
+            }
+            rows[idx].appendChild(menu);
+            var first = menu.querySelector(".ss-replace-option");
+            if (first) setTimeout(function () { try { first.focus(); } catch (e) { /* ignore */ } }, 20);
+        }
+
+        function ssApplyReplacement(oi, idx) {
+            var opt = REPAIR_REPLACEMENTS[oi];
+            var fb = document.getElementById("ssRepairFb");
+            var menu = document.getElementById("ssReplaceMenu");
+            if (menu) menu.remove();
+            var actionIndex = 6;
+            if (ssActions[actionIndex]) ssJudgeAction(actionIndex, opt.correct);
+            if (opt.correct) {
+                var card = ssRepair[idx];
+                card.text = opt.text;
+                card.icon = "\uD83D\uDD2A";
+                card.vague = false;
+                ssVagueReplaced = true;
+                fb.className = "ss-feedback show correct";
+                fb.innerHTML = '<span class="fb-title">Precise instruction \u2713</span>\u201CAsk an adult to cut the fruit into small pieces.\u201D names the verb, the object and the needed detail \u2014 and keeps the step safe.';
+                ssAnnounce("Vague instruction replaced with a precise one.");
+                ssRenderRepair();
+            } else {
+                var why = oi === 1 ? "\u201CCut the fruit.\u201D is still too vague and unsafe \u2014 the reader does not know to ask a responsible adult." : "That sentence states information (indicative) instead of giving a step.";
+                fb.className = "ss-feedback show incorrect";
+                fb.innerHTML = '<span class="fb-title">Not the precise instruction</span>' +
+                    '<strong>Why:</strong> ' + escapeHtml(why) + ' ' +
+                    '<strong>Fix:</strong> Use a precise verb, object and needed detail.' +
+                    '<span class="fb-model">Correct model: "Ask an adult to cut the fruit into small pieces."</span>';
+                ssAnnounce("That is not the precise instruction. " + why);
+                ssOpenReplacement(idx);
+            }
+        }
+
+        function ssCheckRepair() {
+            if (ssRepairChecked) return;
+            var fb = document.getElementById("ssRepairFb");
+            var allGood = true;
+            var i;
+            for (i = 0; i < 6; i++) {
+                if (ssRepair[i].id !== STEPS[i].id) { allGood = false; break; }
+            }
+            if (allGood && !ssVagueReplaced) allGood = false;
+            ssRepairChecked = true;
+            ssJudgeAction(7, allGood);
+            if (allGood) {
+                fb.className = "ss-feedback show correct";
+                fb.innerHTML = '<span class="fb-title">Repaired \u2014 recipe complete!</span>Every step is precise and in the exact safe order from preparation to serving.';
+                ssAnnounce("The stack is repaired. The recipe is complete.");
+                var go = document.getElementById("ssS5Recipe");
+                if (!go) {
+                    go = document.createElement("button");
+                    go.id = "ssS5Recipe";
+                    go.className = "primary-btn";
+                    go.textContent = "See the Recipe \u2192";
+                    go.style.marginTop = "14px";
+                    go.addEventListener("click", function () {
+                        ssShowCompletion();
+                    });
+                    fb.appendChild(go);
+                }
+                setTimeout(function () { try { go.focus(); } catch (e) { /* ignore */ } }, 30);
+            } else {
+                var why, fix, model;
+                if (!ssVagueReplaced) {
+                    why = "The vague card \u201CDo the fruit thing\u201D is still in the stack, so the reader cannot tell what action to perform.";
+                    fix = "Use a precise verb, object and needed detail.";
+                    model = "Ask an adult to cut the fruit into small pieces.";
+                } else {
+                    why = "The serving step is in the wrong place in the stack.";
+                    fix = "Move \u201CFinally, add a spoon and serve\u201D to the very last slot.";
+                    model = "Finally, add a spoon and serve.";
+                }
+                fb.className = "ss-feedback show incorrect";
+                fb.innerHTML = '<span class="fb-title">The stack still has a mistake</span>' +
+                    '<strong>Why:</strong> ' + escapeHtml(why) + ' <strong>Fix:</strong> ' + escapeHtml(fix) +
+                    '<span class="fb-model">Correct model: ' + escapeHtml(model) + '</span>';
+                ssAnnounce("The stack is not correct yet. " + why);
+                var tied = document.getElementById("ssTryAgainRepair");
+                if (!tied) {
+                    tied = document.createElement("button");
+                    tied.id = "ssTryAgainRepair";
+                    tied.className = "secondary-btn";
+                    tied.textContent = "Try Again";
+                    tied.style.marginTop = "12px";
+                    tied.addEventListener("click", function () {
+                        ssRepairChecked = false;
+                        fb.className = "ss-feedback";
+                        tied.remove();
+                    });
+                    fb.appendChild(tied);
+                }
+            }
+        }
+
+        /* ---- Completion ---- */
+        function ssShowCompletion() {
+            ssShowScreen(6);
+            var summary = ssBuildScoreSummary();
+            var skills = summary.missedSkills.length ? summary.missedSkills.join(", ") : "None \u2014 all focus skills mastered";
+            document.getElementById("ssResultTable").innerHTML =
+                '<table>' +
+                '<tr><td>Task</td><td>Snack Stack (fruit-cup recipe)</td></tr>' +
+                '<tr><td>First-attempt accuracy</td><td>' + summary.firstTryCount + ' of ' + summary.actionsTotal + ' correct on first try</td></tr>' +
+                '<tr><td>Hints used</td><td>' + summary.hints + '</td></tr>' +
+                '<tr><td>Retries needed</td><td>' + summary.attempts + '</td></tr>' +
+                '<tr><td>Time on task</td><td>' + summary.timeOnTask + ' seconds</td></tr>' +
+                '<tr><td>Missed focus skill</td><td>' + escapeHtml(skills) + '</td></tr>' +
+                '</table>';
+            ssSaveReport(summary);
+            if (summary.firstTryCount === summary.actionsTotal && summary.actionsTotal > 0) ssConfetti();
+            var restart = document.getElementById("ssRestartBtn");
+            if (restart) {
+                restart.addEventListener("click", function () {
+                    devReset();
+                    devInit();
+                });
+                setTimeout(function () { try { restart.focus(); } catch (e) { /* ignore */ } }, 30);
+            }
+        }
+
+        function ssBuildScoreSummary() {
+            var firstTryCount = 0;
+            for (var i = 0; i < ssActions.length; i++) {
+                if (ssActions[i].firstTry === true) firstTryCount++;
+            }
+            return {
+                completion: true,
+                firstTryCount: firstTryCount,
+                actionsTotal: ssActions.length,
+                attempts: ssAttempts,
+                hints: ssHints,
+                timeOnTask: Math.round((Date.now() - ssStartTime) / 1000),
+                missedSkills: ssMissedSkills.slice()
+            };
+        }
+
+        function ssSaveReport(summary) {
+            try {
+                sessionStorage.setItem(SIM_CONFIG.simId + ":report", JSON.stringify(summary));
+            } catch (err) { /* storage unavailable */ }
+        }
+
+        function ssConfetti() {
+            if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+            var canvas = document.createElement("canvas");
+            canvas.className = "ss-confetti-canvas";
+            document.body.appendChild(canvas);
+            var ctx = canvas.getContext("2d");
+            var W = canvas.width = window.innerWidth;
+            var H = canvas.height = window.innerHeight;
+            var colors = ["#34d399", "#7dd3fc", "#a78bfa", "#fbbf24", "#fb7185", "#f472b6"];
+            var parts = [];
+            for (var i = 0; i < 150; i++) {
+                parts.push({
+                    x: Math.random() * W,
+                    y: Math.random() * -H,
+                    w: 6 + Math.random() * 6,
+                    h: 8 + Math.random() * 8,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: 2 + Math.random() * 3,
+                    vx: -1.5 + Math.random() * 3,
+                    rot: Math.random() * Math.PI * 2,
+                    vr: -0.15 + Math.random() * 0.3
+                });
+            }
+            var frames = 0;
+            function tick() {
+                ctx.clearRect(0, 0, W, H);
+                for (var p = 0; p < parts.length; p++) {
+                    var o = parts[p];
+                    o.y += o.vy;
+                    o.x += o.vx + Math.sin((Date.now() / 400) + o.rot) * 0.6;
+                    o.rot += o.vr;
+                    ctx.save();
+                    ctx.translate(o.x, o.y);
+                    ctx.rotate(o.rot);
+                    ctx.fillStyle = o.color;
+                    ctx.fillRect(-o.w / 2, -o.h / 2, o.w, o.h);
+                    ctx.restore();
+                }
+                frames++;
+                if (frames < 360) {
+                    window.requestAnimationFrame(tick);
+                } else {
+                    canvas.remove();
+                }
+            }
+            tick();
+        }
+
+        /* ---- Master init / reset ---- */
+        function ssInit() {
+            ssStartTime = Date.now();
+            dom.simContainer.innerHTML =
+                '<div class="ss-layout">' +
+                    '<div class="ss-progress">' +
+                        '<span class="ss-progress-label" id="ssProgressLabel">Scene 1 of 6</span>' +
+                        '<span class="ss-progress-msg" id="ssProgressMsg">Mission brief</span>' +
+                    '</div>' +
+                    ssBuildMission() +
+                    ssBuildGuided() +
+                    ssBuildStack() +
+                    ssBuildVerb() +
+                    ssBuildRepair() +
+                    ssBuildCompletion() +
+                '</div>';
+
+            ssBakeFocus("ssS1", "ssS1Begin", "ssFocus1");
+            ssBakeFocus("ssS2", "ssGuidedCards", "ssFocus2");
+            ssBakeFocus("ssS3", "ssTrayCards", "ssFocus3");
+            ssBakeFocus("ssS4", "ssVerbArea", "ssFocus4");
+            ssBakeFocus("ssS5", "ssRepairCards", "ssFocus5");
+
+            // Static, once-only bindings
+            var begin = document.getElementById("ssS1Begin");
+            if (begin) begin.addEventListener("click", function () { ssShowScreen(2); ssAnnounce("Scene 2 of 6. Guided stack."); });
+
+            var s2cont = document.getElementById("ssS2Continue");
+            if (s2cont) {
+                s2cont.disabled = true;
+                s2cont.addEventListener("click", function () {
+                    if (!ssGuidedOK) return;
+                    ssShowScreen(3);
+                    ssPrepStack();
+                });
+            }
+
+            var s3check = document.getElementById("ssS3Check");
+            if (s3check) s3check.addEventListener("click", ssCheckOrder);
+
+            var s4cont = document.getElementById("ssS4Continue");
+            if (s4cont) {
+                s4cont.disabled = true;
+                s4cont.addEventListener("click", function () {
+                    var done = ssVerbDone.length === 4;
+                    for (var i = 0; i < 4; i++) if (!ssVerbDone[i]) done = false;
+                    if (!done) return;
+                    ssShowScreen(5);
+                    ssPrepRepair();
+                });
+            }
+
+            var s5check = document.getElementById("ssS5Check");
+            if (s5check) s5check.addEventListener("click", ssCheckRepair);
+
+            var backs = document.querySelectorAll(".ss-back-btn");
+            for (var bq = 0; bq < backs.length; bq++) {
+                (function (el) {
+                    el.addEventListener("click", function () {
+                        if (ssStep <= 1 || ssStep === 6) return;
+                        ssShowScreen(ssStep - 1);
+                    });
+                })(backs[bq]);
+            }
+
+            var hints = document.querySelectorAll("[data-hint]");
+            for (var h = 0; h < hints.length; h++) {
+                (function (el) {
+                    el.addEventListener("click", function () { ssShowHint(Number(el.getAttribute("data-hint"))); });
+                })(hints[h]);
+            }
+
+            var gcards = document.querySelectorAll(".ss-guided-card");
+            for (var g = 0; g < gcards.length; g++) {
+                (function (el) {
+                    var act = function () { ssGuidedPick(parseInt(el.getAttribute("data-guided"), 10)); };
+                    el.addEventListener("click", act);
+                    el.addEventListener("keydown", function (e) {
+                        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); }
+                    });
+                })(gcards[g]);
+            }
+
+            var slots = document.querySelectorAll("#ssStackSlots .ss-slot");
+            for (var s = 0; s < slots.length; s++) {
+                (function (idx, el) {
+                    var act = function () { ssSlotClick(idx); };
+                    el.addEventListener("click", act);
+                    el.addEventListener("keydown", function (e) {
+                        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); }
+                    });
+                })(s, slots[s]);
+            }
+
+            ssShowScreen(1);
+            ssAnnounce("Snack Stack started. Build the fruit-cup recipe.");
+        }
+
+        function ssBakeFocus(screenId, sourceId, focusId) {
+            var scr = document.getElementById(screenId);
+            if (!scr) return;
+            var src = document.getElementById(sourceId);
+            if (!src) return;
+            if (!document.getElementById(focusId)) {
+                var div = document.createElement("div");
+                div.id = focusId;
+                div.style.cssText = "position:absolute;clip:rect(0 0 0 0);overflow:hidden;height:1px;width:1px;";
+                div.setAttribute("tabindex", "-1");
+                scr.appendChild(div);
+            }
+        }
+
+        function devInit() {
+            devReset();
+            ssInit();
+        }
+
+        function devReset() {
+            ssHints = 0;
+            ssAttempts = 0;
+            ssActions = [];
+            ssMissedSkills = [];
+            ssGuidedOK = false;
+            ssVagueReplaced = false;
+            ssRepairChecked = false;
+            ssSlots = [];
+            ssTray = [];
+            ssVerbDone = [];
+            try {
+                sessionStorage.removeItem(SIM_CONFIG.simId + ":report");
+            } catch (err) { /* storage unavailable */ }
+        }
+    </script>
+</body>
+
+</html>
