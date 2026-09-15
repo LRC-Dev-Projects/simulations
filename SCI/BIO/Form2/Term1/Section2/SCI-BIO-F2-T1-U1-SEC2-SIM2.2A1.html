@@ -1719,9 +1719,33 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
+        /* Timing accuracy: for each recorded tap, how close it landed to the
+           actual beat. Each beat triggers at pulseStartTime + k * beatInterval,
+           so we measure the offset of every tap from its nearest scheduled beat
+           and convert it to a percentage (100% = tap landed exactly on the beat;
+           0% = tap was off by half a beat or more). Returns null when there is
+           no timing data to judge. */
+        function computeTimingAccuracy() {
+            if (!simState.beatTimes.length || !simState.tapTimes.length) return null;
+            const beatInterval = 60000 / simState.bpm;
+            const bestOffset = beatInterval / 2;
+            let totalErr = 0;
+            for (const t of simState.tapTimes) {
+                const elapsed = t - simState.pulseStartTime;
+                const beatIndex = Math.round(elapsed / beatInterval);
+                const expected = simState.pulseStartTime + beatIndex * beatInterval;
+                const err = Math.min(Math.abs(t - expected), bestOffset);
+                totalErr += err;
+            }
+            const avgErr = totalErr / simState.tapTimes.length;
+            const pct = Math.round((1 - avgErr / bestOffset) * 100);
+            return Math.max(0, Math.min(100, pct));
+        }
+
         function renderResults() {
             const diff = simState.tapCount - simState.totalBeats;
             const absDiff = Math.abs(diff);
+            const timingAccuracy = computeTimingAccuracy();
             let feedbackClass, feedbackMsg;
 
             if (absDiff <= 2) {
@@ -1751,6 +1775,10 @@
                         <div class="results-stat">
                             <h4>Difference</h4>
                             <p>${diff > 0 ? "+" : ""}${diff}</p>
+                        </div>
+                        <div class="results-stat">
+                            <h4>Timing Accuracy</h4>
+                            <p>${timingAccuracy === null ? "—" : timingAccuracy + "%"}</p>
                         </div>
                     </div>
                     <div class="results-feedback ${feedbackClass}">${feedbackMsg}</div>
