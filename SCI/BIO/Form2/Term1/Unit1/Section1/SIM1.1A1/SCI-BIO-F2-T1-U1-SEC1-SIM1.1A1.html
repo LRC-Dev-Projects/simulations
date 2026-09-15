@@ -4693,35 +4693,7 @@ html[data-theme="dark"] .finish-confirm-icon {
             pointer-events: none;
         }
 
-        /* --------------------------------------------------------- PREPARED COPY Kept underneath the meal composition. --------------------------------------------------------- */
-        .prepared-copy {
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed var(--notepad-border);
-        }
-
-        .prepared-kicker {
-            display: block;
-            margin-bottom: 2px;
-            font: 900 .5rem Arial, sans-serif;
-            letter-spacing: .13em;
-            color: var(--accent);
-        }
-
-        .prepared-copy h3 {
-            margin: 0 0 2px;
-            font: 700 .9rem Georgia, serif;
-            line-height: 1.15;
-            color: var(--text);
-        }
-
-        .prepared-copy p {
-            margin: 0;
-            font-size: .63rem;
-            line-height: 1.3;
-            color: var(--text-soft);
-        }
-
+    
         /* --------------------------------------------------------- PREPARATION OVERLAY --------------------------------------------------------- */
         .preparation-overlay {
             position: absolute;
@@ -5003,6 +4975,12 @@ html[data-theme="dark"] .finish-confirm-icon {
                 0 2px 5px rgba(50, 40, 25, .07);
         }
 
+        html[data-theme="dark"] .feedback-note.state-neutral .feedback-content {
+            background: #5c473b;
+            box-shadow:
+                inset 4px 0 0 #3e2015,
+                0 2px 5px rgba(0, 0, 0, .18);
+        }
         /* ORANGE — almost */
 
         .feedback-note.state-almost .feedback-content {
@@ -5056,7 +5034,7 @@ html[data-theme="dark"] .finish-confirm-icon {
         }
 
         html[data-theme="dark"] .feedback-note.state-prepared .feedback-content {
-            background: var(--cover-bg);
+            background: #5c473b;
             border-color:
                 color-mix(in srgb,
                     var(--cover-bg) 70%,
@@ -5073,7 +5051,7 @@ html[data-theme="dark"] .finish-confirm-icon {
             justify-content: center;
             align-items: stretch;
             gap: 6px;
-            padding: 8px 12px;
+            padding: 4px 12px;
             text-align: left;
             min-height: 0;
             box-sizing: border-box;
@@ -5093,6 +5071,12 @@ html[data-theme="dark"] .finish-confirm-icon {
             letter-spacing: .12em;
             color: #47784c;
         }
+
+        html[data-theme="dark"] .feedback-note.state-prepared .prepared-kicker {
+ 
+            color: #518a57;
+        }
+
 
         .feedback-note.state-prepared .prepared-copy h3 {
             margin: 0 0 5px;
@@ -5252,51 +5236,37 @@ html[data-theme="dark"] .finish-confirm-icon {
    ========================================================= */
 
         .prepared-copy {
-            margin-bottom: 9px;
+            margin-bottom: 3px;
 
             padding-bottom: 9px;
 
             border-bottom:
                 1px dashed color-mix(in srgb,
                     var(--notepad-border) 55%,
-                    transparent);
+                    transparent); 
+            overflow-y: auto;
         }
-
-
+ 
         .prepared-kicker {
-            display: block;
-
-            margin-bottom: 2px;
-
-            font:
-                900 .5rem Arial, sans-serif;
-
-            letter-spacing: .13em;
-
+            display: block; 
+            margin-bottom: 2px; 
+            font: 900 .5rem Arial, sans-serif; 
+            letter-spacing: .13em; 
             color: var(--success);
         }
 
 
         .prepared-copy h3 {
-            margin:
-                0 0 2px;
-
-            font:
-                700 .9rem Georgia, serif;
-
-            line-height: 1.15;
-
+            margin: 0 0 2px; 
+            font: 700 .9rem Georgia, serif; 
+            line-height: 1.15; 
             color: var(--ink);
         }
 
 
         .prepared-copy p {
             margin: 0;
-
-            font:
-                .63rem/1.3 Arial,
-                sans-serif;
-
+            font: .63rem/1.3 Arial,  sans-serif;
             color: var(--text-soft);
         }
 
@@ -5307,7 +5277,6 @@ html[data-theme="dark"] .finish-confirm-icon {
 
         .feedback-content {
             scrollbar-width: thin;
-
             scrollbar-color:
                 color-mix(in srgb,
                     var(--notepad-border) 70%,
@@ -6499,6 +6468,7 @@ html[data-theme="dark"] .finish-confirm-icon {
 
                 <ellipse cx="768" cy="748" rx="260" ry="70" fill="#ffffff" opacity=".22" />
 
+    <g transform="scale(0.95) translate(40 40)">
                 <!-- =====================================================
        SALAD GROUND SHADOW
   ====================================================== -->
@@ -8250,176 +8220,145 @@ html[data-theme="dark"] .finish-confirm-icon {
                     </g>
 
                 </g>
-
+</g>
             </symbol>
 
-            <symbol id="meal-fish" viewBox="0 0 1536 1024">
-                <defs>
-
-                    <!-- Bowl -->
-                    <radialGradient id="bowlWhite" cx="38%" cy="32%" r="72%">
-                        <stop offset="0%" stop-color="#ffffff" />
-                        <stop offset="45%" stop-color="#f8f8f8" />
-                        <stop offset="78%" stop-color="#e5e5e5" />
-                        <stop offset="100%" stop-color="#cfcfcf" />
-                    </radialGradient>
-
-                    <radialGradient id="bowlInner" cx="42%" cy="35%" r="70%">
-                        <stop offset="0%" stop-color="#fafafa" />
-                        <stop offset="58%" stop-color="#eeeeee" />
-                        <stop offset="100%" stop-color="#d7d7d7" />
-                    </radialGradient>
-
-                    <!-- Broth -->
-                    <radialGradient id="fishBroth" cx="38%" cy="30%" r="72%">
-                        <stop offset="0%" stop-color="#e8b85b" />
-                        <stop offset="32%" stop-color="#d99b3d" />
-                        <stop offset="68%" stop-color="#c47d2d" />
-                        <stop offset="100%" stop-color="#9b5721" />
-                    </radialGradient>
-
-                    <!-- Fish -->
-                    <linearGradient id="fishMeat" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#f4d49b" />
-                        <stop offset="38%" stop-color="#dfb56f" />
-                        <stop offset="72%" stop-color="#c68d4c" />
-                        <stop offset="100%" stop-color="#9b6635" />
-                    </linearGradient>
-
-                    <linearGradient id="fishSkin" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#68736d" />
-                        <stop offset="48%" stop-color="#4f5a55" />
-                        <stop offset="100%" stop-color="#303a37" />
-                    </linearGradient>
-
-                    <linearGradient id="fishSkinCooked" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#a96d3b"/>
-                        <stop offset="28%" stop-color="#87512c"/>
-                        <stop offset="62%" stop-color="#70401f"/>
-                        <stop offset="100%" stop-color="#4e2b19"/>
-                    </linearGradient>
-
-                    <linearGradient id="fishFleshCooked" x1="0" y1="0" x2="0.9" y2="1">
-                        <stop offset="0%" stop-color="#fff0c4"/>
-                        <stop offset="24%" stop-color="#f3dda8"/>
-                        <stop offset="52%" stop-color="#dfb66f"/>
-                        <stop offset="78%" stop-color="#c98b4b"/>
-                        <stop offset="100%" stop-color="#a96835"/>
-                    </linearGradient>
-
-                    <filter id="bowlShadow" x="-25%" y="-25%" width="150%" height="160%">
-                        <feGaussianBlur stdDeviation="13" />
-                    </filter>
-
-                    <filter id="brothShadow" x="-20%" y="-20%" width="140%" height="150%">
-                        <feGaussianBlur stdDeviation="8" />
-                    </filter>
-
-                    <filter id="foodSoftShadow" x="-30%" y="-30%" width="160%" height="170%">
-                      <feGaussianBlur stdDeviation="9" />
-                  </filter>
-
-                  <filter id="foodSoftHighlight" x="-30%" y="-30%" width="160%" height="170%">
-                      <feGaussianBlur stdDeviation="7" />
-                  </filter>
-                  <linearGradient id="pumpkinForm" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#ff9a3d"/>
-    <stop offset="28%" stop-color="#f1842b"/>
-    <stop offset="62%" stop-color="#d96320"/>
-    <stop offset="100%" stop-color="#a94717"/>
+<symbol id="meal-fish" viewBox="0 0 1536 1024">
+  <defs>
+    <!-- Bowl -->
+    <radialGradient id="bowlWhite" cx="38%" cy="32%" r="72%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#f8f8f8"/>
+      <stop offset="78%" stop-color="#e5e5e5"/>
+      <stop offset="100%" stop-color="#cfcfcf"/>
+    </radialGradient>
+    <radialGradient id="bowlInner" cx="42%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="58%" stop-color="#eeeeee"/>
+      <stop offset="100%" stop-color="#d7d7d7"/>
+    </radialGradient>
+    <!-- Broth -->
+    <radialGradient id="fishBroth" cx="38%" cy="30%" r="72%">
+      <stop offset="0%" stop-color="#e8b85b"/>
+      <stop offset="32%" stop-color="#d99b3d"/>
+      <stop offset="68%" stop-color="#c47d2d"/>
+      <stop offset="100%" stop-color="#9b5721"/>
+    </radialGradient>
+    <!-- Fish -->
+    <linearGradient id="fishMeat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f4d49b"/>
+      <stop offset="38%" stop-color="#dfb56f"/>
+      <stop offset="72%" stop-color="#c68d4c"/>
+      <stop offset="100%" stop-color="#9b6635"/>
+    </linearGradient>
+    <linearGradient id="fishSkin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#68736d"/>
+      <stop offset="48%" stop-color="#4f5a55"/>
+      <stop offset="100%" stop-color="#303a37"/>
+    </linearGradient>
+    <linearGradient id="fishSkinCooked" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a96d3b"/>
+      <stop offset="28%" stop-color="#87512c"/>
+      <stop offset="62%" stop-color="#70401f"/>
+      <stop offset="100%" stop-color="#4e2b19"/>
+    </linearGradient>
+    <linearGradient id="fishFleshCooked" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#fff0c4"/>
+      <stop offset="24%" stop-color="#f3dda8"/>
+      <stop offset="52%" stop-color="#dfb66f"/>
+      <stop offset="78%" stop-color="#c98b4b"/>
+      <stop offset="100%" stop-color="#a96835"/>
+    </linearGradient>
+    <filter id="bowlShadow" x="-25%" y="-25%" width="150%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+    <filter id="brothShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <filter id="foodSoftShadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <filter id="foodSoftHighlight" x="-30%" y="-30%" width="160%" height="170%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+    <linearGradient id="pumpkinForm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff9a3d"/>
+      <stop offset="28%" stop-color="#f1842b"/>
+      <stop offset="62%" stop-color="#d96320"/>
+      <stop offset="100%" stop-color="#a94717"/>
+    </linearGradient>
+    <linearGradient id="eddoeForm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eee9d8"/>
+      <stop offset="30%" stop-color="#d9d2bd"/>
+      <stop offset="62%" stop-color="#bdb59e"/>
+      <stop offset="100%" stop-color="#8f8977"/>
+    </linearGradient>
+    <radialGradient id="carrotForm" cx="32%" cy="28%" r="75%">
+      <stop offset="0%" stop-color="#ffb45a"/>
+      <stop offset="35%" stop-color="#f28a32"/>
+      <stop offset="72%" stop-color="#d96320"/>
+      <stop offset="100%" stop-color="#a94717"/>
+    </radialGradient>
+    <linearGradient id="figForm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#91b66b"/>
+      <stop offset="30%" stop-color="#719b52"/>
+      <stop offset="65%" stop-color="#5a813f"/>
+      <stop offset="100%" stop-color="#3f642f"/>
+    </linearGradient>
+    <!-- POTATO — WARM FORM GRADIENT -->
+    <linearGradient id="potatoForm" x1="0.15" y1="0.05" x2="0.9" y2="0.95">
+    <stop offset="0%" stop-color="#f4e4b8"/>
+    <stop offset="25%" stop-color="#e8d29b"/>
+    <stop offset="52%" stop-color="#d4bc7e"/>
+    <stop offset="78%" stop-color="#b39760"/>
+    <stop offset="100%" stop-color="#8d7045"/>
 </linearGradient>
-<linearGradient id="eddoeForm" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#eee9d8"/>
-    <stop offset="30%" stop-color="#d9d2bd"/>
-    <stop offset="62%" stop-color="#bdb59e"/>
-    <stop offset="100%" stop-color="#8f8977"/>
+    <!-- POTATO — SOFT GOLDEN HIGHLIGHT -->
+    <radialGradient id="potatoHighlight" cx="32%" cy="25%" r="72%">
+      <stop offset="0%" stop-color="#fff4cc" stop-opacity=".72"/>
+      <stop offset="45%" stop-color="#f8e5b0" stop-opacity=".30"/>
+      <stop offset="100%" stop-color="#f8e5b0" stop-opacity="0"/>
+    </radialGradient>
+    <!-- SWEET POTATO — DEEPER WARM FORM -->
+    <linearGradient id="sweetPotatoForm" x1="0.12" y1="0.04" x2="0.92" y2="0.95">
+    <stop offset="0%" stop-color="#f7cf70"/>
+    <stop offset="25%" stop-color="#edb94d"/>
+    <stop offset="52%" stop-color="#d9992e"/>
+    <stop offset="78%" stop-color="#b87520"/>
+    <stop offset="100%" stop-color="#805016"/>
 </linearGradient>
-<radialGradient id="carrotForm" cx="32%" cy="28%" r="75%">
-    <stop offset="0%" stop-color="#ffb45a"/>
-    <stop offset="35%" stop-color="#f28a32"/>
-    <stop offset="72%" stop-color="#d96320"/>
-    <stop offset="100%" stop-color="#a94717"/>
-</radialGradient>
-<linearGradient id="figForm" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#91b66b"/>
-    <stop offset="30%" stop-color="#719b52"/>
-    <stop offset="65%" stop-color="#5a813f"/>
-    <stop offset="100%" stop-color="#3f642f"/>
-</linearGradient>
-<!-- POTATO — WARM FORM GRADIENT -->
-<linearGradient id="potatoForm" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#f3e2b0"/>
-    <stop offset="28%" stop-color="#e5cf97"/>
-    <stop offset="58%" stop-color="#cdb477"/>
-    <stop offset="82%" stop-color="#ad8e55"/>
-    <stop offset="100%" stop-color="#856a3d"/>
-</linearGradient>
-
-<!-- POTATO — SOFT GOLDEN HIGHLIGHT -->
-<radialGradient id="potatoHighlight" cx="32%" cy="25%" r="72%">
-    <stop offset="0%" stop-color="#fff4cc" stop-opacity=".72"/>
-    <stop offset="45%" stop-color="#f8e5b0" stop-opacity=".30"/>
-    <stop offset="100%" stop-color="#f8e5b0" stop-opacity="0"/>
-</radialGradient>
-
-<!-- SWEET POTATO — DEEPER WARM FORM -->
-<linearGradient id="sweetPotatoForm" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#f5c85f"/>
-    <stop offset="28%" stop-color="#e8ae3e"/>
-    <stop offset="58%" stop-color="#c98525"/>
-    <stop offset="82%" stop-color="#a9671d"/>
-    <stop offset="100%" stop-color="#744513"/>
-</linearGradient>
-
-<!-- SWEET POTATO — WARM HIGHLIGHT -->
-<radialGradient id="sweetPotatoHighlight" cx="30%" cy="24%" r="72%">
-    <stop offset="0%" stop-color="#ffeaa2" stop-opacity=".70"/>
-    <stop offset="45%" stop-color="#ffd875" stop-opacity=".28"/>
-    <stop offset="100%" stop-color="#ffd875" stop-opacity="0"/>
-</radialGradient>
-                </defs>
-
-
-                <!-- BOWL SHADOW -->
-                <ellipse cx="768" cy="535" rx="475" ry="455" fill="#000000" opacity=".16" filter="url(#bowlShadow)" />
-
-
-                <!-- OUTER BOWL -->
-                <circle cx="768" cy="512" r="492" fill="url(#bowlWhite)" stroke="#cfcfcf" stroke-width="6" />
-
-                <!-- BOWL RIM -->
-                <circle cx="768" cy="512" r="474" fill="none" stroke="#ffffff" stroke-width="11" opacity=".9" />
-
-                <!-- INNER BOWL -->
-                <circle cx="768" cy="512" r="452" fill="url(#bowlInner)" stroke="#d4d4d4" stroke-width="4" />
-
-
-                <!-- BROTH -->
-                <circle cx="768" cy="512" r="426" fill="url(#fishBroth)" stroke="#8f5427" stroke-width="5" />
-
-
-                <!-- SUBTLE BROTH DEPTH -->
-                <ellipse cx="700" cy="405" rx="250" ry="145" fill="#f3cc79" opacity=".16" />
-
-                <ellipse cx="870" cy="670" rx="290" ry="175" fill="#713b1b" opacity=".12" filter="url(#brothShadow)" />
-
-
-                <!-- BROTH ORGANIC HIGHLIGHTS -->
-                <g fill="none" stroke="#f6d98e" stroke-width="9" stroke-linecap="round" opacity=".28">
-
-                    <path d="M505 430 Q550 395 604 412" />
-                    <path d="M650 335 Q697 314 740 332" />
-                    <path d="M890 382 Q935 360 979 380" />
-                    <path d="M1010 505 Q1052 488 1081 510" />
-                    <path d="M555 650 Q596 628 633 644" />
-                    <path d="M800 720 Q850 697 898 714" />
-
-                </g>
-
-<!-- FISH — LONG, IRREGULAR HORIZONTAL PIECES -->
-
-<g>
-
+    <!-- SWEET POTATO — WARM HIGHLIGHT -->
+    <radialGradient id="sweetPotatoHighlight" cx="30%" cy="24%" r="72%">
+      <stop offset="0%" stop-color="#ffeaa2" stop-opacity=".70"/>
+      <stop offset="45%" stop-color="#ffd875" stop-opacity=".28"/>
+      <stop offset="100%" stop-color="#ffd875" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- BOWL SHADOW -->
+  <ellipse cx="768" cy="535" rx="475" ry="455" fill="#000000" opacity=".16" filter="url(#bowlShadow)"/>
+  <!-- OUTER BOWL -->
+  <circle cx="768" cy="512" r="492" fill="url(#bowlWhite)" stroke="#cfcfcf" stroke-width="6"/>
+  <!-- BOWL RIM -->
+  <circle cx="768" cy="512" r="474" fill="none" stroke="#ffffff" stroke-width="11" opacity=".9"/>
+  <!-- INNER BOWL -->
+  <circle cx="768" cy="512" r="452" fill="url(#bowlInner)" stroke="#d4d4d4" stroke-width="4"/>
+  <!-- BROTH -->
+  <circle cx="768" cy="512" r="426" fill="url(#fishBroth)" stroke="#8f5427" stroke-width="5"/>
+  <!-- SUBTLE BROTH DEPTH -->
+  <ellipse cx="700" cy="405" rx="250" ry="145" fill="#f3cc79" opacity=".16"/>
+  <ellipse cx="870" cy="670" rx="290" ry="175" fill="#713b1b" opacity=".12" filter="url(#brothShadow)"/>
+  <!-- BROTH ORGANIC HIGHLIGHTS -->
+  <g fill="none" stroke="#f6d98e" stroke-width="9" stroke-linecap="round" opacity=".28">
+    <path d="M505 430 Q550 395 604 412"/>
+    <path d="M650 335 Q697 314 740 332"/>
+    <path d="M890 382 Q935 360 979 380"/>
+    <path d="M1010 505 Q1052 488 1081 510"/>
+    <path d="M555 650 Q596 628 633 644"/>
+    <path d="M800 720 Q850 697 898 714"/>
+  </g>
+  <!-- FISH — LONG, IRREGULAR HORIZONTAL PIECES -->
+  <g>
+    <g transform="translate(20 0)">
     <!-- FISH 1 — BROWN SKIN -->
     <path d="
         M 348 316
@@ -8435,12 +8374,7 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 438 396, 414 388, 391 383
         C 370 379, 353 368, 349 351
         C 346 339, 350 329, 348 316
-        Z"
-        fill="url(#fishSkinCooked)"
-        stroke="#5c351f"
-        stroke-width="5"
-    />
-
+        Z" fill="url(#fishSkinCooked)" stroke="#5c351f" stroke-width="5"/>
     <!-- FISH 1 — FLESH -->
     <path d="
         M 360 316
@@ -8456,74 +8390,43 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 439 382, 417 376, 396 371
         C 378 367, 365 358, 365 346
         C 365 334, 358 326, 360 316
-        Z"
-        fill="url(#fishFleshCooked)"
-        stroke="#c89c5e"
-        stroke-width="4"
-    />
-
+        Z" fill="url(#fishFleshCooked)" stroke="#c89c5e" stroke-width="4"/>
     <!-- FISH 1 — COOKED GOLDEN PATCHES -->
-    <path
-        d="M 377 303
+    <path d="M 377 303
            C 397 288, 423 284, 446 291
            C 431 299, 416 310, 405 324
            C 394 337, 382 342, 369 337
-           C 366 324, 369 312, 377 303 Z"
-        fill="#e4b866"
-        opacity=".28"
-    />
-
-    <path
-        d="M 530 292
+           C 366 324, 369 312, 377 303 Z" fill="#e4b866" opacity=".28"/>
+    <path d="M 530 292
            C 553 290, 578 290, 596 299
            C 607 305, 612 313, 610 323
            C 595 316, 581 311, 564 310
-           C 548 309, 537 304, 530 292 Z"
-        fill="#a86632"
-        opacity=".28"
-    />
-
+           C 548 309, 537 304, 530 292 Z" fill="#a86632" opacity=".28"/>
     <!-- FISH 1 — SEARED EDGE -->
-    <path
-        d="
+    <path d="
             M 362 306
             C 378 286, 401 278, 423 279
             C 407 284, 390 294, 379 307
             C 369 319, 366 330, 366 342
-        "
-        fill="none"
-        stroke="#f2c978"
-        stroke-width="9"
-        stroke-linecap="round"
-        opacity=".30"
-    />
-
-<!-- FISH 1 — FLESH FLAKES -->
-<g
-    fill="none"
-    stroke="#fff0c6"
-    stroke-width="5"
-    stroke-linecap="round"
-    opacity=".62"
->
-    <path d="M 380 305 Q 410 292 440 303 Q 470 316 500 304 Q 530 291 562 303 Q 590 315 609 306" />
-    <path d="M 373 328 Q 404 315 435 327 Q 466 340 497 327 Q 528 314 558 327 Q 588 339 615 327" />
-    <path d="M 374 351 Q 404 338 435 350 Q 466 363 497 350 Q 528 337 558 350 Q 586 361 608 352" />
-    <path d="M 392 369 Q 420 361 448 369 Q 477 378 505 369 Q 532 360 558 369" />
+        " fill="none" stroke="#f2c978" stroke-width="9" stroke-linecap="round" opacity=".30"/>
+    <!-- FISH 1 — FLESH FLAKES -->
+   
+    <g fill="none" stroke="#fff0c6" stroke-width="5" stroke-linecap="round" opacity=".62">
+      <path d="M 380 305 Q 410 292 440 303 Q 470 316 500 304 Q 530 291 562 303 Q 590 315 609 306"/>
+      <path d="M 373 328 Q 404 315 435 327 Q 466 340 497 327 Q 528 314 558 327 Q 588 339 615 327"/>
+      <path d="M 374 351 Q 404 338 435 350 Q 466 363 497 350 Q 528 337 558 350 Q 586 361 608 352"/>
+      <path d="M 392 369 Q 420 361 448 369 Q 477 378 505 369 Q 532 360 558 369"/>
+    </g>
+    <!-- FISH 1 — SMALL COOKED FLESH VARIATION -->
+    <g fill="#b9783c" opacity=".22">
+      <ellipse cx="431" cy="318" rx="25" ry="10" transform="rotate(12 431 318)"/>
+      <ellipse cx="501" cy="350" rx="28" ry="9" transform="rotate(-8 501 350)"/>
+      <ellipse cx="570" cy="331" rx="22" ry="8" transform="rotate(13 570 331)"/>
+    </g>
 </g>
 
-    <!-- FISH 1 — SMALL COOKED FLESH VARIATION -->
-    <g
-        fill="#b9783c"
-        opacity=".22"
-    >
-        <ellipse cx="431" cy="318" rx="25" ry="10" transform="rotate(12 431 318)" />
-        <ellipse cx="501" cy="350" rx="28" ry="9" transform="rotate(-8 501 350)" />
-        <ellipse cx="570" cy="331" rx="22" ry="8" transform="rotate(13 570 331)" />
-    </g>
-
-
     <!-- FISH 2 — BROWN SKIN -->
+    <g transform="translate(-20 10)">
     <path d="
         M 462 405
         C 466 383, 483 366, 507 360
@@ -8538,12 +8441,7 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 548 490, 523 482, 500 478
         C 478 474, 464 463, 461 448
         C 458 434, 464 419, 462 405
-        Z"
-        fill="url(#fishSkinCooked)"
-        stroke="#5c351f"
-        stroke-width="5"
-    />
-
+        Z" fill="url(#fishSkinCooked)" stroke="#5c351f" stroke-width="5"/>
     <!-- FISH 2 — FLESH -->
     <path d="
         M 476 404
@@ -8559,98 +8457,48 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 551 478, 529 471, 508 467
         C 490 463, 478 454, 477 442
         C 477 431, 474 417, 476 404
-        Z"
-        fill="url(#fishFleshCooked)"
-        stroke="#c89c5e"
-        stroke-width="4"
-    />
-
+        Z" fill="url(#fishFleshCooked)" stroke="#c89c5e" stroke-width="4"/>
     <!-- FISH 2 — COOKED GOLDEN PATCHES -->
-    <path
-        d="M 493 393
+    <path d="M 493 393
            C 511 378, 535 372, 555 377
            C 540 385, 527 396, 516 409
            C 507 420, 496 424, 482 419
-           C 481 409, 485 400, 493 393 Z"
-        fill="#e4b866"
-        opacity=".28"
-    />
-
-    <path
-        d="M 633 380
+           C 481 409, 485 400, 493 393 Z" fill="#e4b866" opacity=".28"/>
+    <path d="M 633 380
            C 658 377, 683 378, 702 388
            C 713 394, 719 402, 717 412
            C 700 406, 685 401, 669 400
-           C 653 399, 641 393, 633 380 Z"
-        fill="#a86632"
-        opacity=".28"
-    />
-
+           C 653 399, 641 393, 633 380 Z" fill="#a86632" opacity=".28"/>
     <!-- FISH 2 — SEARED EDGE -->
-    <path
-        d="
+    <path d="
             M 479 395
             C 495 378, 516 370, 538 370
             C 520 377, 504 388, 493 402
             C 484 413, 481 425, 481 437
-        "
-        fill="none"
-        stroke="#f2c978"
-        stroke-width="9"
-        stroke-linecap="round"
-        opacity=".30"
-    />
-
-
-<!-- FISH 2 — FLESH FLAKES -->
-<g
-    fill="none"
-    stroke="#fff0c6"
-    stroke-width="5"
-    stroke-linecap="round"
-    opacity=".62"
->
-    <path d="M 495 396 Q 525 383 555 395 Q 585 408 615 395 Q 645 382 675 395 Q 703 407 721 397" />
-    <path d="M 488 419 Q 518 406 548 419 Q 578 432 608 419 Q 638 406 668 419 Q 696 431 721 421" />
-    <path d="M 489 442 Q 518 429 548 442 Q 578 455 608 442 Q 638 429 668 442 Q 696 453 716 445" />
-    <path d="M 501 460 Q 528 451 556 459 Q 584 468 612 459 Q 639 450 664 458" />
-</g>
-
-    <!-- FISH 2 — SMALL COOKED FLESH VARIATION -->
-    <g
-        fill="#b9783c"
-        opacity=".22"
-    >
-        <ellipse cx="536" cy="410" rx="24" ry="9" transform="rotate(10 536 410)" />
-        <ellipse cx="607" cy="447" rx="28" ry="9" transform="rotate(-7 607 447)" />
-        <ellipse cx="680" cy="420" rx="21" ry="8" transform="rotate(12 680 420)" />
+        " fill="none" stroke="#f2c978" stroke-width="9" stroke-linecap="round" opacity=".30"/>
+    <!-- FISH 2 — FLESH FLAKES -->
+    <g fill="none" stroke="#fff0c6" stroke-width="5" stroke-linecap="round" opacity=".62">
+      <path d="M 495 396 Q 525 383 555 395 Q 585 408 615 395 Q 645 382 675 395 Q 703 407 721 397"/>
+      <path d="M 488 419 Q 518 406 548 419 Q 578 432 608 419 Q 638 406 668 419 Q 696 431 721 421"/>
+      <path d="M 489 442 Q 518 429 548 442 Q 578 455 608 442 Q 638 429 668 442 Q 696 453 716 445"/>
+      <path d="M 501 460 Q 528 451 556 459 Q 584 468 612 459 Q 639 450 664 458"/>
     </g>
-
-</g>
-
-
-                <!-- SMALL BROTH / HERB DETAILS -->
-                <g fill="#6f7d32" opacity=".8">
-
-                    <ellipse cx="760" cy="390" rx="13" ry="6" transform="rotate(-25 760 390)" />
-
-                    <ellipse cx="838" cy="455" rx="11" ry="6" transform="rotate(30 838 455)" />
-
-                    <ellipse cx="916" cy="590" rx="14" ry="6" transform="rotate(-18 916 590)" />
-
-                    <ellipse cx="690" cy="670" rx="12" ry="6" transform="rotate(25 690 670)" />
-
-                </g>
-
-                <!-- PROVISIONS — LARGER POTATOES, POINTED SWEET POTATO & PUMPKIN -->
-
-                <g transform="translate(-150 0)">
-
-                    <!-- ========================= -->
-                    <!-- POTATO 1 — HUGE + FURTHER LEFT -->
-                    <!-- ========================= -->
-
-                    <path d="
+    <!-- FISH 2 — SMALL COOKED FLESH VARIATION -->
+    <g fill="#b9783c" opacity=".22">
+      <ellipse cx="536" cy="410" rx="24" ry="9" transform="rotate(10 536 410)"/>
+      <ellipse cx="607" cy="447" rx="28" ry="9" transform="rotate(-7 607 447)"/>
+      <ellipse cx="680" cy="420" rx="21" ry="8" transform="rotate(12 680 420)"/>
+    </g>
+    </g>
+  </g>
+  
+  <!-- PROVISIONS — LARGER POTATOES, POINTED SWEET POTATO & PUMPKIN -->
+  <g transform="translate(-150 0)">
+    <!-- ========================= -->
+    <!-- POTATO 1 — HUGE + FURTHER LEFT -->
+    <!-- ========================= -->
+    <g transform="scale(0.9) translate(110 30)">
+    <path d="
     M 790 235
     C 812 200, 852 181, 894 190
     C 934 198, 966 222, 980 257
@@ -8661,23 +8509,19 @@ html[data-theme="dark"] .finish-confirm-icon {
     C 788 353, 773 330, 770 304
 
     C 767 281, 775 260, 776 249
-    C 777 242, 783 237, 790 235 Z" fill="url(#potatoForm)" stroke="#c5b277" stroke-width="5" />
-
-                    <path d="
+    C 777 242, 783 237, 790 235 Z" fill="url(#potatoForm)" stroke="#c5b277" stroke-width="5"/>
+    <path d="
     M 789 255
     C 813 217, 852 204, 891 211
-    C 928 218, 953 238, 968 263" fill="none" stroke="#fff4d0" stroke-width="9" stroke-linecap="round" opacity=".7" />
-
-                    <path d="
+    C 928 218, 953 238, 968 263" fill="none" stroke="#fff4d0" stroke-width="9" stroke-linecap="round" opacity=".7"/>
+    <path d="
     M 782 318
     C 812 300, 847 308, 876 322
-    C 904 336, 933 332, 956 314" fill="none" stroke="#d4c28d" stroke-width="6" stroke-linecap="round" opacity=".55" />
-
-                    <!-- POTATO 2 — SAME SHAPE, MOVED UPWARD -->
-
-                    <g transform="translate(0 -85)">
-
-                        <path d="
+    C 904 336, 933 332, 956 314" fill="none" stroke="#d4c28d" stroke-width="6" stroke-linecap="round" opacity=".55"/>
+    </g>
+    <!-- POTATO 2 — SAME SHAPE, MOVED UPWARD -->
+    <g transform="translate(0 -85)">
+      <path d="
       M 1020 270
       C 1038 240, 1071 226, 1106 233
       C 1140 240, 1162 263, 1167 293
@@ -8688,28 +8532,20 @@ html[data-theme="dark"] .finish-confirm-icon {
       C 998 356, 987 337, 987 315
 
       C 986 294, 993 279, 997 272
-      C 1002 265, 1011 272, 1020 270 Z" fill="url(#potatoForm)" stroke="#c5b277" stroke-width="5" />
-
-                        <path d="
+      C 1002 265, 1011 272, 1020 270 Z" fill="url(#potatoForm)" stroke="#c5b277" stroke-width="5"/>
+      <path d="
       M 1009 289
       C 1031 253, 1066 241, 1098 248
-      C 1128 255, 1150 275, 1160 298" fill="none" stroke="#fff4d0" stroke-width="9" stroke-linecap="round"
-                            opacity=".7" />
-
-                        <path d="
+      C 1128 255, 1150 275, 1160 298" fill="none" stroke="#fff4d0" stroke-width="9" stroke-linecap="round" opacity=".7"/>
+      <path d="
       M 1004 333
       C 1030 317, 1059 324, 1085 338
-      C 1110 351, 1134 347, 1153 330" fill="none" stroke="#d4c28d" stroke-width="6" stroke-linecap="round"
-                            opacity=".55" />
-
-                    </g>
- 
-                     
-                    <!-- ========================= -->
-                    <!-- SWEET POTATO — IRREGULAR BOTTOM -->
-                    <!-- ========================= -->
-
-                    <path d="
+      C 1110 351, 1134 347, 1153 330" fill="none" stroke="#d4c28d" stroke-width="6" stroke-linecap="round" opacity=".55"/>
+    </g>
+    <!-- ========================= -->
+    <!-- SWEET POTATO — IRREGULAR BOTTOM -->
+    <!-- ========================= -->
+    <path d="
     M 1135 365
 
     C 1144 332, 1168 305, 1200 297
@@ -8729,40 +8565,20 @@ html[data-theme="dark"] .finish-confirm-icon {
     C 1149 435, 1145 425, 1140 416
 
     C 1135 407, 1130 399, 1134 390
-    C 1137 382, 1132 373, 1135 365 Z" fill="url(#sweetPotatoForm)" stroke="#d5a638ff" stroke-width="5" />
-
-                    <path d="
+    C 1137 382, 1132 373, 1135 365 Z" fill="url(#sweetPotatoForm)" stroke="#d5a638ff" stroke-width="5"/>
+    <path d="
     M 1153 370
     C 1163 338, 1187 319, 1214 313
-    C 1236 308, 1258 302, 1287 287" fill="none" stroke="#f6da76" stroke-width="10" stroke-linecap="round"
-                        opacity=".75" />
-
-                    <path d="
+    C 1236 308, 1258 302, 1287 287" fill="none" stroke="#f6da76" stroke-width="10" stroke-linecap="round" opacity=".75"/>
+    <path d="
     M 1152 411
     C 1177 394, 1201 406, 1221 421
-    C 1242 436, 1265 428, 1284 408" fill="none" stroke="#e6bf5dff" stroke-width="6" stroke-linecap="round"
-                        opacity=".55" />
- 
-
-<!-- SWEET POTATO — WARM INNER GLOW -->
-<path
-    d="
-        M 1161 359
-        C 1174 335, 1193 322, 1216 316
-        C 1235 311, 1254 304, 1276 294
-        C 1258 313, 1243 327, 1225 337
-        C 1206 348, 1186 354, 1161 359
-        Z"
-    fill="#ffe18a"
-    opacity=".24"
-    filter="url(#potatoSoftShadow)"
-/>
-
-                    <!-- ========================= -->
-                    <!-- PUMPKIN 1 — LARGE -->
-                    <!-- ========================= -->
-<path
-    d="
+    C 1242 436, 1265 428, 1284 408" fill="none" stroke="#e6bf5dff" stroke-width="6" stroke-linecap="round" opacity=".55"/>
+     
+    <!-- ========================= -->
+    <!-- PUMPKIN 1 — LARGE -->
+    <!-- ========================= -->
+    <path d="
       M 942 603 L 1025 551
       C 1038 543, 1053 548, 1059 562
       L 1078 644
@@ -8770,22 +8586,15 @@ html[data-theme="dark"] .finish-confirm-icon {
       C 1049 691, 1037 685, 1025 691
       C 1013 696, 999 689, 990 677
       L 941 622
-      C 933 614, 934 608, 942 603 Z"
-    fill="url(#pumpkinForm)"
-    stroke="#b74e17"
-    stroke-width="5"
-/>
-  <path d="
+      C 933 614, 934 608, 942 603 Z" fill="url(#pumpkinForm)" stroke="#b74e17" stroke-width="5"/>
+    <path d="
       M 955 604
       L 1025 561
-      Q 1042 551 1050 567" fill="none" stroke="#ffae4e" stroke-width="8" stroke-linecap="round" opacity=".7" />
- 
- 
-                    <!-- ========================= -->
-                    <!-- PUMPKIN 2 — LARGE -->
-                    <!-- ========================= -->
-
-                    <path d="
+      Q 1042 551 1050 567" fill="none" stroke="#ffae4e" stroke-width="8" stroke-linecap="round" opacity=".7"/>
+    <!-- ========================= -->
+    <!-- PUMPKIN 2 — LARGE -->
+    <!-- ========================= -->
+    <path d="
       M 1070 556
       L 1148 510
 
@@ -8799,19 +8608,15 @@ html[data-theme="dark"] .finish-confirm-icon {
 
       L 1068 578
 
-      C 1061 569, 1063 561, 1070 556 Z" fill="url(#pumpkinForm)" stroke="#b74e17" stroke-width="5" />
-
-                    <path d="
+      C 1061 569, 1063 561, 1070 556 Z" fill="url(#pumpkinForm)" stroke="#b74e17" stroke-width="5"/>
+    <path d="
       M 1083 558
       L 1147 520
-      Q 1163 511 1172 527" fill="none" stroke="#ffae4e" stroke-width="8" stroke-linecap="round" opacity=".7" />
-
-
-                    <!-- ========================= -->
-                    <!-- PUMPKIN 3 — LARGE -->
-                    <!-- ========================= -->
-
-                    <path d="
+      Q 1163 511 1172 527" fill="none" stroke="#ffae4e" stroke-width="8" stroke-linecap="round" opacity=".7"/>
+    <!-- ========================= -->
+    <!-- PUMPKIN 3 — LARGE -->
+    <!-- ========================= -->
+    <path d="
       M 1170 618
       L 1242 568
 
@@ -8825,21 +8630,17 @@ html[data-theme="dark"] .finish-confirm-icon {
 
       L 1167 640
 
-      C 1160 631, 1162 624, 1170 618 Z" fill="url(#pumpkinForm)" stroke="#b74e17" stroke-width="5" />
-
-                    <path d="
+      C 1160 631, 1162 624, 1170 618 Z" fill="url(#pumpkinForm)" stroke="#b74e17" stroke-width="5"/>
+    <path d="
       M 1182 620
       L 1241 580
-      Q 1257 570 1266 586" fill="none" stroke="#ffae4e" stroke-width="8" stroke-linecap="round" opacity=".7" />
-
-                </g> 
-                <!-- ========================= -->
-                <!-- EDDO 1 — LARGE + IRREGULAR -->
-                <!-- ========================= -->
-
-                <g transform="translate(160 180)">
-
-                    <path d="
+      Q 1257 570 1266 586" fill="none" stroke="#ffae4e" stroke-width="8" stroke-linecap="round" opacity=".7"/>
+  </g>
+  <!-- ========================= -->
+  <!-- EDDO 1 — LARGE + IRREGULAR -->
+  <!-- ========================= -->
+  <g transform="translate(230 210) scale(0.9)">
+    <path d="
       M 665 185
 
       C 682 164, 711 157, 737 166
@@ -8853,30 +8654,23 @@ html[data-theme="dark"] .finish-confirm-icon {
       C 638 284, 630 266, 632 248
       C 634 232, 628 216, 635 203
 
-      C 641 193, 654 194, 665 185 Z" fill="url(#eddoeForm)" stroke="#97917d" stroke-width="5" />
-
-                    <!-- eddo 1 surface -->
-                    <path d="
+      C 641 193, 654 194, 665 185 Z" fill="url(#eddoeForm)" stroke="#97917d" stroke-width="5"/>
+    <!-- eddo 1 surface -->
+    <path d="
       M 648 211
       C 666 181, 699 174, 726 184
-      C 750 192, 767 207, 773 226" fill="none" stroke="#ded8c1" stroke-width="9" stroke-linecap="round"
-                        opacity=".65" />
-
-                    <path d="
+      C 750 192, 767 207, 773 226" fill="none" stroke="#ded8c1" stroke-width="9" stroke-linecap="round" opacity=".65"/>
+    <path d="
       M 645 263
       C 667 248, 690 256, 709 268
-      C 728 280, 747 273, 761 258" fill="none" stroke="#aaa38e" stroke-width="7" stroke-linecap="round" opacity=".5" />
-
-                </g>
-
-
-                <!-- ========================= -->
-                <!-- EDDO 2 — LARGE + IRREGULAR -->
-                <!-- ========================= -->
-
-                <g transform="translate(-350 240)">
-
-                    <path d="
+      C 728 280, 747 273, 761 258" fill="none" stroke="#aaa38e" stroke-width="7" stroke-linecap="round" opacity=".5"/>
+  
+  </g>
+  <!-- ========================= -->
+  <!-- EDDO 2 — LARGE + IRREGULAR -->
+  <!-- ========================= -->
+  <g transform="translate(-350 240)">
+    <path d="
       M 785 300
 
       C 804 276, 835 267, 861 276
@@ -8890,414 +8684,311 @@ html[data-theme="dark"] .finish-confirm-icon {
       C 756 389, 748 371, 750 352
       C 752 335, 747 320, 754 310
 
-      C 761 301, 774 307, 785 300 Z" fill="url(#eddoeForm)" stroke="#948d78" stroke-width="5" />
-
-                    <!-- eddo 2 surface -->
-                    <path d="
+      C 761 301, 774 307, 785 300 Z" fill="url(#eddoeForm)" stroke="#948d78" stroke-width="5"/>
+    <!-- eddo 2 surface -->
+    <path d="
       M 766 327
       C 785 294, 819 285, 846 295
-      C 870 303, 889 319, 896 339" fill="none" stroke="#dcd5be" stroke-width="9" stroke-linecap="round"
-                        opacity=".65" />
-
-                    <path d="
+      C 870 303, 889 319, 896 339" fill="none" stroke="#dcd5be" stroke-width="9" stroke-linecap="round" opacity=".65"/>
+    <path d="
       M 762 377
       C 784 362, 808 370, 827 382
-      C 847 394, 866 387, 884 371" fill="none" stroke="#a69f89" stroke-width="7" stroke-linecap="round" opacity=".5" />
-
-                </g>
- 
-                <!-- ========================= -->
-                <!-- SCATTERED CARROT SLICES — 2X SIZE -->
-                <!-- ========================= -->
-
-                <g>
-
-                    <!-- carrot 1 -->
-                    <ellipse cx="535" cy="235" rx="48" ry="38" transform="rotate(-18 535 235)" fill="#e97828"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="535" cy="235" rx="30" ry="22" transform="rotate(-18 535 235)" fill="#f59a42"
-                        opacity=".7" />
-
-
-
-                    <!-- carrot 2 -->
-                    <ellipse cx="845" cy="250" rx="46" ry="36" transform="rotate(12 845 250)" fill="#e97929"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="845" cy="250" rx="28" ry="20" transform="rotate(12 845 250)" fill="#f59a42"
-                        opacity=".65" />
-
-
-                    <!-- carrot 3 -->
-                    <ellipse cx="940" cy="470" rx="50" ry="40" transform="rotate(-28 940 470)" fill="#e87527"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="940" cy="470" rx="30" ry="22" transform="rotate(-28 940 470)" fill="#f59a42"
-                        opacity=".65" />
-
-
-                    <!-- carrot 4 -->
-                    <ellipse cx="805" cy="555" rx="38" ry="50" transform="rotate(18 805 555)" fill="#e97828"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="805" cy="555" rx="22" ry="32" transform="rotate(18 805 555)" fill="#f59a42"
-                        opacity=".65" />
-
-
-                    <!-- carrot 5 -->
-                    <ellipse cx="690" cy="545" rx="48" ry="36" transform="rotate(-12 690 545)" fill="#e87527"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="690" cy="545" rx="28" ry="20" transform="rotate(-12 690 545)" fill="#f59a42"
-                        opacity=".65" />
-
-
-                    <!-- carrot 6 -->
-                    <ellipse cx="1070" cy="455" rx="42" ry="52" transform="rotate(31 1070 455)" fill="#e97829"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="1070" cy="455" rx="24" ry="32" transform="rotate(31 1070 455)" fill="#f59a42"
-                        opacity=".65" />
-
-
-                    <!-- carrot 7 -->
-                    <ellipse cx="560" cy="705" rx="40" ry="50" transform="rotate(27 560 705)" fill="#e97828"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="560" cy="705" rx="22" ry="32" transform="rotate(27 560 705)" fill="#f59a42"
-                        opacity=".65" />
-
-
-                    <!-- carrot 8 -->
-                    <ellipse cx="735" cy="800" rx="48" ry="36" transform="rotate(-14 735 800)" fill="#e87527"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="735" cy="800" rx="28" ry="20" transform="rotate(-14 735 800)" fill="#f59a42"
-                        opacity=".65" />
-
-
-                    <!-- carrot 9 -->
-                    <ellipse cx="985" cy="790" rx="40" ry="50" transform="rotate(22 985 790)" fill="#e97829"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="985" cy="790" rx="22" ry="32" transform="rotate(22 985 790)" fill="#f59a42"
-                        opacity=".65" />
-
-                    <!-- carrot 10 -->
-                    <ellipse cx="430" cy="500" rx="46" ry="36" transform="rotate(-25 430 500)" fill="#e87527"
-                        stroke="#b95019" stroke-width="4" />
-
-                    <ellipse cx="430" cy="500" rx="28" ry="20" transform="rotate(-25 430 500)" fill="#f59a42"
-                        opacity=".65" />
-
-                </g>
-                <!-- ========================= -->
-                <!-- More Pumpkins — BOTTOM LEFT -->
-                <!-- ========================= -->
-
-                <g transform="translate(0 0)">
-
-                    <!-- pumpkin   -->
-                    <g transform="rotate(-18 470 690)">
-                        <path d="
+      C 847 394, 866 387, 884 371" fill="none" stroke="#a69f89" stroke-width="7" stroke-linecap="round" opacity=".5"/>
+  </g>
+  
+  <!-- ========================= -->
+  <!-- SCATTERED CARROT SLICES — 2X SIZE -->
+  <!-- ========================= -->
+  <g>
+    <!-- carrot 1 -->
+    <ellipse cx="535" cy="235" rx="38" ry="28" transform="rotate(-18 535 235)" fill="#e97828" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="535" cy="235" rx="20" ry="12" transform="rotate(-18 535 235)" fill="#f59a42" opacity=".7"/>
+    <!-- carrot 2 -->
+    <ellipse cx="845" cy="250" rx="18" ry="33" transform="rotate(-18 845 250)" fill="#e97929" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="845" cy="250" rx="8" ry="16" transform="rotate(-18 845 250)" fill="#f59a42" opacity=".65"/>
+    <!-- carrot 3 -->
+    <ellipse cx="940" cy="470" rx="40" ry="30" transform="rotate(-28 940 410)" fill="#e87527" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="940" cy="470" rx="20" ry="12" transform="rotate(-28 940 410)" fill="#f59a42" opacity=".65"/>
+    <!-- carrot 4 -->
+    <ellipse cx="805" cy="555" rx="28" ry="36" transform="rotate(18 805 555)" fill="#e97828" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="805" cy="555" rx="12" ry="22" transform="rotate(18 805 555)" fill="#f59a42" opacity=".65"/>
+    <!-- carrot 5 -->
+    <ellipse cx="690" cy="545" rx="38" ry="26" transform="rotate(-12 690 545)" fill="#e87527" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="690" cy="545" rx="18" ry="10" transform="rotate(-12 690 545)" fill="#f59a42" opacity=".65"/>
+  
+     <!-- carrot 8 -->
+    <ellipse cx="735" cy="800" rx="38" ry="26" transform="rotate(-14 735 800)" fill="#e87527" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="735" cy="800" rx="18" ry="10" transform="rotate(-14 735 800)" fill="#f59a42" opacity=".65"/>
+    <!-- carrot 9 -->
+    <ellipse cx="985" cy="790" rx="30" ry="40" transform="rotate(22 985 790)" fill="#e97829" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="985" cy="790" rx="12" ry="22" transform="rotate(22 985 790)" fill="#f59a42" opacity=".65"/>
+    <!-- carrot 10 -->
+    <ellipse cx="430" cy="500" rx="36" ry="26" transform="rotate(-25 430 500)" fill="#e87527" stroke="#b95019" stroke-width="4"/>
+    <ellipse cx="430" cy="500" rx="18" ry="10" transform="rotate(-25 430 500)" fill="#f59a42" opacity=".65"/>
+  </g>
+  <!-- ========================= -->
+  <!-- More Pumpkins — BOTTOM LEFT -->
+  <!-- ========================= -->
+  <g transform="translate(0 0)">
+    <!-- pumpkin   -->
+    <g transform="rotate(-18 470 690)">
+      <path d="
         M 425 655
         C 438 643, 457 641, 475 648
         C 493 655, 507 669, 512 685
         C 517 701, 513 716, 503 728
         C 493 740, 479 745, 465 739
         C 449 732, 438 716, 431 700
-        C 424 684, 418 667, 425 655 Z" fill="url(#pumpkinForm)" stroke="#b95019" stroke-width="5" />
-
-                        <path d="
+        C 424 684, 418 667, 425 655 Z" fill="url(#pumpkinForm)" stroke="#b95019" stroke-width="5"/>
+      <path d="
         M 436 660
         C 450 652, 467 653, 480 660
-        C 493 667, 501 677, 504 689" fill="none" stroke="#ffae4e" stroke-width="9" stroke-linecap="round"
-                            opacity=".7" />
-                    </g>
-
-
-                    <!-- pumpkin 2 -->
-                    <g transform="rotate(22 570 755)">
-                        <path d="
+        C 493 667, 501 677, 504 689" fill="none" stroke="#ffae4e" stroke-width="9" stroke-linecap="round" opacity=".7"/>
+    </g>
+    <!-- pumpkin 2 -->
+    <g transform="rotate(22 570 755)">
+      <path d="
         M 535 715
         C 550 704, 569 705, 585 714
         C 600 723, 610 739, 611 756
         C 612 773, 605 789, 593 799
         C 581 809, 565 808, 552 798
         C 538 787, 531 770, 528 752
-        C 525 735, 526 721, 535 715 Z" fill="url(#pumpkinForm)" stroke="#b95019" stroke-width="5" />
-
-                        <path d="
+        C 525 735, 526 721, 535 715 Z" fill="url(#pumpkinForm)" stroke="#b95019" stroke-width="5"/>
+      <path d="
         M 544 719
         C 559 711, 575 714, 588 723
-        C 598 730, 604 741, 605 753" fill="none" stroke="#ffae4e" stroke-width="9" stroke-linecap="round"
-                            opacity=".7" />
-                    </g>
+        C 598 730, 604 741, 605 753" fill="none" stroke="#ffae4e" stroke-width="9" stroke-linecap="round" opacity=".7"/>
+    </g>
+  </g>
+  <!-- ========================= -->
+  <!-- BIG GREEN FIGS — BOTTOM LEFT -->
+  <!-- ========================= -->
+  <!-- FIG 1 -->
+  <!-- FIG 1 -->
+<g transform="translate(150 0)">
+  <path d="
+    M 465 665
+    C 468 646, 477 626, 489 611
+    C 500 598, 513 590, 526 595
+    C 538 600, 544 611, 548 624
+    C 551 637, 546 651, 544 664
+    C 542 681, 540 696, 534 711
+    C 529 725, 523 741, 514 750
+    C 507 758, 499 759, 491 754
+    C 483 749, 480 739, 476 729
+    C 471 717, 466 705, 465 693
+    C 462 682, 462 673, 465 665 Z"
+    fill="url(#figForm)"
+    stroke="#416b31"
+    stroke-width="5"/>
 
-                </g>
+  <path d="
+    M 480 654
+    C 484 635, 493 616, 504 607
+    C 514 599, 526 600, 535 610"
+    fill="none"
+    stroke="#91b66b"
+    stroke-width="8"
+    stroke-linecap="round"
+    opacity=".7"/>
+</g>
+  <!-- FIG 2 -->
+<!-- FIG 2 -->
+<g transform="translate(250 40)">
+  <path d="
+    M 570 735
+    C 573 716, 581 697, 592 683
+    C 602 670, 616 661, 629 666
+    C 642 670, 650 681, 653 694
+    C 656 707, 651 720, 649 733
+    C 647 750, 644 765, 638 780
+    C 632 796, 624 814, 614 822
+    C 606 829, 597 829, 590 822
+    C 582 814, 581 802, 577 792
+    C 573 779, 569 766, 569 754
+    C 568 746, 569 740, 570 735 Z"
+    fill="url(#figForm)"
+    stroke="#3f6830"
+    stroke-width="5"/>
 
+  <path d="
+    M 584 724
+    C 588 705, 596 687, 607 678
+    C 617 669, 629 671, 639 680"
+    fill="none"
+    stroke="#8fb569"
+    stroke-width="8"
+    stroke-linecap="round"
+    opacity=".7"/>
+</g>
+  <!-- SMALL BROTH / HERB DETAILS -->
+  <g fill="#889c2bff" opacity=".8">
+    <ellipse cx="760" cy="390" rx="13" ry="6" transform="rotate(-25 760 390)"/>
+    <ellipse cx="838" cy="455" rx="11" ry="6" transform="rotate(30 838 455)"/>
+    <ellipse cx="916" cy="590" rx="14" ry="6" transform="rotate(-18 916 590)"/>
+    <ellipse cx="690" cy="670" rx="12" ry="6" transform="rotate(25 690 670)"/>
+  </g>
+</symbol>
 
-                <!-- ========================= -->
-                <!-- BIG GREEN FIGS — BOTTOM LEFT -->
-                <!-- ========================= --> 
-
-                <!-- FIG 1 -->
-                <g transform="translate(150 0)">
-
-                    <path d="
-      M 465 665
-      C 469 646, 478 625, 491 610
-      C 503 596, 518 590, 531 596
-      C 545 602, 551 617, 549 635
-      C 547 657, 541 682, 533 705
-      C 525 727, 516 746, 504 753
-      C 493 760, 483 751, 477 736
-      C 469 716, 463 692, 465 665 Z" fill="url(#figForm)" stroke="#416b31" stroke-width="5" />
-
-                    <path d="
-      M 480 654
-      C 484 634, 493 615, 505 606
-      C 516 598, 528 601, 536 610" fill="none" stroke="#91b66b" stroke-width="8" stroke-linecap="round" opacity=".7" />
-
-                </g>
-
-
-                <!-- FIG 2 -->
-                <g transform="translate(250 40)">
-
-                    <path d="
-      M 570 735
-      C 574 716, 582 695, 595 680
-      C 607 666, 622 661, 635 667
-      C 649 673, 655 688, 653 706
-      C 651 728, 645 753, 637 776
-      C 629 798, 620 817, 608 824
-      C 597 830, 587 821, 581 806
-      C 573 786, 568 761, 570 735 Z" fill="url(#figForm)" stroke="#3f6830" stroke-width="5" />
-
-                    <path d="
-      M 584 724
-      C 588 704, 596 686, 608 676
-      C 619 668, 631 671, 640 680" fill="none" stroke="#8fb569" stroke-width="8" stroke-linecap="round" opacity=".7" />
-
-                </g>
-
-                
-
-            </symbol>
-
-            <symbol id="meal-vegetarian" viewBox="0 0 1536 1024">
-                <defs>
-
-                    <!--   PLATE  -->
-
-                    <radialGradient id="plateWhite" cx="50%" cy="42%" r="62%">
-                        <stop offset="0%" stop-color="#ffffff" />
-                        <stop offset="72%" stop-color="#f7f7f7" />
-                        <stop offset="94%" stop-color="#e7e7e7" />
-                        <stop offset="100%" stop-color="#d2d2d2" />
-                    </radialGradient>
-
-                    <radialGradient id="plateInner" cx="50%" cy="48%" r="55%">
-                        <stop offset="0%" stop-color="#ffffff" />
-                        <stop offset="82%" stop-color="#fafafa" />
-                        <stop offset="100%" stop-color="#eeeeee" />
-                    </radialGradient>
-
-                    <filter id="plateShadow" x="-20%" y="-20%" width="140%" height="150%">
-                        <feGaussianBlur stdDeviation="13" />
-                    </filter>
-
-
-                    <!-- SALAD SHADOW -->
-
-                    <filter id="saladShadow" x="-20%" y="-30%" width="140%" height="170%">
-                        <feGaussianBlur stdDeviation="12" />
-                    </filter>
-
-
-                    <!-- LETTUCE GRADIENTS  -->
-
-                    <linearGradient id="lettuceLight" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#a8d94d" />
-                        <stop offset="45%" stop-color="#72b52f" />
-                        <stop offset="100%" stop-color="#438d24" />
-                    </linearGradient>
-
-                    <linearGradient id="lettuceMid" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#79bd35" />
-                        <stop offset="55%" stop-color="#4d9a27" />
-                        <stop offset="100%" stop-color="#28731f" />
-                    </linearGradient>
-
-                    <linearGradient id="lettuceDark" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#4c9c29" />
-                        <stop offset="100%" stop-color="#1d5c20" />
-                    </linearGradient>
-
-
-                    <!--   TOMATO -->
-
-                    <radialGradient id="tomato" cx="35%" cy="30%" r="75%">
-                        <stop offset="0%" stop-color="#ff5840" />
-                        <stop offset="55%" stop-color="#e52e1d" />
-                        <stop offset="100%" stop-color="#a91816" />
-                    </radialGradient>
-
-
-                    <!--  CUCUMBER -->
-
-                    <radialGradient id="cucumberSkin" cx="40%" cy="35%" r="70%">
-                        <stop offset="0%" stop-color="#9acb3c" />
-                        <stop offset="70%" stop-color="#5d9e2c" />
-                        <stop offset="100%" stop-color="#376e27" />
-                    </radialGradient>
-
-                    <radialGradient id="cucumberInside" cx="50%" cy="50%" r="70%">
-                        <stop offset="0%" stop-color="#e2ef9d" />
-                        <stop offset="100%" stop-color="#a7c94b" />
-                    </radialGradient>
-
-
-                    <!--  CABBAGE / SHREDDED GREENS  -->
-
-                    <linearGradient id="cabbage" x1="0" y1="0" x2="0.8" y2="1">
-                        <stop offset="0%" stop-color="#f2f5b7" />
-                        <stop offset="45%" stop-color="#dce89a" />
-                        <stop offset="100%" stop-color="#a9c96c" />
-                    </linearGradient>
-
-                    <!--   VEGETABLE NOODLES  -->
-
-                    <filter id="noodleShadow" x="-25%" y="-30%" width="150%" height="170%">
-                        <feGaussianBlur stdDeviation="11" />
-                    </filter>
-
-                    <radialGradient id="noodleMound" cx="42%" cy="30%" r="75%">
-                        <stop offset="0%" stop-color="#f3d58c" />
-                        <stop offset="38%" stop-color="#e5bc68" />
-                        <stop offset="72%" stop-color="#c99443" />
-                        <stop offset="100%" stop-color="#9d6a32" />
-                    </radialGradient>
-
-                    <linearGradient id="noodleLight" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#fff0b5" />
-                        <stop offset="45%" stop-color="#e9c56f" />
-                        <stop offset="100%" stop-color="#bd8239" />
-                    </linearGradient>
-
-                    <linearGradient id="noodleDark" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#dcae5c" />
-                        <stop offset="100%" stop-color="#8d5b2b" />
-                    </linearGradient>
-
-                    <linearGradient id="pepperGreen" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#75ff52ff" />
-                        <stop offset="50%" stop-color="#0e7528ff" />
-                        <stop offset="100%" stop-color="#20a920ff" />
-                    </linearGradient>
-
-                    <linearGradient id="pepperYellow" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#ffe57a" />
-                        <stop offset="50%" stop-color="#f4c53d" />
-                        <stop offset="100%" stop-color="#c89420" />
-                    </linearGradient>
-
-                    <linearGradient id="carrot" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#ffb34d" />
-                        <stop offset="50%" stop-color="#f47b28" />
-                        <stop offset="100%" stop-color="#c84e1d" />
-                    </linearGradient>
-
-                    <!-- =========================
+<symbol id="meal-vegetarian" viewBox="0 0 1536 1024">
+  <defs>
+    <!--   PLATE  -->
+    <radialGradient id="plateWhite" cx="50%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="72%" stop-color="#f7f7f7"/>
+      <stop offset="94%" stop-color="#e7e7e7"/>
+      <stop offset="100%" stop-color="#d2d2d2"/>
+    </radialGradient>
+    <radialGradient id="plateInner" cx="50%" cy="48%" r="55%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="82%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#eeeeee"/>
+    </radialGradient>
+    <filter id="plateShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+    <!-- SALAD SHADOW -->
+    <filter id="saladShadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+    <!-- LETTUCE GRADIENTS  -->
+    <linearGradient id="lettuceLight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a8d94d"/>
+      <stop offset="45%" stop-color="#72b52f"/>
+      <stop offset="100%" stop-color="#438d24"/>
+    </linearGradient>
+    <linearGradient id="lettuceMid" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#79bd35"/>
+      <stop offset="55%" stop-color="#4d9a27"/>
+      <stop offset="100%" stop-color="#28731f"/>
+    </linearGradient>
+    <linearGradient id="lettuceDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4c9c29"/>
+      <stop offset="100%" stop-color="#1d5c20"/>
+    </linearGradient>
+    <!--   TOMATO -->
+    <radialGradient id="tomato" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#ff5840"/>
+      <stop offset="55%" stop-color="#e52e1d"/>
+      <stop offset="100%" stop-color="#a91816"/>
+    </radialGradient>
+    <!--  CUCUMBER -->
+    <radialGradient id="cucumberSkin" cx="40%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#9acb3c"/>
+      <stop offset="70%" stop-color="#5d9e2c"/>
+      <stop offset="100%" stop-color="#376e27"/>
+    </radialGradient>
+    <radialGradient id="cucumberInside" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#e2ef9d"/>
+      <stop offset="100%" stop-color="#a7c94b"/>
+    </radialGradient>
+    <!--  CABBAGE / SHREDDED GREENS  -->
+    <linearGradient id="cabbage" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#f2f5b7"/>
+      <stop offset="45%" stop-color="#dce89a"/>
+      <stop offset="100%" stop-color="#a9c96c"/>
+    </linearGradient>
+    <!--   VEGETABLE NOODLES  -->
+    <filter id="noodleShadow" x="-25%" y="-30%" width="150%" height="170%">
+      <feGaussianBlur stdDeviation="11"/>
+    </filter>
+    <radialGradient id="noodleMound" cx="42%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#f3d58c"/>
+      <stop offset="38%" stop-color="#e5bc68"/>
+      <stop offset="72%" stop-color="#c99443"/>
+      <stop offset="100%" stop-color="#9d6a32"/>
+    </radialGradient>
+    <linearGradient id="noodleLight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff0b5"/>
+      <stop offset="45%" stop-color="#e9c56f"/>
+      <stop offset="100%" stop-color="#bd8239"/>
+    </linearGradient>
+    <linearGradient id="noodleDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dcae5c"/>
+      <stop offset="100%" stop-color="#8d5b2b"/>
+    </linearGradient>
+    <linearGradient id="pepperGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#75ff52ff"/>
+      <stop offset="50%" stop-color="#0e7528ff"/>
+      <stop offset="100%" stop-color="#20a920ff"/>
+    </linearGradient>
+    <linearGradient id="pepperYellow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe57a"/>
+      <stop offset="50%" stop-color="#f4c53d"/>
+      <stop offset="100%" stop-color="#c89420"/>
+    </linearGradient>
+    <linearGradient id="carrot" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffb34d"/>
+      <stop offset="50%" stop-color="#f47b28"/>
+      <stop offset="100%" stop-color="#c84e1d"/>
+    </linearGradient>
+    <!-- =========================
          POTATO SALAD
     ========================== -->
-
-                    <filter id="potatoSaladShadow" x="-25%" y="-30%" width="150%" height="170%">
-                        <feGaussianBlur stdDeviation="10" />
-                    </filter>
-
-                    <radialGradient id="potatoSalad" cx="40%" cy="30%" r="75%">
-                        <stop offset="0%" stop-color="#fffdf2" />
-                        <stop offset="42%" stop-color="#f7f2dc" />
-                        <stop offset="75%" stop-color="#e9e3ca" />
-                        <stop offset="100%" stop-color="#d3ccb0" />
-                    </radialGradient>
-
-                    <radialGradient id="potatoChunk" cx="38%" cy="30%" r="75%">
-                        <stop offset="0%" stop-color="#fffef5" />
-                        <stop offset="65%" stop-color="#eee9d5" />
-                        <stop offset="100%" stop-color="#d8d1b8" />
-                    </radialGradient>
-
-                    <linearGradient id="potatoCarrot" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#ffc15c" />
-                        <stop offset="50%" stop-color="#f58a2d" />
-                        <stop offset="100%" stop-color="#c9571c" />
-                    </linearGradient>
-
-                    <!-- =========================
+    <filter id="potatoSaladShadow" x="-25%" y="-30%" width="150%" height="170%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+    <radialGradient id="potatoSalad" cx="40%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fffdf2"/>
+      <stop offset="42%" stop-color="#f7f2dc"/>
+      <stop offset="75%" stop-color="#e9e3ca"/>
+      <stop offset="100%" stop-color="#d3ccb0"/>
+    </radialGradient>
+    <radialGradient id="potatoChunk" cx="38%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fffef5"/>
+      <stop offset="65%" stop-color="#eee9d5"/>
+      <stop offset="100%" stop-color="#d8d1b8"/>
+    </radialGradient>
+    <linearGradient id="potatoCarrot" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffc15c"/>
+      <stop offset="50%" stop-color="#f58a2d"/>
+      <stop offset="100%" stop-color="#c9571c"/>
+    </linearGradient>
+    <!-- =========================
          BROWN SOYA CHUNKS
     ========================== -->
-
-                    <radialGradient id="soyaMound" cx="38%" cy="30%" r="75%">
-                        <stop offset="0%" stop-color="#a87545" />
-                        <stop offset="38%" stop-color="#86532f" />
-                        <stop offset="72%" stop-color="#623b25" />
-                        <stop offset="100%" stop-color="#43281a" />
-                    </radialGradient>
-
-                    <linearGradient id="soyaChunkDark" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#a66e3f" />
-                        <stop offset="42%" stop-color="#784829" />
-                        <stop offset="100%" stop-color="#4a2b1c" />
-                    </linearGradient>
-
-                    <linearGradient id="soyaChunkLight" x1="0" y1="0" x2="0.9" y2="1">
-                        <stop offset="0%" stop-color="#b47b49" />
-                        <stop offset="45%" stop-color="#895631" />
-                        <stop offset="100%" stop-color="#57331f" />
-                    </linearGradient>
-
-                    <filter id="soyaMoundShadow" x="-25%" y="-25%" width="150%" height="160%">
-                        <feGaussianBlur stdDeviation="12" />
-                    </filter>
-
-                </defs>
-
-
-                <!-- =====================================================
+    <radialGradient id="soyaMound" cx="38%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#a87545"/>
+      <stop offset="38%" stop-color="#86532f"/>
+      <stop offset="72%" stop-color="#623b25"/>
+      <stop offset="100%" stop-color="#43281a"/>
+    </radialGradient>
+    <linearGradient id="soyaChunkDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a66e3f"/>
+      <stop offset="42%" stop-color="#784829"/>
+      <stop offset="100%" stop-color="#4a2b1c"/>
+    </linearGradient>
+    <linearGradient id="soyaChunkLight" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#b47b49"/>
+      <stop offset="45%" stop-color="#895631"/>
+      <stop offset="100%" stop-color="#57331f"/>
+    </linearGradient>
+    <filter id="soyaMoundShadow" x="-25%" y="-25%" width="150%" height="160%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+  <!-- =====================================================
        PLATE SHADOW
   ====================================================== -->
-
-                <ellipse cx="768" cy="526" rx="503" ry="470" fill="#999" opacity=".20" filter="url(#plateShadow)" />
-
-
-                <!-- =====================================================
+  <ellipse cx="768" cy="526" rx="503" ry="470" fill="#999" opacity=".20" filter="url(#plateShadow)"/>
+  <!-- =====================================================
        OUTER PLATE
   ====================================================== -->
-
-                <circle cx="768" cy="512" r="492" fill="url(#plateWhite)" stroke="#d3d3d3" stroke-width="5" />
-
-                <!-- subtle outer rim -->
-
-                <circle cx="768" cy="512" r="477" fill="none" stroke="#ffffff" stroke-width="8" opacity=".85" />
-
-                <circle cx="768" cy="512" r="461" fill="url(#plateInner)" stroke="#e2e2e2" stroke-width="3" />
-                <!-- =====================================================
+  <circle cx="768" cy="512" r="492" fill="url(#plateWhite)" stroke="#d3d3d3" stroke-width="5"/>
+  <!-- subtle outer rim -->
+  <circle cx="768" cy="512" r="477" fill="none" stroke="#ffffff" stroke-width="8" opacity=".85"/>
+  <circle cx="768" cy="512" r="461" fill="url(#plateInner)" stroke="#e2e2e2" stroke-width="3"/>
+  <!-- =====================================================
        PLATE INNER HIGHLIGHT
   ====================================================== -->
-
-                <ellipse cx="768" cy="747" rx="315" ry="105" fill="#ffffff" opacity=".34" />
-
-                <ellipse cx="768" cy="748" rx="260" ry="70" fill="#ffffff" opacity=".22" />
-
-                <!-- =====================================================
+  <ellipse cx="768" cy="747" rx="315" ry="105" fill="#ffffff" opacity=".34"/>
+  <ellipse cx="768" cy="748" rx="260" ry="70" fill="#ffffff" opacity=".22"/>
+   <g transform="scale(0.95) translate(40 40)">
+  <!-- =====================================================
        SALAD GROUND SHADOW
   ====================================================== -->
-
-                <path d="
+  <path d="
         M 338 462
         C 350 270, 520 133, 768 132
         C 1015 133, 1187 270, 1198 462
@@ -9306,14 +8997,12 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 865 600, 815 573, 768 565
         C 721 573, 671 600, 604 605
         C 534 610, 461 594, 391 556
-        C 354 535, 337 500, 338 462 Z" fill="#6d6d6d" opacity=".18" filter="url(#saladShadow)" />
-
-
-                <!-- =====================================================
+        C 354 535, 337 500, 338 462 Z" fill="#6d6d6d" opacity=".18" filter="url(#saladShadow)"/>
+  <!-- =====================================================
        MAIN HALF-MOON SALAD BASE
        Tall / vertical crescent shape
   ====================================================== -->
-                <path d="  
+  <path d="  
     M 330 455  
 
     C 324 404, 341 356, 368 310
@@ -9342,14 +9031,11 @@ html[data-theme="dark"] .finish-confirm-icon {
     C 648 572, 604 601, 544 608  
 
     C 490 615, 432 602, 386 570  
-    C 348 544, 328 500, 330 455 Z" fill="url(#lettuceMid)" stroke="#3c7e25" stroke-width="5" />
-
-
-                <!-- =====================================================
+    C 348 544, 328 500, 330 455 Z" fill="url(#lettuceMid)" stroke="#3c7e25" stroke-width="5"/>
+  <!-- =====================================================
        LOWER DARK LETTUCE LAYER
   ====================================================== -->
-
-                <path d="
+  <path d="
         M 350 453
         C 362 335, 432 241, 528 193
         C 592 161, 675 147, 768 150
@@ -9366,438 +9052,320 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 663 525, 615 566, 550 579
 
         C 502 589, 448 580, 402 550
-        C 368 527, 347 493, 350 453 Z" fill="url(#lettuceDark)" opacity=".78" />
-
-
-                <!-- =====================================================
+        C 368 527, 347 493, 350 453 Z" fill="url(#lettuceDark)" opacity=".78"/>
+  <!-- =====================================================
        INDIVIDUAL LETTUCE CLUSTERS
   ====================================================== -->
-
-                <!-- top -->
-
-                <g fill="url(#lettuceLight)" stroke="#4a9228" stroke-width="3">
-
-                    <path d="M510 183
+  <!-- top -->
+  <g fill="url(#lettuceLight)" stroke="#4a9228" stroke-width="3">
+    <path d="M510 183
              C488 161 503 132 532 139
              C543 111 579 112 590 139
              C615 126 639 148 626 172
              C648 188 633 217 607 215
              C591 235 558 226 554 201
-             C531 216 507 205 510 183Z" />
-
-                    <path d="M641 153
+             C531 216 507 205 510 183Z"/>
+    <path d="M641 153
              C625 128 647 106 670 119
              C682 91 717 96 722 124
              C747 110 772 132 760 155
              C779 176 757 199 734 191
              C719 216 684 207 680 181
-             C659 195 638 181 641 153Z" />
-
-                    <path d="M770 150
+             C659 195 638 181 641 153Z"/>
+    <path d="M770 150
              C755 125 778 102 803 116
              C816 89 850 98 854 125
              C880 110 902 134 889 158
              C907 180 883 202 860 192
              C846 216 811 208 807 181
-             C785 196 764 177 770 150Z" />
-
-                    <path d="M902 165
+             C785 196 764 177 770 150Z"/>
+    <path d="M902 165
              C889 139 914 117 937 131
              C948 104 983 110 987 138
              C1011 126 1037 148 1024 172
              C1042 192 1021 216 997 207
              C984 232 949 222 946 197
-             C925 210 902 192 902 165Z" />
-
-                </g>
-
-
-                <!-- left leafy folds -->
-
-                <g fill="url(#lettuceLight)" stroke="#4b9028" stroke-width="3">
-
-                    <path d="M423 282
+             C925 210 902 192 902 165Z"/>
+  </g>
+  <!-- left leafy folds -->
+  <g fill="url(#lettuceLight)" stroke="#4b9028" stroke-width="3">
+    <path d="M423 282
              C393 260 405 225 437 228
              C439 197 477 193 491 220
              C517 208 537 237 518 258
              C536 282 509 306 484 293
              C467 319 432 310 436 281
-             C421 290 414 288 423 282Z" />
-
-                    <path d="M385 390
+             C421 290 414 288 423 282Z"/>
+    <path d="M385 390
              C359 368 373 335 402 338
              C405 309 440 303 454 329
              C480 318 498 345 480 367
              C499 391 471 414 447 401
              C430 426 396 415 400 389
-             C387 397 378 397 385 390Z" />
-
-                    <path d="M400 497
+             C387 397 378 397 385 390Z"/>
+    <path d="M400 497
              C372 475 388 443 417 448
              C421 417 456 413 470 440
              C496 429 514 457 495 479
              C512 503 483 526 460 512
              C444 538 408 526 413 500
-             C400 508 393 504 400 497Z" />
-
-                </g>
-
-
-                <!-- right leafy folds -->
-
-                <g fill="url(#lettuceLight)" stroke="#4b9028" stroke-width="3">
-
-                    <path d="M1104 278
+             C400 508 393 504 400 497Z"/>
+  </g>
+  <!-- right leafy folds -->
+  <g fill="url(#lettuceLight)" stroke="#4b9028" stroke-width="3">
+    <path d="M1104 278
              C1132 257 1121 222 1091 226
              C1088 196 1053 191 1039 218
              C1013 206 994 235 1013 256
              C994 280 1021 303 1045 291
              C1061 317 1097 307 1092 280
-             C1106 288 1113 285 1104 278Z" />
-
-                    <path d="M1151 388
+             C1106 288 1113 285 1104 278Z"/>
+    <path d="M1151 388
              C1178 366 1164 334 1135 338
              C1132 307 1097 303 1082 329
              C1057 318 1038 345 1057 367
              C1038 391 1066 414 1089 401
              C1106 427 1141 416 1137 390
-             C1150 397 1158 396 1151 388Z" />
-
-                    <path d="M1134 493
+             C1150 397 1158 396 1151 388Z"/>
+    <path d="M1134 493
              C1162 472 1147 439 1118 445
              C1114 415 1080 411 1065 438
              C1040 427 1021 455 1040 477
              C1022 501 1050 524 1074 511
              C1089 537 1125 526 1121 500
-             C1134 507 1141 502 1134 493Z" />
-
-                </g>
-
-
-                <!-- =====================================================
+             C1134 507 1141 502 1134 493Z"/>
+  </g>
+  <!-- =====================================================
        CENTRAL LETTUCE TEXTURE
   ====================================================== -->
-
-                <g fill="url(#lettuceLight)" opacity=".9">
-
-                    <ellipse cx="545" cy="350" rx="62" ry="37" transform="rotate(-24 545 350)" />
-
-                    <ellipse cx="650" cy="286" rx="67" ry="38" transform="rotate(15 650 286)" />
-
-                    <ellipse cx="760" cy="270" rx="72" ry="40" transform="rotate(-8 760 270)" />
-
-                    <ellipse cx="874" cy="285" rx="67" ry="39" transform="rotate(14 874 285)" />
-
-                    <ellipse cx="982" cy="350" rx="63" ry="38" transform="rotate(-18 982 350)" />
-
-                    <ellipse cx="492" cy="430" rx="65" ry="39" transform="rotate(18 492 430)" />
-
-                    <ellipse cx="605" cy="405" rx="70" ry="39" transform="rotate(-14 605 405)" />
-
-                    <ellipse cx="720" cy="380" rx="69" ry="41" transform="rotate(8 720 380)" />
-
-                    <ellipse cx="830" cy="386" rx="72" ry="40" transform="rotate(-9 830 386)" />
-
-                    <ellipse cx="950" cy="420" rx="68" ry="40" transform="rotate(17 950 420)" />
-
-                </g>
-
-
-                <!-- =====================================================
+  <g fill="url(#lettuceLight)" opacity=".9">
+    <ellipse cx="545" cy="350" rx="62" ry="37" transform="rotate(-24 545 350)"/>
+    <ellipse cx="650" cy="286" rx="67" ry="38" transform="rotate(15 650 286)"/>
+    <ellipse cx="760" cy="270" rx="72" ry="40" transform="rotate(-8 760 270)"/>
+    <ellipse cx="874" cy="285" rx="67" ry="39" transform="rotate(14 874 285)"/>
+    <ellipse cx="982" cy="350" rx="63" ry="38" transform="rotate(-18 982 350)"/>
+    <ellipse cx="492" cy="430" rx="65" ry="39" transform="rotate(18 492 430)"/>
+    <ellipse cx="605" cy="405" rx="70" ry="39" transform="rotate(-14 605 405)"/>
+    <ellipse cx="720" cy="380" rx="69" ry="41" transform="rotate(8 720 380)"/>
+    <ellipse cx="830" cy="386" rx="72" ry="40" transform="rotate(-9 830 386)"/>
+    <ellipse cx="950" cy="420" rx="68" ry="40" transform="rotate(17 950 420)"/>
+  </g>
+  <!-- =====================================================
        CABBAGE SHREDS
   ====================================================== -->
-
-                <g fill="none" stroke="url(#cabbage)" stroke-width="14" stroke-linecap="round">
-
-                    <path d="M454 248 Q535 215 588 252 Q623 274 655 247" />
-                    <path d="M554 188 Q604 230 637 272 Q653 293 681 308" />
-                    <path d="M688 170 Q720 213 746 257" />
-                    <path d="M830 171 Q806 211 798 253" />
-                    <path d="M928 196 Q881 229 863 272" />
-                    <path d="M1030 244 Q970 263 941 304" />
-
-                    <path d="M395 338 Q458 318 503 342 Q528 356 557 345" />
-                    <path d="M493 321 Q536 360 568 393" />
-                    <path d="M610 301 Q648 340 675 382" />
-                    <path d="M715 300 Q741 339 756 377" />
-                    <path d="M842 302 Q820 346 800 387" />
-                    <path d="M944 320 Q910 352 886 391" />
-                    <path d="M1050 336 Q1011 357 981 395" />
-
-                    <path d="M392 452 Q443 429 486 449" />
-                    <path d="M525 446 Q561 475 584 503" />
-                    <path d="M656 438 Q684 470 704 503" />
-                    <path d="M868 438 Q844 471 827 503" />
-                    <path d="M981 448 Q947 477 923 504" />
-                    <path d="M1090 454 Q1050 469 1023 493" />
-
-                </g>
-
-
-                <!-- =====================================================
+  <g fill="none" stroke="url(#cabbage)" stroke-width="14" stroke-linecap="round">
+    <path d="M454 248 Q535 215 588 252 Q623 274 655 247"/>
+    <path d="M554 188 Q604 230 637 272 Q653 293 681 308"/>
+    <path d="M688 170 Q720 213 746 257"/>
+    <path d="M830 171 Q806 211 798 253"/>
+    <path d="M928 196 Q881 229 863 272"/>
+    <path d="M1030 244 Q970 263 941 304"/>
+    <path d="M395 338 Q458 318 503 342 Q528 356 557 345"/>
+    <path d="M493 321 Q536 360 568 393"/>
+    <path d="M610 301 Q648 340 675 382"/>
+    <path d="M715 300 Q741 339 756 377"/>
+    <path d="M842 302 Q820 346 800 387"/>
+    <path d="M944 320 Q910 352 886 391"/>
+    <path d="M1050 336 Q1011 357 981 395"/>
+    <path d="M392 452 Q443 429 486 449"/>
+    <path d="M525 446 Q561 475 584 503"/>
+    <path d="M656 438 Q684 470 704 503"/>
+    <path d="M868 438 Q844 471 827 503"/>
+    <path d="M981 448 Q947 477 923 504"/>
+    <path d="M1090 454 Q1050 469 1023 493"/>
+  </g>
+  <!-- =====================================================
        CUCUMBERS
   ====================================================== -->
-
-                <!-- cucumber 1 -->
-
-                <g transform="translate(548 321)">
-
-                    <circle r="49" fill="#326d28" />
-                    <circle r="42" fill="url(#cucumberSkin)" />
-                    <circle r="33" fill="url(#cucumberInside)" />
-
-                    <g fill="none" stroke="#7ca63b" stroke-width="3">
-                        <path d="M0-29 Q8-13 0 0 Q-8-13 0-29" />
-                        <path d="M29 0 Q13 8 0 0 Q13-8 29 0" />
-                        <path d="M0 29 Q-8 13 0 0 Q8 13 0 29" />
-                        <path d="M-29 0 Q-13-8 0 0 Q-13 8-29 0" />
-                    </g>
-
-                </g>
-
-
-                <!-- cucumber 2 -->
-
-                <g transform="translate(931 252)">
-
-                    <circle r="47" fill="#326d28" />
-                    <circle r="40" fill="url(#cucumberSkin)" />
-                    <circle r="32" fill="url(#cucumberInside)" />
-
-                    <g fill="none" stroke="#7ca63b" stroke-width="3">
-                        <path d="M0-28 Q8-12 0 0 Q-8-12 0-28" />
-                        <path d="M28 0 Q12 8 0 0 Q12-8 28 0" />
-                        <path d="M0 28 Q-8 12 0 0 Q8 12 0 28" />
-                        <path d="M-28 0 Q-12-8 0 0 Q-12 8-28 0" />
-                    </g>
-
-                </g>
-
-
-                <!-- cucumber 3 -->
-
-                <g transform="translate(1040 363)">
-
-                    <circle r="46" fill="#326d28" />
-                    <circle r="39" fill="url(#cucumberSkin)" />
-                    <circle r="31" fill="url(#cucumberInside)" />
-
-                    <g fill="none" stroke="#7ca63b" stroke-width="3">
-                        <path d="M0-27 Q8-12 0 0 Q-8-12 0-27" />
-                        <path d="M27 0 Q12 8 0 0 Q12-8 27 0" />
-                        <path d="M0 27 Q-8 12 0 0 Q8 12 0 27" />
-                        <path d="M-27 0 Q-12-8 0 0 Q-12 8-27 0" />
-                    </g>
-
-                </g>
-
-
-                <!-- cucumber 4 -->
-
-                <g transform="translate(477 478)">
-
-                    <circle r="45" fill="#326d28" />
-                    <circle r="38" fill="url(#cucumberSkin)" />
-                    <circle r="30" fill="url(#cucumberInside)" />
-
-                    <g fill="none" stroke="#7ca63b" stroke-width="3">
-                        <path d="M0-26 Q8-11 0 0 Q-8-11 0-26" />
-                        <path d="M26 0 Q11 8 0 0 Q11-8 26 0" />
-                        <path d="M0 26 Q-8 11 0 0 Q8 11 0 26" />
-                        <path d="M-26 0 Q-11-8 0 0 Q-11 8-26 0" />
-                    </g>
-
-                </g>
-
-
-                <!-- cucumber 5 -->
-
-                <g transform="translate(1042 480)">
-
-                    <circle r="45" fill="#326d28" />
-                    <circle r="38" fill="url(#cucumberSkin)" />
-                    <circle r="30" fill="url(#cucumberInside)" />
-
-                    <g fill="none" stroke="#7ca63b" stroke-width="3">
-                        <path d="M0-26 Q8-11 0 0 Q-8-11 0-26" />
-                        <path d="M26 0 Q11 8 0 0 Q11-8 26 0" />
-                        <path d="M0 26 Q-8 11 0 0 Q8 11 0 26" />
-                        <path d="M-26 0 Q-11-8 0 0 Q-11 8-26 0" />
-                    </g>
-
-                </g>
-
-
-                <!-- =====================================================
+  <!-- cucumber 1 -->
+  <g transform="translate(548 321)">
+    <circle r="49" fill="#326d28"/>
+    <circle r="42" fill="url(#cucumberSkin)"/>
+    <circle r="33" fill="url(#cucumberInside)"/>
+    <g fill="none" stroke="#7ca63b" stroke-width="3">
+      <path d="M0-29 Q8-13 0 0 Q-8-13 0-29"/>
+      <path d="M29 0 Q13 8 0 0 Q13-8 29 0"/>
+      <path d="M0 29 Q-8 13 0 0 Q8 13 0 29"/>
+      <path d="M-29 0 Q-13-8 0 0 Q-13 8-29 0"/>
+    </g>
+  </g>
+  <!-- cucumber 2 -->
+  <g transform="translate(931 252)">
+    <circle r="47" fill="#326d28"/>
+    <circle r="40" fill="url(#cucumberSkin)"/>
+    <circle r="32" fill="url(#cucumberInside)"/>
+    <g fill="none" stroke="#7ca63b" stroke-width="3">
+      <path d="M0-28 Q8-12 0 0 Q-8-12 0-28"/>
+      <path d="M28 0 Q12 8 0 0 Q12-8 28 0"/>
+      <path d="M0 28 Q-8 12 0 0 Q8 12 0 28"/>
+      <path d="M-28 0 Q-12-8 0 0 Q-12 8-28 0"/>
+    </g>
+  </g>
+  <!-- cucumber 3 -->
+  <g transform="translate(1040 363)">
+    <circle r="46" fill="#326d28"/>
+    <circle r="39" fill="url(#cucumberSkin)"/>
+    <circle r="31" fill="url(#cucumberInside)"/>
+    <g fill="none" stroke="#7ca63b" stroke-width="3">
+      <path d="M0-27 Q8-12 0 0 Q-8-12 0-27"/>
+      <path d="M27 0 Q12 8 0 0 Q12-8 27 0"/>
+      <path d="M0 27 Q-8 12 0 0 Q8 12 0 27"/>
+      <path d="M-27 0 Q-12-8 0 0 Q-12 8-27 0"/>
+    </g>
+  </g>
+  <!-- cucumber 4 -->
+  <g transform="translate(477 478)">
+    <circle r="45" fill="#326d28"/>
+    <circle r="38" fill="url(#cucumberSkin)"/>
+    <circle r="30" fill="url(#cucumberInside)"/>
+    <g fill="none" stroke="#7ca63b" stroke-width="3">
+      <path d="M0-26 Q8-11 0 0 Q-8-11 0-26"/>
+      <path d="M26 0 Q11 8 0 0 Q11-8 26 0"/>
+      <path d="M0 26 Q-8 11 0 0 Q8 11 0 26"/>
+      <path d="M-26 0 Q-11-8 0 0 Q-11 8-26 0"/>
+    </g>
+  </g>
+  <!-- cucumber 5 -->
+  <g transform="translate(1042 480)">
+    <circle r="45" fill="#326d28"/>
+    <circle r="38" fill="url(#cucumberSkin)"/>
+    <circle r="30" fill="url(#cucumberInside)"/>
+    <g fill="none" stroke="#7ca63b" stroke-width="3">
+      <path d="M0-26 Q8-11 0 0 Q-8-11 0-26"/>
+      <path d="M26 0 Q11 8 0 0 Q11-8 26 0"/>
+      <path d="M0 26 Q-8 11 0 0 Q8 11 0 26"/>
+      <path d="M-26 0 Q-11-8 0 0 Q-11 8-26 0"/>
+    </g>
+  </g>
+  <!-- =====================================================
        TOMATO PIECES
   ====================================================== -->
-
-                <!-- tomato upper-left -->
-
-                <path d="M454 237
+  <!-- tomato upper-left -->
+  <path d="M454 237
          C463 203 498 183 530 197
          C546 207 555 228 548 251
-         C519 257 482 252 454 237Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4" />
-
-                <g fill="#f59b36">
-                    <ellipse cx="491" cy="222" rx="5" ry="9" />
-                    <ellipse cx="512" cy="229" rx="5" ry="9" />
-                    <ellipse cx="480" cy="235" rx="4" ry="8" />
-                </g>
-
-
-                <!-- tomato upper-middle -->
-
-                <path d="M746 177
+         C519 257 482 252 454 237Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4"/>
+  <g fill="#f59b36">
+    <ellipse cx="491" cy="222" rx="5" ry="9"/>
+    <ellipse cx="512" cy="229" rx="5" ry="9"/>
+    <ellipse cx="480" cy="235" rx="4" ry="8"/>
+  </g>
+  <!-- tomato upper-middle -->
+  <path d="M746 177
          C773 160 813 168 832 194
          C842 211 837 233 823 249
          C793 243 764 227 742 204
-         C740 194 742 184 746 177Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4" />
-
-                <g fill="#f59b36">
-                    <ellipse cx="779" cy="194" rx="5" ry="9" />
-                    <ellipse cx="802" cy="202" rx="5" ry="9" />
-                    <ellipse cx="789" cy="217" rx="5" ry="8" />
-                </g>
-
-
-                <!-- tomato right -->
-
-                <path d="M1001 274
+         C740 194 742 184 746 177Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4"/>
+  <g fill="#f59b36">
+    <ellipse cx="779" cy="194" rx="5" ry="9"/>
+    <ellipse cx="802" cy="202" rx="5" ry="9"/>
+    <ellipse cx="789" cy="217" rx="5" ry="8"/>
+  </g>
+  <!-- tomato right -->
+  <path d="M1001 274
          C1020 243 1055 239 1079 258
          C1096 272 1099 299 1083 319
-         C1054 320 1024 305 1001 286Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4" />
-
-                <g fill="#f59b36">
-                    <ellipse cx="1030" cy="270" rx="5" ry="9" />
-                    <ellipse cx="1051" cy="282" rx="5" ry="9" />
-                    <ellipse cx="1045" cy="298" rx="4" ry="8" />
-                </g>
-
-
-                <!-- tomato left-middle -->
-
-                <path d="M392 400
+         C1054 320 1024 305 1001 286Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4"/>
+  <g fill="#f59b36">
+    <ellipse cx="1030" cy="270" rx="5" ry="9"/>
+    <ellipse cx="1051" cy="282" rx="5" ry="9"/>
+    <ellipse cx="1045" cy="298" rx="4" ry="8"/>
+  </g>
+  <!-- tomato left-middle -->
+  <path d="M392 400
          C407 372 441 361 467 377
          C483 387 489 409 479 431
-         C450 435 419 424 395 410Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4" />
-
-                <g fill="#f59b36">
-                    <ellipse cx="422" cy="388" rx="5" ry="9" />
-                    <ellipse cx="445" cy="398" rx="5" ry="9" />
-                    <ellipse cx="437" cy="413" rx="4" ry="8" />
-                </g>
-
-
-                <!-- tomato center-right -->
-
-                <path d="M891 369
+         C450 435 419 424 395 410Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4"/>
+  <g fill="#f59b36">
+    <ellipse cx="422" cy="388" rx="5" ry="9"/>
+    <ellipse cx="445" cy="398" rx="5" ry="9"/>
+    <ellipse cx="437" cy="413" rx="4" ry="8"/>
+  </g>
+  <!-- tomato center-right -->
+  <path d="M891 369
          C910 337 944 330 970 349
          C987 362 989 388 974 409
-         C946 411 915 399 892 382Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4" />
-
-                <g fill="#f59b36">
-                    <ellipse cx="919" cy="356" rx="5" ry="9" />
-                    <ellipse cx="941" cy="368" rx="5" ry="9" />
-                    <ellipse cx="934" cy="386" rx="4" ry="8" />
-                </g>
-
-
-                <!-- tomato lower-right -->
-
-                <path d="M1080 535
+         C946 411 915 399 892 382Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4"/>
+  <g fill="#f59b36">
+    <ellipse cx="919" cy="356" rx="5" ry="9"/>
+    <ellipse cx="941" cy="368" rx="5" ry="9"/>
+    <ellipse cx="934" cy="386" rx="4" ry="8"/>
+  </g>
+  <!-- tomato lower-right -->
+  <path d="M1080 535
          C1094 506 1127 497 1151 513
          C1168 526 1170 549 1156 568
-         C1129 571 1101 559 1081 545Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4" />
-
-                <g fill="#f59b36">
-                    <ellipse cx="1107" cy="520" rx="5" ry="9" />
-                    <ellipse cx="1128" cy="532" rx="5" ry="9" />
-                    <ellipse cx="1122" cy="548" rx="4" ry="8" />
-                </g>
-
-
-                <!-- =====================================================
+         C1129 571 1101 559 1081 545Z" fill="url(#tomato)" stroke="#a81e17" stroke-width="4"/>
+  <g fill="#f59b36">
+    <ellipse cx="1107" cy="520" rx="5" ry="9"/>
+    <ellipse cx="1128" cy="532" rx="5" ry="9"/>
+    <ellipse cx="1122" cy="548" rx="4" ry="8"/>
+  </g>
+  <!-- =====================================================
        PARSLEY / HERBS
   ====================================================== -->
-
-                <g fill="#28752a">
-
-                    <path d="M595 292
+  <g fill="#28752a">
+    <path d="M595 292
              C581 276 592 260 607 267
              C612 249 631 250 634 266
              C650 258 659 274 649 285
              C660 296 647 309 633 304
              C628 320 609 316 608 301
-             C596 307 587 299 595 292Z" />
-
-                    <path d="M855 246
+             C596 307 587 299 595 292Z"/>
+    <path d="M855 246
              C843 230 854 216 869 223
              C874 205 892 206 895 222
              C910 214 920 230 910 241
              C921 253 908 265 894 260
              C889 276 870 272 870 257
-             C858 263 850 255 855 246Z" />
-
-                    <path d="M711 350
+             C858 263 850 255 855 246Z"/>
+    <path d="M711 350
              C698 333 709 319 724 326
              C729 308 748 309 751 325
              C766 317 776 333 766 344
              C777 356 764 369 750 363
              C745 379 726 375 726 360
-             C714 366 705 358 711 350Z" />
-
-                    <path d="M983 425
+             C714 366 705 358 711 350Z"/>
+    <path d="M983 425
              C970 408 981 394 996 401
              C1001 383 1020 384 1023 400
              C1038 392 1048 408 1038 419
              C1049 431 1036 444 1022 438
              C1017 454 998 450 998 435
-             C986 441 977 433 983 425Z" />
-
-                    <path d="M520 526
+             C986 441 977 433 983 425Z"/>
+    <path d="M520 526
              C507 509 518 495 533 502
              C538 484 557 485 560 501
              C575 493 585 509 575 520
              C586 532 573 545 559 539
              C554 555 535 551 535 536
-             C523 542 514 534 520 526Z" />
-
-                </g>
-
-
-                <!-- =====================================================
+             C523 542 514 534 520 526Z"/>
+  </g>
+  <!-- =====================================================
        FINAL LEAF HIGHLIGHTS
   ====================================================== -->
-
-                <g fill="none" stroke="#b7dc65" stroke-width="5" stroke-linecap="round" opacity=".65">
-
-                    <path d="M457 305 Q500 279 536 291" />
-                    <path d="M605 235 Q642 207 675 221" />
-                    <path d="M723 221 Q759 195 795 213" />
-                    <path d="M838 221 Q876 201 909 220" />
-                    <path d="M946 282 Q982 261 1014 277" />
-
-                    <path d="M426 365 Q455 347 481 358" />
-                    <path d="M557 382 Q589 357 622 371" />
-                    <path d="M680 330 Q716 309 744 326" />
-                    <path d="M809 342 Q842 319 873 335" />
-                    <path d="M932 369 Q962 349 989 362" />
-
-                    <path d="M443 494 Q469 476 493 486" />
-                    <path d="M580 470 Q609 450 637 464" />
-                    <path d="M850 466 Q879 447 908 462" />
-                    <path d="M982 493 Q1010 474 1037 486" />
-
-                </g>
-
-                <g transform="translate(70 -350) scale(1.2)">
-                    <!-- =====================================================
+  <g fill="none" stroke="#b7dc65" stroke-width="5" stroke-linecap="round" opacity=".65">
+    <path d="M457 305 Q500 279 536 291"/>
+    <path d="M605 235 Q642 207 675 221"/>
+    <path d="M723 221 Q759 195 795 213"/>
+    <path d="M838 221 Q876 201 909 220"/>
+    <path d="M946 282 Q982 261 1014 277"/>
+    <path d="M426 365 Q455 347 481 358"/>
+    <path d="M557 382 Q589 357 622 371"/>
+    <path d="M680 330 Q716 309 744 326"/>
+    <path d="M809 342 Q842 319 873 335"/>
+    <path d="M932 369 Q962 349 989 362"/>
+    <path d="M443 494 Q469 476 493 486"/>
+    <path d="M580 470 Q609 450 637 464"/>
+    <path d="M850 466 Q879 447 908 462"/>
+    <path d="M982 493 Q1010 474 1037 486"/>
+  </g>
+  <g transform="translate(70 -350) scale(1.2)">
+    <!-- =====================================================
        VEGETABLE NOODLE MOUND
   ====================================================== -->
-
-                    <!-- soft ground shadow -->
-                    <path d="
+    <!-- soft ground shadow -->
+    <path d="
         M 365 706
         C 375 652, 420 611, 482 592
         C 544 572, 625 579, 687 603
@@ -9806,13 +9374,12 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 743 870, 685 887, 617 892
         C 550 897, 482 886, 431 861
         C 384 838, 355 799, 356 758
-        C 356 739, 360 720, 365 706 Z" fill="#666" opacity=".20" filter="url(#noodleShadow)" />
-
-                    <!-- =====================================================
+        C 356 739, 360 720, 365 706 Z" fill="#666" opacity=".20" filter="url(#noodleShadow)"/>
+    <!-- =====================================================
      MAIN IRREGULAR NOODLE MOUND
      More uneven / organic outer edge
 ====================================================== -->
-                    <path d=" 
+    <path d=" 
       M 375 700 
 
       C 380 681, 391 659, 410 641 
@@ -9859,13 +9426,11 @@ html[data-theme="dark"] .finish-confirm-icon {
 
       C 381 753, 371 738, 375 728 
 
-      C 381 716, 371 709, 375 700 Z" fill="url(#noodleMound)" stroke="#9c6b35" stroke-width="5" />
-
-
-                    <!-- =====================================================
+      C 381 716, 371 709, 375 700 Z" fill="url(#noodleMound)" stroke="#9c6b35" stroke-width="5"/>
+    <!-- =====================================================
        DARKER LOWER NOODLE LAYER
   ====================================================== -->
-                    <path d="  
+    <path d="  
       M 383 718  
 
       C 395 675, 424 645, 466 628  
@@ -9884,163 +9449,126 @@ html[data-theme="dark"] .finish-confirm-icon {
       C 543 883, 519 892, 489 881  
       C 459 872, 431 852, 412 828  
 
-      C 391 803, 381 767, 383 718 Z" fill="url(#noodleDark)" opacity=".58" />
-
-                    <!-- =====================================================
+      C 391 803, 381 767, 383 718 Z" fill="url(#noodleDark)" opacity=".58"/>
+    <!-- =====================================================
        NOODLE CURLS / TANGLES
   ====================================================== -->
-
-                    <g fill="none" stroke="url(#noodleLight)" stroke-width="13" stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <!-- upper curls -->
-
-                        <path d=" 
+    <g fill="none" stroke="url(#noodleLight)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+      <!-- upper curls -->
+      <path d=" 
     M416 688 
     C438 657 468 650 493 665 
     C516 679 518 701 499 716 
     C480 731 449 720 451 697 
-    C453 680 470 673 487 681" />
-
-                        <path d=" 
+    C453 680 470 673 487 681"/>
+      <path d=" 
     M500 620 
     C527 608 554 617 563 637 
     C573 659 556 678 534 674 
     C514 670 506 651 519 637 
-    C530 625 546 629 553 641" />
-
-                        <path d=" 
+    C530 625 546 629 553 641"/>
+      <path d=" 
     M573 615 
     C598 602 626 611 634 631 
     C642 651 627 669 607 666 
     C586 663 578 644 590 631 
-    C601 620 617 624 624 636" />
-
-                        <path d=" 
+    C601 620 617 624 624 636"/>
+      <path d=" 
     M651 632 
     C676 615 705 626 711 648 
     C718 670 699 686 679 678 
     C661 671 658 650 674 639 
-    C686 631 699 638 703 650" />
-
-
-                        <!-- middle tangled noodles -->
-
-                        <path d=" 
+    C686 631 699 638 703 650"/>
+      <!-- middle tangled noodles -->
+      <path d=" 
     M402 735 
     C427 710 458 714 472 735 
     C486 757 470 779 447 773 
     C425 767 418 744 434 730 
-    C446 719 462 726 468 738" />
-
-                        <path d=" 
+    C446 719 462 726 468 738"/>
+      <path d=" 
     M481 724 
     C505 700 538 705 551 728 
     C563 750 546 771 523 765 
     C502 760 496 738 511 725 
-    C523 714 540 720 546 733" />
-
-                        <path d=" 
+    C523 714 540 720 546 733"/>
+      <path d=" 
     M557 704 
     C580 682 613 688 625 710 
     C637 733 621 754 598 749 
     C577 745 571 723 586 710 
-    C598 699 614 705 620 718" />
-
-                        <path d=" 
+    C598 699 614 705 620 718"/>
+      <path d=" 
     M638 700 
     C664 679 696 686 708 708 
     C720 730 704 751 682 746 
     C660 742 654 720 670 707 
-    C681 697 698 704 704 717" />
-
-                        <path d=" 
+    C681 697 698 704 704 717"/>
+      <path d=" 
     M704 731 
     C727 712 753 718 760 739 
     C767 759 753 775 735 769 
     C719 763 717 746 730 736 
-    C741 727 753 733 757 744" />
-
-
-                        <!-- lower curls -->
-
-                        <path d=" 
+    C741 727 753 733 757 744"/>
+      <!-- lower curls -->
+      <path d=" 
     M421 783 
     C447 760 477 767 488 789 
     C499 811 481 830 460 822 
     C439 814 437 793 452 782 
-    C464 773 478 780 484 792" />
-
-                        <path d=" 
+    C464 773 478 780 484 792"/>
+      <path d=" 
     M496 799 
     C522 776 552 783 564 805 
     C575 826 558 846 537 838 
     C516 831 513 809 529 798 
-    C541 789 556 796 561 808" />
-
-                        <path d=" 
+    C541 789 556 796 561 808"/>
+      <path d=" 
     M575 789 
     C601 765 633 773 645 795 
     C657 817 640 838 618 830 
     C598 823 594 801 610 790 
-    C622 781 637 788 642 800" />
-
-                        <path d=" 
+    C622 781 637 788 642 800"/>
+      <path d=" 
     M654 789 
     C677 770 703 777 713 797 
     C723 816 710 833 692 827 
     C675 821 673 803 686 792 
-    C697 783 708 789 713 800" />
-
-                    </g>
-
-                    <!-- =====================================================
+    C697 783 708 789 713 800"/>
+    </g>
+    <!-- =====================================================
        DARK NOODLE STRANDS
   ====================================================== -->
-
-                    <g fill="none" stroke="url(#noodleDark)" stroke-width="9" stroke-linecap="round" opacity=".9">
-
-                        <path d="M399 704 Q450 672 493 699 Q522 719 550 694" />
-                        <path d="M454 758 Q493 731 530 752 Q557 770 585 744" />
-                        <path d="M548 681 Q584 650 620 677 Q648 697 675 676" />
-                        <path d="M625 760 Q660 734 693 753 Q720 769 748 748" />
-                        <path d="M472 830 Q509 800 545 823 Q573 841 606 817" />
-                        <path d="M593 838 Q625 812 657 830 Q683 844 710 821" />
-
-                    </g>
-
-
-                    <!-- =====================================================
+    <g fill="none" stroke="url(#noodleDark)" stroke-width="9" stroke-linecap="round" opacity=".9">
+      <path d="M399 704 Q450 672 493 699 Q522 719 550 694"/>
+      <path d="M454 758 Q493 731 530 752 Q557 770 585 744"/>
+      <path d="M548 681 Q584 650 620 677 Q648 697 675 676"/>
+      <path d="M625 760 Q660 734 693 753 Q720 769 748 748"/>
+      <path d="M472 830 Q509 800 545 823 Q573 841 606 817"/>
+      <path d="M593 838 Q625 812 657 830 Q683 844 710 821"/>
+    </g>
+    <!-- =====================================================
        CABBAGE / SHREDDED VEGETABLE
   ====================================================== -->
-
-                    <g fill="none" stroke="#dce89a" stroke-width="12" stroke-linecap="round" opacity=".95">
-
-                        <path d="M430 663 Q465 638 503 648 Q530 656 551 643" />
-                        <path d="M463 693 Q495 666 528 680" />
-                        <path d="M537 645 Q564 620 594 638" />
-                        <path d="M611 642 Q639 619 671 640" />
-                        <path d="M682 665 Q713 645 743 669" />
-
-                        <path d="M408 750 Q439 729 470 742" />
-                        <path d="M528 715 Q555 693 582 710" />
-                        <path d="M617 697 Q648 677 678 696" />
-                        <path d="M701 708 Q729 688 755 708" />
-
-                        <path d="M451 809 Q478 786 509 801" />
-                        <path d="M548 824 Q576 800 607 816" />
-                        <path d="M638 811 Q668 790 696 805" />
-
-                    </g>
-
-
-                    <!-- =====================================================
+    <g fill="none" stroke="#dce89a" stroke-width="12" stroke-linecap="round" opacity=".95">
+      <path d="M430 663 Q465 638 503 648 Q530 656 551 643"/>
+      <path d="M463 693 Q495 666 528 680"/>
+      <path d="M537 645 Q564 620 594 638"/>
+      <path d="M611 642 Q639 619 671 640"/>
+      <path d="M682 665 Q713 645 743 669"/>
+      <path d="M408 750 Q439 729 470 742"/>
+      <path d="M528 715 Q555 693 582 710"/>
+      <path d="M617 697 Q648 677 678 696"/>
+      <path d="M701 708 Q729 688 755 708"/>
+      <path d="M451 809 Q478 786 509 801"/>
+      <path d="M548 824 Q576 800 607 816"/>
+      <path d="M638 811 Q668 790 696 805"/>
+    </g>
+    <!-- =====================================================
        GREEN SWEET PEPPER
   ====================================================== -->
-
-                    <g fill="url(#pepperGreen)" stroke="#0c4c1dff" stroke-width="3">
-
-                        <path d="
+    <g fill="url(#pepperGreen)" stroke="#0c4c1dff" stroke-width="3">
+      <path d="
       M470 646
       C480 631 497 624 513 630
       L536 640
@@ -10048,9 +9576,8 @@ html[data-theme="dark"] .finish-confirm-icon {
       L519 681
       C514 687 505 688 499 683
       L476 663
-      C469 658 466 652 470 646 Z" />
-
-                        <path d="
+      C469 658 466 652 470 646 Z"/>
+      <path d="
       M650 651
       C660 637 676 632 691 638
       L715 649
@@ -10058,9 +9585,8 @@ html[data-theme="dark"] .finish-confirm-icon {
       L696 688
       C691 694 682 694 676 689
       L654 670
-      C647 664 645 657 650 651 Z" />
-
-                        <path d="
+      C647 664 645 657 650 651 Z"/>
+      <path d="
       M424 762
       C434 748 450 744 464 750
       L485 760
@@ -10068,18 +9594,13 @@ html[data-theme="dark"] .finish-confirm-icon {
       L468 797
       C463 802 455 802 449 798
       L429 782
-      C423 777 420 769 424 762 Z" />
-
-                    </g>
-
-
-                    <!-- =====================================================
+      C423 777 420 769 424 762 Z"/>
+    </g>
+    <!-- =====================================================
        YELLOW SWEET PEPPER
   ====================================================== -->
-
-                    <g fill="url(#pepperYellow)" stroke="#bd8c22" stroke-width="3">
-
-                        <path d="
+    <g fill="url(#pepperYellow)" stroke="#bd8c22" stroke-width="3">
+      <path d="
       M552 675
       C561 660 577 656 592 663
       L615 675
@@ -10087,9 +9608,8 @@ html[data-theme="dark"] .finish-confirm-icon {
       L597 714
       C592 720 583 720 577 715
       L556 696
-      C550 691 548 682 552 675 Z" />
-
-                        <path d="
+      C550 691 548 682 552 675 Z"/>
+      <path d="
       M721 684
       C730 670 746 666 761 674
       L780 685
@@ -10097,55 +9617,38 @@ html[data-theme="dark"] .finish-confirm-icon {
       L765 721
       C760 727 752 728 746 723
       L726 707
-      C720 701 718 691 721 684 Z" />
-
-                    </g>
-
-
-                    <!-- =====================================================
+      C720 701 718 691 721 684 Z"/>
+    </g>
+    <!-- =====================================================
        CARROT SHREDS
   ====================================================== -->
-
-                    <g fill="none" stroke="url(#carrot)" stroke-width="11" stroke-linecap="round">
-
-                        <path d="M435 676 Q463 658 487 670" />
-                        <path d="M520 701 Q548 682 571 697" />
-                        <path d="M603 674 Q629 653 652 668" />
-                        <path d="M676 716 Q702 697 728 711" />
-
-                        <path d="M456 755 Q482 738 506 750" />
-                        <path d="M572 739 Q598 719 623 734" />
-                        <path d="M646 768 Q673 747 699 761" />
-
-                        <path d="M490 818 Q516 798 541 812" />
-                        <path d="M612 828 Q637 806 663 819" />
-
-                    </g>
-
-
-                    <!-- =====================================================
+    <g fill="none" stroke="url(#carrot)" stroke-width="11" stroke-linecap="round">
+      <path d="M435 676 Q463 658 487 670"/>
+      <path d="M520 701 Q548 682 571 697"/>
+      <path d="M603 674 Q629 653 652 668"/>
+      <path d="M676 716 Q702 697 728 711"/>
+      <path d="M456 755 Q482 738 506 750"/>
+      <path d="M572 739 Q598 719 623 734"/>
+      <path d="M646 768 Q673 747 699 761"/>
+      <path d="M490 818 Q516 798 541 812"/>
+      <path d="M612 828 Q637 806 663 819"/>
+    </g>
+    <!-- =====================================================
        SMALL VEGETABLE HIGHLIGHTS
   ====================================================== -->
+    <g fill="#fff2c2" opacity=".65">
+      <ellipse cx="493" cy="642" rx="5" ry="3" transform="rotate(25 493 642)"/>
+      <ellipse cx="674" cy="649" rx="5" ry="3" transform="rotate(25 674 649)"/>
+      <ellipse cx="574" cy="674" rx="5" ry="3" transform="rotate(25 574 674)"/>
+    </g>
+  </g>
 
-                    <g fill="#fff2c2" opacity=".65">
-
-                        <ellipse cx="493" cy="642" rx="5" ry="3" transform="rotate(25 493 642)" />
-
-                        <ellipse cx="674" cy="649" rx="5" ry="3" transform="rotate(25 674 649)" />
-
-                        <ellipse cx="574" cy="674" rx="5" ry="3" transform="rotate(25 574 674)" />
-
-                    </g>
-                </g>
-
-
-
-                <!-- SOYA CHUNKS-->
-                <!-- MOUND SHADOW -->
-                <g transform="translate(200 20) rotate(10)">
-
-                    <!-- SOYA MOUND SHADOW -->
-                    <path d=" 
+  <!-- SOYA CHUNKS-->
+  
+  
+  <g transform="translate(200 20) rotate(10)">
+    <!-- SOYA MOUND SHADOW -->
+    <path d=" 
     M 296 650
 
     C 311 616, 342 591, 382 578
@@ -10163,8 +9666,8 @@ html[data-theme="dark"] .finish-confirm-icon {
 
     C 425 783, 385 760, 352 730
 
-    C 323 703, 301 673, 296 650 Z" fill="#302118" opacity=".25" filter="url(#soyaMoundShadow)" />
-                    <path d=" 
+    C 323 703, 301 673, 296 650 Z" fill="#302118" opacity=".25" filter="url(#soyaMoundShadow)"/>
+    <path d=" 
     M 291 585
 
     C 306 505, 337 535, 377 522
@@ -10182,130 +9685,303 @@ html[data-theme="dark"] .finish-confirm-icon {
 
     C 420 771, 380 748, 347 718 
 
-    C 318 691, 296 661, 291 615 Z" fill="url(#soyaMound)" stroke="#432719" stroke-width="6" />
+    C 318 691, 296 661, 291 615 Z" fill="url(#soyaMound)" stroke="#432719" stroke-width="6"/>
+   
+   <!-- IRREGULAR DARKER RECESSED LAYERS -->
+<path d="
+    M 313 620
+    C 324 606, 341 597, 358 600
+    C 369 602, 379 609, 387 618
+    C 374 617, 362 620, 350 625
+    C 337 631, 324 629, 313 620 Z"
+    fill="#45291b"
+    opacity=".34"/>
 
-                    <!-- SPARSE SCATTERED SOYA CHUNKS -->
-                    <g stroke="#4a2b1b" stroke-width="4">
+<path d="
+    M 426 589
+    C 439 578, 454 579, 466 584
+    C 475 588, 484 597, 489 607
+    C 476 601, 463 600, 452 603
+    C 441 606, 433 599, 426 589 Z"
+    fill="#4b2c1d"
+    opacity=".28"/>
 
-                        <!-- upper area -->
-                        <path d="
-      M 345 615
-      C 335 602, 341 586, 357 581
-      C 372 577, 387 585, 390 598
-      C 393 611, 385 623, 370 627
-      C 358 630, 349 625, 345 615 Z" fill="url(#soyaChunkDark)" />
+<path d="
+    M 519 617
+    C 530 607, 544 610, 556 617
+    C 567 624, 574 635, 584 642
+    C 571 641, 559 635, 548 637
+    C 537 639, 527 631, 519 617 Z"
+    fill="#45281a"
+    opacity=".34"/>
 
-                        <path d="
-      M 470 590
-      C 460 577, 467 562, 483 558
-      C 498 555, 512 563, 515 576
-      C 518 589, 510 600, 496 604
-      C 484 607, 475 602, 470 590 Z" fill="url(#soyaChunkLight)" />
+<path d="
+    M 638 646
+    C 650 640, 662 645, 671 653
+    C 678 659, 683 669, 689 678
+    C 678 675, 668 670, 658 672
+    C 648 673, 642 662, 638 646 Z"
+    fill="#4a2a1c"
+    opacity=".30"/>
 
-                        <path d="
-      M 602 620
-      C 593 607, 600 592, 616 588
-      C 631 584, 646 592, 649 605
-      C 652 618, 644 630, 630 634
-      C 618 637, 608 631, 602 620 Z" fill="url(#soyaChunkDark)" />
+<path d="
+    M 344 676
+    C 353 667, 366 668, 377 674
+    C 386 680, 393 689, 399 698
+    C 388 695, 378 691, 367 694
+    C 357 696, 350 687, 344 676 Z"
+    fill="#45291b"
+    opacity=".31"/>
+
+<path d="
+    M 454 700
+    C 465 692, 478 695, 487 703
+    C 494 709, 498 718, 505 726
+    C 494 722, 485 718, 475 721
+    C 465 723, 459 713, 454 700 Z"
+    fill="#422619"
+    opacity=".34"/>
+
+<path d="
+    M 566 700
+    C 574 692, 585 694, 595 700
+    C 604 706, 609 716, 617 724
+    C 606 721, 596 717, 587 720
+    C 577 722, 571 712, 566 700 Z"
+    fill="#492a1c"
+    opacity=".30"/>
+
+<!-- SMALL, PARTIAL RECESSED POCKETS -->
+<path d="
+    M 393 635
+    C 401 629, 410 632, 416 638
+    C 420 643, 421 649, 424 654
+    C 416 651, 409 648, 402 650
+    C 397 649, 394 643, 393 635 Z"
+    fill="#3f2519"
+    opacity=".27"/>
+
+<path d="
+    M 603 661
+    C 611 656, 620 659, 626 665
+    C 630 670, 632 676, 636 682
+    C 628 679, 621 676, 614 678
+    C 608 676, 605 670, 603 661 Z"
+    fill="#402619"
+    opacity=".26"/>
+    <!-- BROAD OVERLAPPING CHUNK FORMS -->
+    <path d="
+        M 321 588
+        C 329 558, 353 538, 381 536
+        C 408 534, 431 547, 445 568
+        C 426 558, 404 556, 384 563
+        C 360 571, 340 585, 321 588 Z"
+        fill="#b47b49"
+        opacity=".22"/>
+
+    <path d="
+        M 399 550
+        C 423 535, 456 542, 480 558
+        C 497 570, 507 589, 520 603
+        C 496 589, 471 579, 446 577
+        C 426 575, 410 566, 399 550 Z"
+        fill="#c18a58"
+        opacity=".16"/>
+
+    <path d="
+        M 501 584
+        C 525 579, 551 591, 571 607
+        C 588 621, 601 635, 617 644
+        C 592 638, 567 630, 545 617
+        C 526 606, 512 597, 501 584 Z"
+        fill="#b47b49"
+        opacity=".18"/>
+
+    <path d="
+        M 598 633
+        C 623 624, 651 628, 674 638
+        C 695 647, 710 660, 723 676
+        C 697 665, 675 659, 651 656
+        C 629 653, 610 646, 598 633 Z"
+        fill="#b47b49"
+        opacity=".14"/>
 
 
-                        <!-- middle area -->
-                        <path d="
-      M 395 666
-      C 385 653, 391 638, 407 633
-      C 422 629, 437 637, 440 650
-      C 443 663, 435 675, 421 679
-      C 409 682, 400 676, 395 666 Z" fill="url(#soyaChunkLight)" />
+    <!-- LOWER OVERLAPPING FORMS -->
+    <path d="
+        M 340 661
+        C 358 645, 383 642, 405 651
+        C 427 660, 441 679, 459 692
+        C 438 685, 416 681, 394 683
+        C 372 685, 353 677, 340 661 Z"
+        fill="#6f4329"
+        opacity=".20"/>
 
-                        <path d="
-      M 520 660
-      C 510 647, 516 632, 532 627
-      C 547 623, 562 631, 565 644
-      C 568 657, 560 669, 546 673
-      C 534 676, 525 670, 520 660 Z" fill="url(#soyaChunkDark)" />
+    <path d="
+        M 454 687
+        C 478 674, 507 679, 530 692
+        C 552 704, 568 721, 585 737
+        C 557 727, 533 722, 508 723
+        C 486 724, 468 712, 454 687 Z"
+        fill="#b47b49"
+        opacity=".12"/>
 
-                        <path d="
-      M 667 674
-      C 657 661, 664 646, 680 642
-      C 695 638, 710 646, 713 659
-      C 716 672, 708 684, 694 688
-      C 682 691, 673 685, 667 674 Z" fill="url(#soyaChunkLight)" />
-
-
-                        <!-- lower area -->
-                        <path d="
-      M 365 712
-      C 355 699, 361 684, 377 679
-      C 392 675, 407 683, 410 696
-      C 413 709, 405 721, 391 725
-      C 379 728, 370 722, 365 712 Z" fill="url(#soyaChunkDark)" />
-
-                        <path d="
-      M 475 731
-      C 465 718, 471 703, 487 698
-      C 502 694, 517 702, 520 715
-      C 523 728, 515 740, 501 744
-      C 489 747, 480 741, 475 731 Z" fill="url(#soyaChunkLight)" />
-
-                        <path d="
-      M 595 719
-      C 585 706, 591 691, 607 686
-      C 622 682, 637 690, 640 703
-      C 643 716, 635 728, 621 732
-      C 609 735, 600 729, 595 719 Z" fill="url(#soyaChunkDark)" />
-
-                    </g>
+    <path d="
+        M 574 700
+        C 598 688, 624 690, 646 701
+        C 666 711, 680 724, 692 738
+        C 668 731, 646 728, 624 730
+        C 604 731, 588 718, 574 700 Z"
+        fill="#6f4329"
+        opacity=".18"/>
 
 
-                    <!-- subtle chunk texture -->
-                    <g fill="none" stroke="#c18a58" stroke-width="4" stroke-linecap="round" opacity=".38">
+    <!-- VERY SOFT TOP RIDGES -->
+    <path d="
+        M 335 579
+        C 365 554, 397 548, 427 560"
+        fill="none"
+        stroke="#c18a58"
+        stroke-width="10"
+        stroke-linecap="round"
+        opacity=".12"/>
 
-                        <path d="M 350 602 C 359 595, 370 597, 377 603" />
-                        <path d="M 477 577 C 486 570, 497 572, 504 579" />
-                        <path d="M 609 607 C 618 600, 629 602, 636 609" />
+    <path d="
+        M 470 578
+        C 497 575, 523 589, 545 607"
+        fill="none"
+        stroke="#d09a66"
+        stroke-width="9"
+        stroke-linecap="round"
+        opacity=".10"/>
 
-                        <path d="M 402 653 C 411 646, 422 648, 429 655" />
-                        <path d="M 527 647 C 536 640, 547 642, 554 649" />
-                        <path d="M 674 661 C 683 654, 694 656, 701 663" />
+   
+    <!-- IRREGULAR POROUS SOYA CHUNKS -->
 
-                        <path d="M 372 699 C 381 692, 392 694, 399 701" />
-                        <path d="M 482 718 C 491 711, 502 713, 509 720" />
-                        <path d="M 602 706 C 611 699, 622 701, 629 708" />
+<g stroke="#4a2b1b" stroke-width="3" stroke-linejoin="round">
 
-                    </g>
+  <!-- Chunk 1 -->
+  <path d="
+    M 340 612
+    C 334 604, 337 594, 345 587
+    L 356 581
+    C 363 578, 374 582, 379 589
+    C 384 596, 381 604, 376 611
+    L 365 620
+    C 358 625, 347 622, 340 612 Z"
+    fill="url(#soyaChunkDark)"/>
 
+  <!-- Chunk 2 -->
+  <path d="
+    M 465 587
+    C 460 579, 463 569, 471 562
+    L 482 557
+    C 490 554, 500 558, 505 565
+    C 510 571, 508 579, 502 586
+    L 493 595
+    C 485 601, 472 597, 465 587 Z"
+    fill="url(#soyaChunkLight)"/>
 
+  <!-- Chunk 3 -->
+  <path d="
+    M 596 617
+    C 592 608, 596 599, 604 592
+    L 616 587
+    C 625 585, 635 590, 639 598
+    C 644 606, 641 614, 635 621
+    L 625 629
+    C 616 635, 603 630, 596 617 Z"
+    fill="url(#soyaChunkDark)"/>
 
-                    <!-- IRREGULAR SOYA TEXTURE -->
-                    <g fill="none" stroke="#c18a58" stroke-width="4" stroke-linecap="round" opacity=".42">
+  <!-- Chunk 4 -->
+  <path d="
+    M 390 665
+    C 384 657, 387 647, 394 640
+    L 405 634
+    C 414 631, 425 635, 430 642
+    C 435 650, 433 658, 426 665
+    L 416 674
+    C 407 680, 396 675, 390 665 Z"
+    fill="url(#soyaChunkLight)"/>
 
-                        <path d="M 335 607 C 343 598, 355 596, 365 600" />
-                        <path d="M 395 583 C 403 576, 413 576, 420 582" />
-                        <path d="M 454 571 C 463 565, 474 566, 482 572" />
-                        <path d="M 516 588 C 526 580, 538 582, 545 589" />
-                        <path d="M 583 614 C 593 607, 604 610, 611 617" />
-                        <path d="M 650 625 C 659 620, 669 623, 675 630" />
+  <!-- Chunk 5 -->
+  <path d="
+    M 515 658
+    C 510 650, 512 640, 520 633
+    L 531 627
+    C 540 625, 551 629, 556 637
+    C 561 645, 558 654, 551 661
+    L 540 669
+    C 531 674, 521 668, 515 658 Z"
+    fill="url(#soyaChunkDark)"/>
 
-                        <path d="M 319 653 C 328 646, 338 648, 345 655" />
-                        <path d="M 365 691 C 375 684, 386 686, 394 693" />
-                        <path d="M 414 724 C 424 717, 436 720, 443 728" />
-                        <path d="M 471 744 C 481 738, 492 741, 499 748" />
-                        <path d="M 530 750 C 540 744, 551 747, 558 754" />
-                        <path d="M 590 744 C 600 738, 611 741, 618 748" />
-                        <path d="M 645 727 C 655 721, 665 724, 672 731" />
-                        <path d="M 698 703 C 708 697, 718 700, 725 707" />
+  <!-- Chunk 6 -->
+  <path d="
+    M 660 671
+    C 655 662, 659 652, 667 646
+    L 678 641
+    C 687 639, 698 643, 703 651
+    C 708 659, 705 668, 698 675
+    L 687 683
+    C 677 688, 666 683, 660 671 Z"
+    fill="url(#soyaChunkLight)"/>
 
-                    </g>
-                </g>
+  <!-- Chunk 7 -->
+  <path d="
+    M 357 709
+    C 352 700, 355 691, 363 684
+    L 374 678
+    C 383 676, 394 680, 399 688
+    C 404 696, 401 705, 394 712
+    L 383 720
+    C 373 725, 363 720, 357 709 Z"
+    fill="url(#soyaChunkDark)"/>
 
-                <!-- =====================================================
+  <!-- Chunk 8 -->
+  <path d="
+    M 468 728
+    C 463 719, 467 709, 475 702
+    L 486 697
+    C 495 694, 506 699, 511 706
+    C 516 714, 513 724, 506 731
+    L 495 739
+    C 485 744, 474 739, 468 728 Z"
+    fill="url(#soyaChunkLight)"/>
+
+  <!-- Chunk 9 -->
+  <path d="
+    M 589 716
+    C 584 708, 588 698, 596 691
+    L 607 686
+    C 616 683, 627 687, 632 695
+    C 637 703, 634 713, 627 720
+    L 616 727
+    C 606 733, 595 727, 589 716 Z"
+    fill="url(#soyaChunkDark)"/>
+
+</g>
+
+    <!-- subtle chunk texture -->
+    <g transform="translate(-5 -10)" fill="none" stroke="#c18a58" stroke-width="4" stroke-linecap="round" opacity=".38">
+      <path d="M 350 602 C 359 595, 370 597, 377 603"/>
+      <path d="M 477 577 C 486 570, 497 572, 504 579"/>
+      <path d="M 609 607 C 618 600, 629 602, 636 609"/>
+      <path d="M 402 653 C 411 646, 422 648, 429 655"/>
+      <path d="M 527 647 C 536 640, 547 642, 554 649"/>
+      <path d="M 674 661 C 683 654, 694 656, 701 663"/>
+      <path d="M 372 699 C 381 692, 392 694, 399 701"/>
+      <path d="M 482 718 C 491 711, 502 713, 509 720"/>
+      <path d="M 602 706 C 611 699, 622 701, 629 708"/>
+    </g>
+     
+  </g>
+  <!-- =====================================================
        POTATO SALAD
        Creamy white mashed potato + small carrots
   ====================================================== -->
-                <g transform="translate(-50 0) scale(1.07)">
-                    <!-- soft ground shadow -->
-                    <path d="
+  <g transform="translate(-50 0) scale(1.07)">
+    <!-- soft ground shadow -->
+    <path d="
         M 850 685
         C 858 645, 884 614, 923 597
         C 957 582, 990 585, 1018 597
@@ -10314,14 +9990,11 @@ html[data-theme="dark"] .finish-confirm-icon {
         C 1057 764, 1027 781, 992 790
         C 954 800, 914 793, 884 775
         C 856 758, 840 731, 842 704
-        C 842 695, 846 690, 850 685 Z" fill="#666" opacity=".18" filter="url(#potatoSaladShadow)" />
-
-
-                    <!-- =====================================================
+        C 842 695, 846 690, 850 685 Z" fill="#666" opacity=".18" filter="url(#potatoSaladShadow)"/>
+    <!-- =====================================================
        MAIN IRREGULAR POTATO SALAD MOUND
   ====================================================== -->
-
-                    <path d=" 
+    <path d=" 
     M 852 674 
 
     C 858 649, 873 625, 898 610 
@@ -10348,135 +10021,138 @@ C 1112 650, 1100 635, 1100 654
     C 837 758, 819 752, 805 741 
     C 791 730, 796 714, 814 701 
 
-    C 832 688, 846 681, 852 674 Z" fill="url(#potatoSalad)" stroke="#d0c8aa" stroke-width="5" />
-
-                    <!-- ===================================================== 
+    C 832 688, 846 681, 852 674 Z" fill="url(#potatoSalad)" stroke="#d0c8aa" stroke-width="5"/>
+   <!-- ===================================================== 
      SOFT POTATO CHUNKS / MASHED TEXTURE 
 ====================================================== -->
+<g fill="url(#potatoChunk)" opacity=".92">
+  <!-- upper-left -->
+  <g transform="translate(20 0)">
+  <ellipse cx="882" cy="630" rx="42" ry="25" transform="rotate(-18 882 630)"/>
+</g>
+  <!-- upper-center -->
+  <g transform="translate(30 0)">
+  <ellipse cx="948" cy="604" rx="47" ry="27" transform="rotate(12 948 604)"/>
+</g>
+  <!-- upper-right -->
+  <g transform="translate(20 -20)">
+  <ellipse cx="1028" cy="600" rx="42" ry="25" transform="rotate(-14 1028 600)"/>
+</g>
+  <!-- far-right -->
+  <ellipse cx="1068" cy="654" rx="38" ry="24" transform="rotate(20 1068 654)"/>
 
-                    <g fill="url(#potatoChunk)" opacity=".92">
+  <!-- left-middle -->
+  <ellipse cx="850" cy="690" rx="44" ry="27" transform="rotate(15 850 690)"/>
 
-                        <ellipse cx="920" cy="628" rx="42" ry="25" transform="rotate(-18 920 628)" />
+  <!-- center -->
+  <ellipse cx="932" cy="666" rx="49" ry="29" transform="rotate(-8 932 666)"/>
 
-                        <ellipse cx="978" cy="604" rx="47" ry="27" transform="rotate(12 978 604)" />
+  <!-- right-middle -->
+  <ellipse cx="1030" cy="688" rx="43" ry="26" transform="rotate(14 1030 688)"/>
 
-                        <ellipse cx="1032" cy="620" rx="42" ry="25" transform="rotate(-14 1032 620)" />
+  <!-- lower-left -->
+  <ellipse cx="875" cy="738" rx="42" ry="24" transform="rotate(-12 875 738)"/>
 
-                        <ellipse cx="1068" cy="664" rx="38" ry="24" transform="rotate(20 1068 664)" />
+  <!-- lower-right -->
+  <ellipse cx="1008" cy="748" rx="47" ry="25" transform="rotate(9 1008 748)"/>
+</g>
 
-                        <ellipse cx="900" cy="695" rx="44" ry="27" transform="rotate(15 900 695)" />
-
-                        <ellipse cx="962" cy="675" rx="49" ry="29" transform="rotate(-8 962 675)" />
-
-                        <ellipse cx="1024" cy="710" rx="43" ry="26" transform="rotate(14 1024 710)" />
-
-                        <ellipse cx="924" cy="748" rx="42" ry="24" transform="rotate(-12 924 748)" />
-
-                        <ellipse cx="982" cy="752" rx="47" ry="25" transform="rotate(9 982 752)" />
-
-                    </g>
-
-
-                    <!-- ===================================================== 
+<!-- ===================================================== 
      SMALL ORANGE CARROT PIECES 
 ====================================================== -->
+<g fill="url(#potatoCarrot)" stroke="#bd551d" stroke-width="2">
+  <!-- upper -->
+  <path d=" 
+M 913 613 
+C 920 607, 930 608, 936 614 
+L 938 625 
+C 938 631, 930 634, 924 630 
+L 915 623 
+C 911 620, 910 616, 913 613 Z"/>
 
-                    <g fill="url(#potatoCarrot)" stroke="#bd551d" stroke-width="2">
+<g transform="translate(20 -20)">
+  <path d=" 
+M 976 594 
+C 983 590, 992 593, 995 600 
+L 993 611 
+C 992 617, 984 619, 979 614 
+L 974 604 
+C 972 600, 973 597, 976 594 Z"/>
+</g>
 
-                        <!-- upper -->
-                        <path d=" 
-    M 913 613 
-    C 920 607, 930 608, 936 614 
-    L 938 625 
-    C 938 631, 930 634, 924 630 
-    L 915 623 
-    C 911 620, 910 616, 913 613 Z" />
+<g transform="translate(20 -15)">
+  <path d=" 
+M 1038 629 
+C 1045 623, 1055 625, 1059 632 
+L 1057 643 
+C 1055 649, 1047 650, 1042 646 
+L 1036 637 
+C 1034 634, 1034 631, 1038 629 Z"/>
+</g>
+  <!-- middle -->
+  <path d=" 
+M 883 676 
+C 890 671, 899 673, 903 680 
+L 901 691 
+C 899 697, 891 698, 886 693 
+L 881 684 
+C 879 681, 880 678, 883 676 Z"/>
 
-                        <path d=" 
-    M 976 594 
-    C 983 590, 992 593, 995 600 
-    L 993 611 
-    C 992 617, 984 619, 979 614 
-    L 974 604 
-    C 972 600, 973 597, 976 594 Z" />
+  <path d=" 
+M 944 658 
+C 951 653, 960 655, 964 662 
+L 962 673 
+C 960 679, 952 680, 947 676 
+L 942 667 
+C 940 663, 941 660, 944 658 Z"/>
 
-                        <path d=" 
-    M 1038 629 
-    C 1045 623, 1055 625, 1059 632 
-    L 1057 643 
-    C 1055 649, 1047 650, 1042 646 
-    L 1036 637 
-    C 1034 634, 1035 631, 1038 629 Z" />
+<g transform="translate(50 0)">
+  <path d=" 
+M 1005 687 
+C 1012 682, 1021 684, 1025 691 
+L 1023 702 
+C 1021 708, 1013 709, 1008 705 
+L 1003 696 
+C 1001 692, 1002 689, 1005 687 Z"/>
+</g>
+  <!-- lower -->
+  <g transform="translate(-20 20)">
+  <path d=" 
+M 913 725 
+C 920 720, 929 722, 933 729 
+L 931 740 
+C 929 746, 921 747, 916 743 
+L 911 734 
+C 909 731, 910 727, 913 725 Z"/>
+</g>
 
+  <path d=" 
+M 974 729 
+C 981 724, 990 726, 994 733 
+L 992 744 
+C 990 750, 982 751, 977 747 
+L 972 738 
+C 970 735, 971 732, 974 729 Z"/>
+</g>
 
-                        <!-- middle -->
-                        <path d=" 
-    M 883 676 
-    C 890 671, 899 673, 903 680 
-    L 901 691 
-    C 899 697, 891 698, 886 693 
-    L 881 684 
-    C 879 681, 880 678, 883 676 Z" />
-
-                        <path d=" 
-    M 944 658 
-    C 951 653, 960 655, 964 662 
-    L 962 673 
-    C 960 679, 952 680, 947 676 
-    L 942 667 
-    C 940 663, 941 660, 944 658 Z" />
-
-                        <path d=" 
-    M 1005 687 
-    C 1012 682, 1021 684, 1025 691 
-    L 1023 702 
-    C 1021 708, 1013 709, 1008 705 
-    L 1003 696 
-    C 1001 692, 1002 689, 1005 687 Z" />
-
-
-                        <!-- lower -->
-                        <path d=" 
-    M 913 725 
-    C 920 720, 929 722, 933 729 
-    L 931 740 
-    C 929 746, 921 747, 916 743 
-    L 911 734 
-    C 909 731, 910 727, 913 725 Z" />
-
-                        <path d=" 
-    M 974 729 
-    C 981 724, 990 726, 994 733 
-    L 992 744 
-    C 990 750, 982 751, 977 747 
-    L 972 738 
-    C 970 735, 971 732, 974 729 Z" />
-
-                    </g>
-
-
-                    <!-- ===================================================== 
+<!-- ===================================================== 
      MAYONNAISE / CREAMY HIGHLIGHTS 
 ====================================================== -->
+<g fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity=".62">
+  <path d="M858 647 Q884 630 910 640"/>
+  <path d="M928 622 Q953 608 977 619"/>
+  <path d="M1018 636 Q1040 624 1060 637"/>
 
-                    <g fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity=".62">
+  <path d="M835 707 Q861 692 885 702"/>
+  <path d="M907 693 Q934 679 958 690"/>
+  <path d="M1015 713 Q1038 700 1058 710"/>
 
-                        <path d="M895 646 Q921 629 947 639" />
-                        <path d="M954 626 Q979 612 1003 623" />
-                        <path d="M1028 652 Q1050 640 1070 653" />
-
-                        <path d="M881 711 Q907 696 931 706" />
-                        <path d="M946 694 Q973 680 997 691" />
-                        <path d="M1008 728 Q1032 714 1052 724" />
-
-                        <path d="M911 760 Q935 746 957 754" />
-                        <path d="M970 765 Q993 752 1015 759" />
-
-                    </g>
-
-                </g>
-            </symbol>
-
+  <path d="M852 754 Q876 741 898 749"/>
+  <path d="M987 762 Q1010 749 1032 756"/>
+</g>
+  </g>
+  </g>
+</symbol>
 
             <!-- REUSABLE SIDES -->
 
@@ -13087,7 +12763,7 @@ C 1112 650, 1100 635, 1100 654
                         el.value = previousValue;
                         return;
                     }
-
+                    state.selectedRecipe = null;
                     setSliderValue(key, requestedValue);
                     bmbRender();
                 });
@@ -13205,6 +12881,24 @@ C 1112 650, 1100 635, 1100 654
             dom.completionScreen.hidden = screenName !== "completion";
             dom.completionScreen.classList.toggle("active", screenName === "completion");
 
+            if (screenName === "sim") {
+                const notepadScroll = document.querySelector(".notepad-scroll");
+
+                if (notepadScroll) {
+                    notepadScroll.scrollTop = 0;
+                }
+            }
+
+            if (screenName === "completion") {
+                const completionPaper = document.querySelector(".completion-paper");
+
+                if (completionPaper) {
+                    completionPaper.scrollTop = 0;
+                }
+
+                dom.completionScreen.scrollTop = 0;
+            }
+            
             window.scrollTo({ top: 0, left: 0, behavior: "auto" });
         }
 
@@ -13325,7 +13019,7 @@ C 1112 650, 1100 635, 1100 654
                 ingredients: [
                     "Chicken thigh",
                     "Pelau rice with black-eyed peas",
-                    "Cucumber, tomato & cabbage salad",
+                    "Cucumber, tomato, cabbage & lettuce salad",
                     "Pineapple chow",
                     "Water"
                 ],
@@ -13342,10 +13036,11 @@ C 1112 650, 1100 635, 1100 654
                     ["Cucumber", false, false, true],
                     ["Tomato", false, false, true],
                     ["Cabbage", false, false, true],
+                    ["Lettuce", false, false, true],
                     ["Pineapple", false, false, true],
                     ["Water", false, false, true]
                 ],
-                description: "A Trinidad-style meal featuring pelau with chicken and black-eyed peas, served with a fresh salad, pineapple chow and water."
+                description: "A Trinidad-style meal featuring pelau with chicken and black-eyed peas, served with a fresh cabbage and lettuce salad, pineapple chow and water."
             },
             fish: {
                 short: "Seafood-Based",
@@ -13389,7 +13084,7 @@ C 1112 650, 1100 635, 1100 654
                     "Vegetable noodles",
                     "Eggless potato salad",
                     "Cooked soya chunks",
-                    "Fresh cabbage, tomato & cucumber salad",
+                    "Fresh cabbage, tomato, cucumber & lettuce salad",
                     "Orange juice"
                 ],
                 rows: [
@@ -13405,9 +13100,10 @@ C 1112 650, 1100 635, 1100 654
                     ["Cabbage", false, false, true],
                     ["Tomato", false, false, true],
                     ["Cucumber", false, false, true],
+                    ["Lettuce", false, false, true],
                     ["Orange juice", false, false, true]
                 ],
-                description: "A vegetarian meal combining vegetable noodles, potato salad with eggless mayonnaise, cooked soya chunks, fresh salad and orange juice."
+                description: "A vegetarian meal combining vegetable noodles, potato salad with eggless mayonnaise, cooked soya chunks, fresh cabbage and lettuce salad, and orange juice."
             }
         };
 
@@ -13511,7 +13207,7 @@ C 1112 650, 1100 635, 1100 654
                     return {
                         label: "All meals prepared",
                         title: "All 3 meals prepared!",
-                        text: "You've prepared all three meal options. Check the recipe cards and tables in the notepad to review the ingredients and see how the foods contribute to Energy, Growth, and Protection. You can click back to any meal to review it, then end the activity when you're ready.",
+                        text: `You've prepared all three meal options. Check the recipe cards and tables in the notepad to review the ingredients and see how the foods contribute to Energy, Growth, and Protection. You can click back to any meal to review it, then end the activity when you're ready. <br><br><strong>Note:</strong> Food illustrations shown are simplified representations for educational purposes and are not intended to show exact serving sizes, quantities, or nutritional measurements.`,
                         icon: "✓"
                     };
                 }
@@ -13520,7 +13216,7 @@ C 1112 650, 1100 635, 1100 654
                     return {
                         label: "Meal prepared",
                         title: `${selectedRecipe.title} successfully prepared!`,
-                        text: "Check the table in the recipe notepad to see how the foods in this meal can contribute to the three food categories. You can also try preparing the other meal options or end the activity early.",
+                        text: `Check the table in the recipe notepad to see how the foods in this meal can contribute to the three food categories. You can also try preparing the other meal options or end the activity early. <br><br><strong>Note:</strong> Food illustrations shown are simplified representations for educational purposes and are not intended to show exact serving sizes, quantities, or nutritional measurements.`,
                         icon: "✓"
                     };
                 }
@@ -13813,7 +13509,7 @@ C 1112 650, 1100 635, 1100 654
 
                 if (selectedIsPrepared) {
                     dom.preparedMealTitle.textContent = f.title;
-                    dom.preparedMealCaption.textContent = f.text;
+                    dom.preparedMealCaption.innerHTML  = f.text;
                 }
             }
 
@@ -13854,7 +13550,7 @@ C 1112 650, 1100 635, 1100 654
 
             dom.feedbackState.textContent = f.label;
             dom.feedbackTitle.textContent = f.title;
-            dom.feedbackText.textContent = f.text;
+            dom.feedbackText.innerHTML = f.text;
             dom.feedbackIcon.textContent = f.icon;
 
             const needle = balanceState === "balanced" ? 0 : Math.min(58, plateTilt() * 5.1);
@@ -14394,7 +14090,11 @@ function renderCompletion() {
             state.preparing = false;
             state.lastBalancedProportions = null;
             dom.preparationOverlay.hidden = true;
-            bmbRender();
+            bmbRender(); 
+
+            requestAnimationFrame(() => {
+                dom.notepadScroll.scrollTop = 0;
+            });
         }
     </script>
 </body>
