@@ -1408,10 +1408,26 @@
                 closeInstructionsModal();
                 closeResetConfirmModal();
             }
-            if (event.key === " " && !event.repeat && simState.phase === "running" && !event.target.closest("button, input, select, textarea")) {
+            if (event.key === " " && !event.repeat && simState.phase === "running") {
+                const target = event.target;
+                const onEditable = target.closest("input, select, textarea");
+                if (onEditable && onEditable.id !== "tapBtn") return;
+
                 event.preventDefault();
+                const btn = target.closest("button");
+                if (btn) btn.blur();
                 handleTap();
             }
+        }
+
+        /* Blur any topbar / control button when it is clicked with the mouse so
+           that focus does not stick to it. This way a subsequent Space press is
+           not swallowed by that button and instead counts as a tap while the
+           timer is the active screen. */
+        function bindButtonBlurOnClick() {
+            document.querySelectorAll(".topbar button, .sim-topbar button, header.controls button").forEach((b) => {
+                b.addEventListener("click", () => b.blur());
+            });
         }
 
         function escapeHtml(value) {
@@ -1866,6 +1882,7 @@
         }
 
         function devInit() {
+            bindButtonBlurOnClick();
             renderConfigScreen();
         }
 
