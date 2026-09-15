@@ -554,6 +554,7 @@
         .results-table th { color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.78rem; }
         .result-mark { font-weight: 700; }
         .result-mark.correct-mark { color: var(--success); }
+        .result-mark.retry-mark { color: var(--warning); }
         .result-mark.incorrect-mark { color: var(--danger); }
         .restart-result-btn { margin-top: 16px; padding: 11px 20px; border-radius: 999px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; cursor: pointer; }
 
@@ -1488,16 +1489,16 @@
             var fontPct = Math.max(8, size * 0.042);
 
             if (sweep >= 0.35) {
-                var labelR = r * 0.62;
+                var labelR = r * 0.78;
                 var lx = cx + Math.cos(midAngle) * labelR;
                 var ly = cy + Math.sin(midAngle) * labelR;
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "bold " + fontBold + "px Arial, Helvetica, sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText(slice.label, lx, ly - size * 0.022);
+                ctx.fillText(slice.label, lx, ly - size * 0.028);
                 ctx.font = fontPct + "px Arial, Helvetica, sans-serif";
-                ctx.fillText(pctText, lx, ly + size * 0.022);
+                ctx.fillText(pctText, lx, ly + size * 0.028);
                 return;
             }
 
@@ -2037,8 +2038,11 @@
             QUESTIONS.forEach(function (q, i) {
                 var correct = simState.qResults[i] === true;
                 var firstTry = simState.qFirstTry[i] === true;
-                var cls = correct ? "correct-mark" : "incorrect-mark";
-                rowsHtml += "<tr><td>" + (i + 1) + "</td><td>" + escapeHtml(q.question.slice(0, 60)) + (q.question.length > 60 ? "\u2026" : "") + "</td><td class=\"result-mark " + cls + "\">" + (correct ? "Correct" : "Incorrect") + " " + (firstTry ? "(1st try)" : "") + "</td></tr>";
+                var cls, resultText;
+                if (correct && firstTry) { cls = "correct-mark"; resultText = "Correct (1st try)"; }
+                else if (correct) { cls = "retry-mark"; resultText = "Incorrect on 1st attempt \u2014 corrected"; }
+                else { cls = "incorrect-mark"; resultText = "Incorrect \u2014 try again"; }
+                rowsHtml += "<tr><td>" + (i + 1) + "</td><td>" + escapeHtml(q.question.slice(0, 60)) + (q.question.length > 60 ? "\u2026" : "") + "</td><td class=\"result-mark " + cls + "\">" + resultText + "</td></tr>";
             });
 
             area.innerHTML = '<div class="completion-banner">' +
