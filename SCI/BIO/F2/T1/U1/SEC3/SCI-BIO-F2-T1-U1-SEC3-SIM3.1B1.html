@@ -1200,8 +1200,9 @@
                 /* Ribs label */
                 ctx.fillStyle = isDark ? "rgba(200,210,240,0.45)" : "rgba(50,60,100,0.4)";
                 ctx.font = "bold 16px Arial, sans-serif";
-                const ribsLabelX = Math.max(16, cx - w * ribSpread - 8);
-                ctx.fillText("Ribs", ribsLabelX, ribTop + 10);
+const ribsLabelY = Math.max(28, ribTop - 14);
+                const ribsLabelX = Math.max(16, cx - w * ribSpread * 0.5);
+                ctx.fillText("Ribs", ribsLabelX, ribsLabelY);
             }
 
             /* Diaphragm (color reflects contraction/tension) */
