@@ -3170,6 +3170,7 @@
             dom.startBtn.addEventListener("click", () => {
                 playSound("click"); // sound: button press
                 showScreen("sim");
+                openInstructionsModal();
                 devInit();
             });
             dom.openInstructionsBtn.addEventListener("click", () => {
@@ -3602,7 +3603,6 @@
         // preference is never touched here.
         function bootFresh() {
             showScreen("home");
-            openInstructionsModal();
         }
 
         function loadQuizProgress() {
