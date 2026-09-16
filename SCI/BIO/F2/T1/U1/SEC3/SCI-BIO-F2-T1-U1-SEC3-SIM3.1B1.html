@@ -105,16 +105,17 @@
         /* ============================================================
            DEV-EDIT: SIM STYLES
            ============================================================ */
-        .sim-main { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; width: 100%; align-items: start; }
+        .sim-main { display: flex; justify-content: center; align-items: flex-start; gap: 28px; width: 100%; }
 
         .slider-col { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 40px; }
-        .slider-col label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); writing-mode: vertical-lr; text-orientation: mixed; transform: rotate(180deg); margin-bottom: 4px; }
+        .slider-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+        .slider-end-label { font-size: 0.7rem; line-height: 1.2; color: var(--muted); text-align: center; white-space: nowrap; }
+        .slider-end-label.relaxed { padding-top: 6px; }
+        .slider-end-label.contracted { padding-top: 6px; }
         .vert-slider { writing-mode: vertical-lr; direction: rtl; width: 44px; height: 300px; accent-color: var(--accent); cursor: pointer; }
         .slider-row { position: relative; display: flex; align-items: flex-start; }
-        .slider-end-labels { position: absolute; left: calc(100% + 3px); top: 13px; bottom: 13px; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.7rem; line-height: 1.2; color: var(--muted); text-align: center; }
-        .slider-end-labels span { width: max-content; max-width: 92px; }
 
-        .cavity-col { position: relative; margin-left: 60px; }
+        .cavity-col { position: relative; }
         .cavity-canvas-wrap { width: 420px; height: 380px; position: relative; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
         .cavity-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
 
@@ -215,7 +216,7 @@
         .q-dot.incorrect { background: var(--danger); }
 
         @media (max-width: 700px) {
-            .sim-main { grid-template-columns: auto 1fr auto; }
+            .sim-main { gap: 14px; flex-wrap: wrap; }
             .cavity-canvas-wrap { width: 300px; height: 280px; }
             .vert-slider { height: 220px; }
             .gauge-wrap { height: 220px; }
@@ -585,11 +586,12 @@
                 <div class="walkthrough-banner" id="walkthroughBanner" style="display:none;"></div>
                 <div class="sim-main">
                     <div class="slider-col">
-                        <label for="diaphragmSlider">Diaphragm Position</label>
+                        <span class="slider-title">Diaphragm Position</span>
+                        <span class="slider-end-label relaxed">Relaxed (Up)</span>
                         <div class="slider-row">
                             <input type="range" id="diaphragmSlider" class="vert-slider" min="0" max="100" value="0" step="1" orient="vertical" aria-label="Diaphragm Position: Up is Relaxed, Down is Contracted">
-                            <div class="slider-end-labels"><span>Relaxed (Up)</span><span>Contracted (Down)</span></div>
                         </div>
+                        <span class="slider-end-label contracted">Contracted (Down)</span>
                     </div>
                     <div class="cavity-col">
                         <div class="cavity-canvas-wrap">
@@ -1146,7 +1148,7 @@
 
             /* Lungs */
             const fillAlpha = 0.22 + simState.lungFill * 0.35;
-            ctx.fillStyle = isDark ? `rgba(125,211,252,${fillAlpha})` : `rgba(2,111,190,${fillAlpha * 0.95})`;
+            ctx.fillStyle = isDark ? `rgba(125,211,252,${fillAlpha})` : `rgba(2,111,190,${Math.max(0.42, fillAlpha * 0.95)})`;
             ctx.strokeStyle = isDark ? "rgba(125,211,252,0.75)" : "rgba(2,111,190,0.6)";
             ctx.lineWidth = 2.5;
 
@@ -1248,20 +1250,20 @@ const ribsLabelY = Math.max(28, ribTop - 14);
             if (simState.showLabels) {
                 ctx.font = "bold 16px Arial, sans-serif";
                 ctx.lineJoin = "round";
-                ctx.fillStyle = isDark ? "#e8f7ff" : "#0a2a45";
-                ctx.strokeStyle = isDark ? "rgba(10,15,35,0.75)" : "rgba(255,255,255,0.9)";
-                ctx.lineWidth = 4;
-                ctx.strokeText("Lung", cx - lungW * 1.1 - 24, (lungTop + lungBottom) / 2);
-                ctx.strokeText("Lung", cx + lungW * 1.1 + 8, (lungTop + lungBottom) / 2);
-                ctx.fillText("Lung", cx - lungW * 1.1 - 24, (lungTop + lungBottom) / 2);
-                ctx.fillText("Lung", cx + lungW * 1.1 + 8, (lungTop + lungBottom) / 2);
+                ctx.fillStyle = isDark ? "#e8f7ff" : "#04294d";
+                ctx.strokeStyle = isDark ? "rgba(10,15,35,0.75)" : "rgba(255,255,255,0.95)";
+                ctx.lineWidth = 5;
+                ctx.strokeText("Lung", cx - lungW * 1.1 - 26, (lungTop + lungBottom) / 2);
+                ctx.strokeText("Lung", cx + lungW * 1.1 + 10, (lungTop + lungBottom) / 2);
+                ctx.fillText("Lung", cx - lungW * 1.1 - 26, (lungTop + lungBottom) / 2);
+                ctx.fillText("Lung", cx + lungW * 1.1 + 10, (lungTop + lungBottom) / 2);
             }
 
             /* Highlight the hovered or pinned (clicked) hotspot */
             const hl = simState.hoverHotspot || simState.pinnedHotspot;
             if (hl) {
-                ctx.fillStyle = isDark ? "rgba(255,255,255,0.16)" : "rgba(14,165,233,0.2)";
-                ctx.strokeStyle = isDark ? "rgba(255,255,255,0.6)" : "rgba(2,111,190,0.75)";
+                ctx.fillStyle = isDark ? "rgba(255,255,255,0.18)" : "rgba(14,165,233,0.32)";
+                ctx.strokeStyle = isDark ? "rgba(255,255,255,0.65)" : "rgba(2,111,190,0.95)";
                 ctx.lineWidth = 2;
                 for (const hs of simState.hotspots) {
                     if (hs.key !== hl) continue;
@@ -1434,37 +1436,44 @@ const ribsLabelY = Math.max(28, ribTop - 14);
             simState.questionAnswered = false;
         }
 
-        function onAssessmentChoice(btn) {
-            if (simState.questionAnswered) return;
-            const qi = simState.currentQuestion;
-            const q = QUESTIONS[qi];
-            const origIdx = Number(btn.dataset.oindex);
-            simState.questionAttempts[qi]++;
-            const allChoices = document.querySelectorAll(".assessment-choice");
-            allChoices.forEach(c => c.classList.add("disabled"));
-            document.getElementById("hintBtn").classList.add("hidden");
-            const feedback = document.getElementById("assessmentFeedback");
+        let assessmentLocked = false;
 
-            if (origIdx === q.correctIndex) {
-                btn.classList.add("correct");
-                feedback.className = "assessment-feedback correct";
-                feedback.innerHTML = "<strong>Correct!</strong> " + q.feedbackCorrect;
-                simState.questionResults[qi] = true;
-                simState.questionCorrectCount++;
-                onQuestionDone();
-            } else {
-                btn.classList.add("incorrect");
-                allChoices.forEach(c => { if (Number(c.dataset.oindex) === q.correctIndex) c.classList.add("correct"); });
-                feedback.className = "assessment-feedback incorrect";
-                if (simState.questionAttempts[qi] < 2) {
-                    feedback.innerHTML = "<strong>Not quite.</strong> " + q.feedbackIncorrect + " Try again!";
-                    document.getElementById("retryBtn").classList.remove("hidden");
-                } else {
-                    feedback.innerHTML = "<strong>Not quite.</strong> The correct answer is: " + q.choices[q.correctIndex] + ". " + q.feedbackCorrect;
-                    simState.questionResults[qi] = false;
-                    document.getElementById("retryBtn").classList.add("hidden");
+        function onAssessmentChoice(btn) {
+            if (simState.questionAnswered || assessmentLocked) return;
+            assessmentLocked = true;
+            try {
+                const qi = simState.currentQuestion;
+                const q = QUESTIONS[qi];
+                const origIdx = Number(btn.dataset.oindex);
+                simState.questionAttempts[qi]++;
+                const allChoices = document.querySelectorAll(".assessment-choice");
+                allChoices.forEach(c => c.classList.add("disabled"));
+                document.getElementById("hintBtn").classList.add("hidden");
+                const feedback = document.getElementById("assessmentFeedback");
+
+                if (origIdx === q.correctIndex) {
+                    btn.classList.add("correct");
+                    feedback.className = "assessment-feedback correct";
+                    feedback.innerHTML = "<strong>Correct!</strong> " + q.feedbackCorrect;
+                    simState.questionResults[qi] = true;
+                    simState.questionCorrectCount++;
                     onQuestionDone();
+                } else {
+                    btn.classList.add("incorrect");
+                    allChoices.forEach(c => { if (Number(c.dataset.oindex) === q.correctIndex) c.classList.add("correct"); });
+                    feedback.className = "assessment-feedback incorrect";
+                    if (simState.questionAttempts[qi] < 2) {
+                        feedback.innerHTML = "<strong>Not quite.</strong> " + q.feedbackIncorrect + " Try again!";
+                        document.getElementById("retryBtn").classList.remove("hidden");
+                    } else {
+                        feedback.innerHTML = "<strong>Not quite.</strong> The correct answer is: " + q.choices[q.correctIndex] + ". " + q.feedbackCorrect;
+                        simState.questionResults[qi] = false;
+                        document.getElementById("retryBtn").classList.add("hidden");
+                        onQuestionDone();
+                    }
                 }
+            } finally {
+                assessmentLocked = false;
             }
         }
 
@@ -1489,23 +1498,28 @@ const ribsLabelY = Math.max(28, ribTop - 14);
         }
 
         function retryQuestion() {
-            if (simState.questionAnswered) return;
-            simState.questionAnswered = false;
-            document.getElementById("retryBtn").classList.add("hidden");
-            document.getElementById("hintBtn").classList.remove("hidden");
-            const fb = document.getElementById("assessmentFeedback");
-            fb.className = "assessment-feedback"; fb.innerHTML = "";
-            document.querySelectorAll(".assessment-choice").forEach(c => c.classList.remove("disabled", "correct", "incorrect"));
+            if (simState.questionAnswered || assessmentLocked) return;
+            try {
+                simState.questionAnswered = false;
+                document.getElementById("retryBtn").classList.add("hidden");
+                document.getElementById("hintBtn").classList.remove("hidden");
+                const fb = document.getElementById("assessmentFeedback");
+                fb.className = "assessment-feedback"; fb.innerHTML = "";
+                document.querySelectorAll(".assessment-choice").forEach(c => c.classList.remove("disabled", "correct", "incorrect"));
+            } catch (e) {}
         }
 
         function showHint() {
+            if (simState.questionAnswered) return;
             const section = document.getElementById("assessmentSection");
             if (document.getElementById("hintText")) return;
+            const qi = simState.currentQuestion;
+            if (!QUESTIONS[qi]) return;
             simState.hintUsed = true;
             storageSet(SIM_CONFIG.simId + ":hintUsed", "true");
             const div = document.createElement("div");
             div.id = "hintText"; div.className = "hint-text";
-            div.textContent = QUESTIONS[simState.currentQuestion].hint;
+            div.textContent = QUESTIONS[qi].hint;
             section.appendChild(div);
         }
 
