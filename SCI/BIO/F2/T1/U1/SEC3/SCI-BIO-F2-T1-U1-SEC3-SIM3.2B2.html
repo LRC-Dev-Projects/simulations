@@ -466,7 +466,7 @@
         .comparison-row { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
         .mini-pie-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
         .mini-pie-label { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-        .mini-pie-wrap { width: 140px; height: 140px; position: relative; }
+        .mini-pie-wrap { width: 200px; height: 200px; position: relative; }
         .mini-pie-wrap canvas { width: 100%; height: 100%; display: block; }
         .live-pie-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .live-pie-label { font-size: 1.1rem; font-weight: 700; color: var(--text); }
@@ -567,7 +567,7 @@
         @media (max-width: 600px) {
             .comparison-row { flex-direction: column; }
             .pie-wrap { width: 240px; height: 240px; }
-            .mini-pie-wrap { width: 120px; height: 120px; }
+            .mini-pie-wrap { width: 150px; height: 150px; }
             .readout-panel { min-width: unset; width: 100%; }
         }
     </style>
@@ -1027,7 +1027,13 @@
             dom.html.setAttribute("data-theme", state.theme);
             updateThemeToggleLabel();
             storageSet(SIM_CONFIG.simId + "-theme", state.theme);
-            redrawStaticPies();
+            var t = simState && typeof simState.smoothPos === "number" ? simState.smoothPos : 0;
+            var vals = getGasValues(t);
+            drawLivePie(vals);
+            var inhCanvas = document.getElementById("inhaledPie");
+            if (inhCanvas) drawStaticPie(inhCanvas, vals);
+            var exhCanvas = document.getElementById("exhaledPie");
+            if (exhCanvas) drawStaticPie(exhCanvas, vals);
         }
 
         function loadTheme() {
@@ -1330,32 +1336,32 @@
                 '</div>' +
                 '<div class="comparison-row">' +
                     '<div class="mini-pie-col">' +
-                        '<div class="mini-pie-label">Inhaled</div>' +
+                        '<div class="mini-pie-label" id="inhaledPieLabel">Inhaled</div>' +
                         '<div class="mini-pie-wrap"><canvas id="inhaledPie"></canvas></div>' +
                     '</div>' +
                     '<div class="live-pie-col">' +
                         '<div class="pie-wrap"><canvas id="pieCanvas"></canvas></div>' +
                     '</div>' +
                     '<div class="mini-pie-col">' +
-                        '<div class="mini-pie-label">Exhaled</div>' +
+                        '<div class="mini-pie-label" id="exhaledPieLabel">Exhaled</div>' +
                         '<div class="mini-pie-wrap"><canvas id="exhaledPie"></canvas></div>' +
                     '</div>' +
                 '</div>' +
                 '<div class="readout-panel">' +
                     '<div class="readout-label">Current Composition (click a gas for details)</div>' +
-                    '<div class="gas-row clickable" id="gasRowN2" tabindex="0" role="button" aria-label="Nitrogen details">' +
+                    '<div class="gas-row clickable" id="gasRowN2" tabindex="0" role="button" aria-label="Nitrogen details" aria-expanded="false">' +
                         '<span class="gas-swatch" style="background:#60a5fa;"></span>' +
                         '<span class="gas-name">Nitrogen</span>' +
                         '<span class="gas-value" id="gasValN2">78.00%</span>' +
                         '<div class="gas-bar"><div class="gas-bar-fill" id="gasBarN2" style="width:78%;background:#60a5fa;"></div></div>' +
                     '</div>' +
-                    '<div class="gas-row clickable" id="gasRowO2" tabindex="0" role="button" aria-label="Oxygen details">' +
+                    '<div class="gas-row clickable" id="gasRowO2" tabindex="0" role="button" aria-label="Oxygen details" aria-expanded="false">' +
                         '<span class="gas-swatch" style="background:#34d399;"></span>' +
                         '<span class="gas-name">Oxygen</span>' +
                         '<span class="gas-value" id="gasValO2">21.00%</span>' +
                         '<div class="gas-bar"><div class="gas-bar-fill" id="gasBarO2" style="width:21%;background:#34d399;"></div></div>' +
                     '</div>' +
-                    '<div class="gas-row clickable" id="gasRowCO2" tabindex="0" role="button" aria-label="Carbon dioxide details">' +
+                    '<div class="gas-row clickable" id="gasRowCO2" tabindex="0" role="button" aria-label="Carbon dioxide details" aria-expanded="false">' +
                         '<span class="gas-swatch" style="background:#fb7185;"></span>' +
                         '<span class="gas-name">Carbon Dioxide</span>' +
                         '<span class="gas-value" id="gasValCO2">0.04%</span>' +
@@ -1442,7 +1448,7 @@
             var inhCanvas = document.getElementById("inhaledPie");
             if (inhCanvas) {
                 var inhWrap = inhCanvas.parentElement;
-                var inhSize = inhWrap.clientWidth || 140;
+                var inhSize = inhWrap.clientWidth || 200;
                 inhCanvas.width = inhSize * dpr;
                 inhCanvas.height = inhSize * dpr;
                 var inhCtx = inhCanvas.getContext("2d");
@@ -1453,7 +1459,7 @@
             var exhCanvas = document.getElementById("exhaledPie");
             if (exhCanvas) {
                 var exhWrap = exhCanvas.parentElement;
-                var exhSize = exhWrap.clientWidth || 140;
+                var exhSize = exhWrap.clientWidth || 200;
                 exhCanvas.width = exhSize * dpr;
                 exhCanvas.height = exhSize * dpr;
                 var exhCtx = exhCanvas.getContext("2d");
@@ -1472,21 +1478,21 @@
             }
         }
 
-        function redrawStaticPies() {
-            var inhCanvas = document.getElementById("inhaledPie");
-            if (inhCanvas) drawStaticPie(inhCanvas, getGasValues(0));
-            var exhCanvas = document.getElementById("exhaledPie");
-            if (exhCanvas) drawStaticPie(exhCanvas, getGasValues(1));
-        }
-
         function pieIsDark() {
             return document.documentElement.getAttribute("data-theme") === "dark";
         }
 
         function drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size) {
-            var pctText = slice.pct < 0.1 ? slice.pct.toFixed(2) + "%" : slice.pct.toFixed(1) + "%";
-            var fontBold = Math.max(9, size * 0.055);
-            var fontPct = Math.max(8, size * 0.042);
+            var pctText;
+            if (slice.pct % 1 === 0) {
+                pctText = slice.pct + "%";
+            } else if (slice.pct < 0.1) {
+                pctText = slice.pct.toFixed(2) + "%";
+            } else {
+                pctText = slice.pct.toFixed(1) + "%";
+            }
+            var fontBold = Math.max(10, size * 0.06);
+            var fontPct = Math.max(9, size * 0.045);
 
             if (sweep >= 0.35) {
                 var labelR = r * 0.78;
@@ -1507,11 +1513,21 @@
             var dirY = Math.sin(midAngle);
             var ex = cx + dirX * (r + 2);
             var ey = cy + dirY * (r + 2);
-            var lx = ex + dirX * 16;
-            var ly = ey + dirY * 16;
 
+            var line1 = slice.label + " " + pctText;
             ctx.font = "bold " + fontBold + "px Arial, Helvetica, sans-serif";
-            var line1 = slice.label + "  " + pctText;
+            var textW = ctx.measureText(line1).width;
+            var textH = fontBold + 4;
+
+            /* Move the label away from the pie, then clamp so the whole text box stays on canvas. */
+            var pad = 4;
+            var lx = cx + dirX * (r + textH + 14);
+            var ly = cy + dirY * (r + textH + 14);
+
+            lx = Math.max(pad + textW / 2, Math.min(size - pad - textW / 2, lx));
+            ly = Math.max(pad + textH / 2, Math.min(size - pad - textH / 2, ly));
+            ctx.textAlign = "center";
+
             ctx.strokeStyle = pieIsDark() ? "rgba(210,220,255,0.5)" : "rgba(45,58,95,0.45)";
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -1521,16 +1537,7 @@
 
             ctx.fillStyle = pieIsDark() ? "#dbe4ff" : "#2a3558";
             ctx.textBaseline = "middle";
-            if (dirX < -0.3) {
-                ctx.textAlign = "right";
-                ctx.fillText(line1, lx - 6, ly);
-            } else if (dirX > 0.3) {
-                ctx.textAlign = "left";
-                ctx.fillText(line1, lx + 6, ly);
-            } else {
-                ctx.textAlign = "center";
-                ctx.fillText(line1, lx, ly);
-            }
+            ctx.fillText(line1, lx, ly);
         }
 
         function drawStaticPie(canvas, vals) {
@@ -1541,33 +1548,34 @@
             ctx.clearRect(0, 0, size, size);
             var cx = size / 2;
             var cy = size / 2;
-            var r = size / 2 - 6;
+            var r = size / 2 - 30;
 
-            var total = vals.n2 + vals.o2 + vals.co2;
+            var total = 100;
             var slices = [
-                { val: vals.n2, color: GAS.n2.color, pattern: "diagonal", label: "N\u2082", pct: (vals.n2 / total) * 100 },
-                { val: vals.o2, color: GAS.o2.color, pattern: "dots", label: "O\u2082", pct: (vals.o2 / total) * 100 },
-                { val: vals.co2, color: GAS.co2.color, pattern: "crosshatch", label: "CO\u2082", pct: (vals.co2 / total) * 100 }
+                { val: vals.n2, color: GAS.n2.color, pattern: "diagonal", label: "N\u2082", pct: vals.n2 },
+                { val: vals.o2, color: GAS.o2.color, pattern: "dots", label: "O\u2082", pct: vals.o2 },
+                { val: vals.co2, color: GAS.co2.color, pattern: "crosshatch", label: "CO\u2082", pct: vals.co2 }
             ];
 
             var startAngle = -Math.PI / 2;
             slices.forEach(function (slice) {
                 var sweep = (slice.val / total) * Math.PI * 2;
-                if (sweep < 0.001) { startAngle += sweep; return; }
                 var endAngle = startAngle + sweep;
                 var midAngle = startAngle + sweep / 2;
 
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, r, startAngle, endAngle);
-                ctx.closePath();
-                ctx.fillStyle = slice.color;
-                ctx.fill();
-                ctx.strokeStyle = "#1d2340";
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                if (sweep >= 0.003) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, r, startAngle, endAngle);
+                    ctx.closePath();
+                    ctx.fillStyle = slice.color;
+                    ctx.fill();
+                    ctx.strokeStyle = "#1d2340";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
 
-                drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
+                    drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
+                }
 
                 drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
 
@@ -1584,33 +1592,34 @@
             ctx.clearRect(0, 0, size, size);
             var cx = size / 2;
             var cy = size / 2;
-            var r = size / 2 - 8;
+            var r = size / 2 - 30;
 
-            var total = vals.n2 + vals.o2 + vals.co2;
+            var total = 100;
             var slices = [
-                { val: vals.n2, color: GAS.n2.color, pattern: "diagonal", label: "N\u2082", pct: (vals.n2 / total) * 100 },
-                { val: vals.o2, color: GAS.o2.color, pattern: "dots", label: "O\u2082", pct: (vals.o2 / total) * 100 },
-                { val: vals.co2, color: GAS.co2.color, pattern: "crosshatch", label: "CO\u2082", pct: (vals.co2 / total) * 100 }
+                { val: vals.n2, color: GAS.n2.color, pattern: "diagonal", label: "N\u2082", pct: vals.n2 },
+                { val: vals.o2, color: GAS.o2.color, pattern: "dots", label: "O\u2082", pct: vals.o2 },
+                { val: vals.co2, color: GAS.co2.color, pattern: "crosshatch", label: "CO\u2082", pct: vals.co2 }
             ];
 
             var startAngle = -Math.PI / 2;
             slices.forEach(function (slice) {
                 var sweep = (slice.val / total) * Math.PI * 2;
-                if (sweep < 0.001) { startAngle += sweep; return; }
                 var endAngle = startAngle + sweep;
                 var midAngle = startAngle + sweep / 2;
 
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, r, startAngle, endAngle);
-                ctx.closePath();
-                ctx.fillStyle = slice.color;
-                ctx.fill();
-                ctx.strokeStyle = "#1d2340";
-                ctx.lineWidth = 2.5;
-                ctx.stroke();
+                if (sweep >= 0.003) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, r, startAngle, endAngle);
+                    ctx.closePath();
+                    ctx.fillStyle = slice.color;
+                    ctx.fill();
+                    ctx.strokeStyle = "#1d2340";
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
 
-                drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
+                    drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
+                }
 
                 drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
 
@@ -1710,6 +1719,8 @@
             var banner = document.getElementById("walkthroughBanner");
             if (banner) banner.style.display = "none";
             storageSet(SIM_CONFIG.simId + ":walkthroughDone", "true");
+            var slider = document.getElementById("gasSlider");
+            if (slider && slider.focus) slider.focus();
             playSound("click");
         }
 
@@ -1748,7 +1759,7 @@
 
             var choicesHtml = "";
             q.choices.forEach(function (choice, i) {
-                choicesHtml += '<button class="assessment-choice" data-index="' + i + '" aria-label="Choice ' + (i + 1) + '">' + escapeHtml(choice) + '</button>';
+                choicesHtml += '<button class="assessment-choice" data-index="' + i + '" type="button">' + escapeHtml(choice) + '</button>';
             });
             document.getElementById("assessmentChoices").innerHTML = choicesHtml;
 
@@ -1900,6 +1911,10 @@
             var vals = getGasValues(t);
 
             drawLivePie(vals);
+            var inhCanvas = document.getElementById("inhaledPie");
+            if (inhCanvas) drawStaticPie(inhCanvas, vals);
+            var exhCanvas = document.getElementById("exhaledPie");
+            if (exhCanvas) drawStaticPie(exhCanvas, vals);
             updateReadout(vals, t);
             updateCaption(t);
             updatePhaseLabel(t);
@@ -1918,6 +1933,12 @@
             }
         }
 
+        function fmtPct(n) {
+            if (n % 1 === 0) return n + "%";
+            if (n < 0.1) return n.toFixed(2) + "%";
+            return n.toFixed(1) + "%";
+        }
+
         function updateReadout(vals, t) {
             var vN2 = document.getElementById("gasValN2");
             var vO2 = document.getElementById("gasValO2");
@@ -1927,14 +1948,13 @@
             var bCO2 = document.getElementById("gasBarCO2");
             if (!vN2) return;
 
-            var total = vals.n2 + vals.o2 + vals.co2;
-            var pctN2 = (vals.n2 / total) * 100;
-            var pctO2 = (vals.o2 / total) * 100;
-            var pctCO2 = (vals.co2 / total) * 100;
+            var pctN2 = vals.n2;
+            var pctO2 = vals.o2;
+            var pctCO2 = vals.co2;
 
-            vN2.textContent = pctN2.toFixed(2) + "%";
-            vO2.textContent = pctO2.toFixed(2) + "%";
-            vCO2.textContent = pctCO2.toFixed(2) + "%";
+            vN2.textContent = fmtPct(pctN2);
+            vO2.textContent = fmtPct(pctO2);
+            vCO2.textContent = fmtPct(pctCO2);
 
             bN2.style.width = pctN2 + "%";
             bO2.style.width = pctO2 + "%";
@@ -1966,7 +1986,10 @@
             var isOpen = panel.classList.contains("show") && panel.dataset.gas === gasKey;
             ["gasRowN2", "gasRowO2", "gasRowCO2"].forEach(function (id) {
                 var r = document.getElementById(id);
-                if (r) r.classList.remove("open");
+                if (r) {
+                    r.classList.remove("open");
+                    r.setAttribute("aria-expanded", "false");
+                }
             });
             if (isOpen) {
                 panel.classList.remove("show");
@@ -1978,7 +2001,10 @@
             panel.classList.add("show");
             panel.dataset.gas = gasKey;
             var row = document.getElementById("gasRow" + gasKey.toUpperCase());
-            if (row) row.classList.add("open");
+            if (row) {
+                row.classList.add("open");
+                row.setAttribute("aria-expanded", "true");
+            }
             playSound("click");
         }
 
@@ -1987,9 +2013,9 @@
             if (!bar) return;
 
             var vals = getGasValues(t);
-            var total = vals.n2 + vals.o2 + vals.co2;
-            var o2pct = ((vals.o2 / total) * 100).toFixed(1);
-            var co2pct = ((vals.co2 / total) * 100).toFixed(2);
+            var o2pct = fmtPct(vals.o2);
+            var co2pct = fmtPct(vals.co2);
+            var n2pct = fmtPct(vals.n2);
 
             if (t < 0.1) {
                 bar.textContent = "Inhaled air: 21% oxygen, 78% nitrogen, 0.04% CO2. Oxygen will be used by cells for energy.";
@@ -1997,21 +2023,28 @@
                 bar.textContent = "Exhaled air: 16% oxygen, 78% nitrogen, 4% CO2. The body used some oxygen and produced CO2 through cellular respiration.";
             } else {
                 var mix = Math.round(t * 100);
-                bar.textContent = "Mixed air (" + mix + "% exhaled): " + o2pct + "% oxygen, 78% nitrogen, " + co2pct + "% CO2. Cells are using oxygen and releasing CO2.";
+                bar.textContent = "Mixed air (" + mix + "% exhaled): " + o2pct + "% oxygen, " + n2pct + "% nitrogen, " + co2pct + "% CO2. Cells are using oxygen and releasing CO2.";
             }
         }
 
         function updatePhaseLabel(t) {
             var lbl = document.getElementById("phaseLabel");
-            if (!lbl) return;
+            var inhLbl = document.getElementById("inhaledPieLabel");
+            var exhLbl = document.getElementById("exhaledPieLabel");
+            var phaseText;
             if (t < 0.1) {
-                lbl.innerHTML = 'Phase: <span>Inhaled Air</span>';
+                phaseText = "Inhaled Air";
+                if (lbl) lbl.innerHTML = 'Phase: <span>Inhaled Air</span>';
             } else if (t > 0.9) {
-                lbl.innerHTML = 'Phase: <span>Exhaled Air</span>';
+                phaseText = "Exhaled Air";
+                if (lbl) lbl.innerHTML = 'Phase: <span>Exhaled Air</span>';
             } else {
                 var mix = Math.round(t * 100);
-                lbl.innerHTML = 'Phase: <span>Mixed (' + mix + '% exhaled)</span>';
+                phaseText = "Mixed (" + mix + "%)";
+                if (lbl) lbl.innerHTML = 'Phase: <span>Mixed (' + mix + '% exhaled)</span>';
             }
+            if (inhLbl) inhLbl.textContent = phaseText;
+            if (exhLbl) exhLbl.textContent = phaseText;
         }
 
         function saveCompletionState() {
