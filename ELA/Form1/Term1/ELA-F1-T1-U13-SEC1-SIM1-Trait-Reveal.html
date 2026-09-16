@@ -765,6 +765,10 @@
                 const hasProgress = storageGet(SIM_CONFIG.simId + ":progress");
                 const isComplete = storageGet(SIM_CONFIG.simId + ":completion") === "true";
                 dom.resumeBtn.classList.toggle("hidden", !hasProgress || isComplete);
+                // Show the instructions any time a session is not complete. This
+                // both opens them for a brand-new session and (importantly)
+                // interrupts a session that is already in progress after a reload.
+                if (!isComplete) openInstructionsModal();
                 if (isComplete && dom.homeDescription) {
                     const note = document.createElement("p");
                     note.className = "last-run-note";
@@ -779,9 +783,8 @@
             loadTheme();
             loadHelpSeen();
             try {
-                const hasProgress = storageGet(SIM_CONFIG.simId + ":progress");
                 const isComplete = storageGet(SIM_CONFIG.simId + ":completion") === "true";
-                if (!hasProgress && !isComplete) openInstructionsModal();
+                if (!isComplete) openInstructionsModal();
             } catch (err) { /* ignore */ }
         }
 
@@ -804,6 +807,7 @@
             dom.startBtn.addEventListener("click", () => {
                 showScreen("sim");
                 devInit(false);
+                openInstructionsModal();
             });
             if (dom.resumeBtn) {
                 dom.resumeBtn.addEventListener("click", () => {
