@@ -440,8 +440,8 @@
         /* ============================================================
            DEV-EDIT: AUDIO
            ============================================================ */
-        const SOUND_FILES = { click: "", correct: "", wrong: "", typing: "", complete: "" };
-        const SOUND_CATEGORIES = { click: "effects", typing: "effects", correct: "effects", wrong: "effects", complete: "effects" };
+        const SOUND_FILES = { click: "", correct: "", wrong: "", typing: "", complete: "", bubble: "" };
+        const SOUND_CATEGORIES = { click: "effects", typing: "effects", correct: "effects", wrong: "effects", complete: "effects", bubble: "effects" };
         const CATEGORY_LABELS = { effects: "Sound effects" };
 
         let audioCtx = null;
@@ -455,7 +455,25 @@
         function volumeFor(name) { const cat = SOUND_CATEGORIES[name] || "effects"; return channelVolumes[cat] != null ? channelVolumes[cat] : 1; }
         function ensureAudioCtx() { if (!audioCtx) { const Ctx = window.AudioContext || window.webkitAudioContext; if (Ctx) audioCtx = new Ctx(); } if (audioCtx && audioCtx.state === "suspended") audioCtx.resume(); return audioCtx; }
         function playTone(freq, durationMs, type, volume, startDelayMs) { const ctx = ensureAudioCtx(); if (!ctx) return; const osc = ctx.createOscillator(); const gain = ctx.createGain(); const t0 = ctx.currentTime + (startDelayMs || 0) / 1000; osc.type = type || "sine"; osc.frequency.setValueAtTime(freq, t0); gain.gain.setValueAtTime(volume != null ? volume : 0.15, t0); gain.gain.exponentialRampToValueAtTime(0.0001, t0 + durationMs / 1000); osc.connect(gain).connect(ctx.destination); osc.start(t0); osc.stop(t0 + durationMs / 1000); }
-        const SYNTH_SOUNDS = { click: (v) => playTone(600, 60, "square", 0.06 * v), typing: (v) => playTone(420, 30, "square", 0.04 * v), correct: (v) => { playTone(523, 120, "sine", 0.15 * v); playTone(784, 180, "sine", 0.15 * v, 110); }, wrong: (v) => playTone(180, 250, "sawtooth", 0.12 * v), complete: (v) => { playTone(523, 120, "sine", 0.15 * v); playTone(659, 120, "sine", 0.15 * v, 120); playTone(784, 250, "sine", 0.15 * v, 240); } };
+        const SYNTH_SOUNDS = { click: (v) => playTone(600, 60, "square", 0.06 * v), typing: (v) => playTone(420, 30, "square", 0.04 * v), correct: (v) => { playTone(523, 120, "sine", 0.15 * v); playTone(784, 180, "sine", 0.15 * v, 110); }, wrong: (v) => playTone(180, 250, "sawtooth", 0.12 * v), complete: (v) => { playTone(523, 120, "sine", 0.15 * v); playTone(659, 120, "sine", 0.15 * v, 120); playTone(784, 250, "sine", 0.15 * v, 240); }, bubble: (v) => { for (let i = 0; i < 9; i++) { const delay = i * 120 + Math.round(Math.random() * 40); const baseFreq = 340 + (i % 3) * 70; playPop(baseFreq + Math.round(Math.random() * 50), 110, 0.2 * v, delay); } } };
+
+        /* "Pop" with a rising pitch sweep — low-mid centred with enough
+           harmonics to remain audible on small laptop/phone speakers. */
+        function playPop(baseFreq, durationMs, volume, startDelayMs) {
+            const ctx = ensureAudioCtx();
+            if (!ctx) return;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const t0 = ctx.currentTime + (startDelayMs || 0) / 1000;
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(baseFreq * 0.9, t0);
+            osc.frequency.linearRampToValueAtTime(baseFreq * 1.2, t0 + durationMs / 1000);
+            gain.gain.setValueAtTime(volume != null ? volume : 0.2, t0);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t0 + durationMs / 1000);
+            osc.connect(gain).connect(ctx.destination);
+            osc.start(t0);
+            osc.stop(t0 + durationMs / 1000);
+        }
 
         function playSound(name) { if (!audioEnabled) return; const v = volumeFor(name); if (v <= 0) return; const src = SOUND_FILES[name]; if (src) { try { const a = new Audio(src); a.volume = v; a.play().catch(() => {}); } catch (err) {} return; } const synth = SYNTH_SOUNDS[name]; if (synth) { try { synth(v); } catch (err) {} } }
 
@@ -716,6 +734,7 @@
 
             /* Bubble animation in Flask A */
             spawnBubbles("bubblesA", 5);
+            playSound("bubble");
 
             /* Log entry */
             addLog("inhale", "Inhale clicked: Flask A bubbles. Liquid is clear.");
@@ -743,6 +762,7 @@
 
             /* Bubble animation in Flask B */
             spawnBubbles("bubblesB", 5);
+            playSound("bubble");
 
             /* Update Flask B opacity based on exhale count */
             updateFlaskB();
