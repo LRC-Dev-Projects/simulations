@@ -398,9 +398,10 @@
             <button class="close-btn" id="closeAssessmentBtn" aria-label="Close assessment">&times;</button>
             <h3 id="assessmentHeading">Assessment Question</h3>
             <div id="assessmentBody"></div>
-            <div class="button-row" style="margin-top: 18px; justify-content: flex-start;">
+            <div class="button-row" style="margin-top: 18px; justify-content: center;">
                 <button class="primary-btn" id="submitAssessmentBtn">Submit Answer</button>
                 <button class="secondary-btn hidden" id="closeAssessmentBtn2">Close</button>
+                <button class="primary-btn hidden" id="doneAssessmentBtn">Done</button>
             </div>
         </section>
     </div>
@@ -890,12 +891,14 @@
             const body = document.getElementById("assessmentBody");
             const submitBtn = document.getElementById("submitAssessmentBtn");
             const closeBtn2 = document.getElementById("closeAssessmentBtn2");
+            const doneBtn = document.getElementById("doneAssessmentBtn");
             const closeBtn = document.getElementById("closeAssessmentBtn");
 
             renderAssessmentOptions(body);
 
             submitBtn.classList.remove("hidden");
             closeBtn2.classList.add("hidden");
+            doneBtn.classList.add("hidden");
 
             function disableOptions() {
                 body.querySelectorAll('input[name="assess-q"]').forEach(inp => { inp.disabled = true; });
@@ -922,6 +925,8 @@
                     assessmentAnswered = true;
                     submitBtn.classList.add("hidden");
                     closeBtn2.classList.add("hidden");
+                    doneBtn.classList.remove("hidden");
+                    doneBtn.onclick = () => { modal.classList.remove("show"); };
                     /* Swap Check My Understanding → Play Again */
                     const checkWrap = document.getElementById("checkBtnWrap");
                     if (checkWrap) {
@@ -941,6 +946,8 @@
                     result.innerHTML += '<br><br><strong>Hint:</strong> "Which flask is receiving air directly from the lungs?"';
                     playSound("wrong");
                     submitBtn.classList.add("hidden");
+                    doneBtn.classList.remove("hidden");
+                    doneBtn.onclick = () => { modal.classList.remove("show"); };
                     closeBtn2.textContent = "Try Again";
                     closeBtn2.classList.remove("hidden");
                     closeBtn2.onclick = () => {
@@ -948,6 +955,7 @@
                         renderAssessmentOptions(body);
                         submitBtn.classList.remove("hidden");
                         closeBtn2.classList.add("hidden");
+                        doneBtn.classList.add("hidden");
                     };
                 }
             };
