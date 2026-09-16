@@ -1383,7 +1383,7 @@
             }
 
             const optOrder = SIM.orders && SIM.orders[index] ? SIM.orders[index] : idArray(item.badges ? item.badges.length : item.cards.length);
-            const cardOrder = item.badges ? idArray(item.cards.length) : optOrder;
+            const cardOrder = item.badges ? shuffledArray(item.cards.length) : optOrder;
 
             let html = "";
             if (item.teach) {
