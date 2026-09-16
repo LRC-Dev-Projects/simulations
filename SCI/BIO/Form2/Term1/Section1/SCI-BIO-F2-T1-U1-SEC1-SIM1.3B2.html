@@ -825,6 +825,7 @@
             title: "Nutrient Movement Through a Villus",
             subtitle: "Explore how the small intestine absorbs nutrients",
             badgeText: "BIO",
+            correctRatePercent: 75, // rate at or above which the sim is marked correct
             homeEyebrow: "Integrated Science - Biology",
             homeDescription:
                 "Investigate how the structure of the small intestine wall affects nutrient absorption. Adjust the wall shape and thickness to match real anatomy and watch how the rate of absorption changes.",
@@ -1613,11 +1614,10 @@
             const isThick = thicknessValue < 25;
 
             let msg = '';
-            let isOptimal = false;
+            const isOptimal = rate >= SIM_CONFIG.correctRatePercent;
 
-            if (isFolded && isThin) {
-                msg = '<strong style="color:var(--success)">Optimal absorption!</strong> The highly folded wall (villi) creates a large surface area, and the one-cell-thick barrier allows nutrients to pass quickly into the bloodstream. This matches the real anatomy of the small intestine!';
-                isOptimal = true;
+            if (isOptimal) {
+                msg = '<strong style="color:var(--success)">Optimal absorption!</strong> The rate of absorption is high enough for efficient nutrient uptake — more surface area and a thinner barrier make this match the real anatomy of the small intestine!';
             } else if (isFlat && isThick) {
                 msg = 'A flat wall gives very small surface area, and a thick wall creates a long journey for nutrients. Very few nutrients can cross at the same time. Try folding the wall and making it thinner!';
             } else if (isFlat) {
