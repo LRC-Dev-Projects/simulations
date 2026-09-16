@@ -1470,9 +1470,7 @@
         function devInit() {
             simState = {
                 foodBlocks: [],
-                activityBlocks: [],
-                foodIndex: 0,
-                activityIndex: 0
+                activityBlocks: []
             };
             previouslyImbalanced = false;
 
@@ -1488,19 +1486,37 @@
         function devReset() {
             simState = {
                 foodBlocks: [],
-                activityBlocks: [],
-                foodIndex: 0,
-                activityIndex: 0
+                activityBlocks: []
             };
             previouslyImbalanced = false;
             updateSeesaw();
         }
 
+        function pickNextType(types, usedTypes, lastType) {
+            var counts = {};
+            types.forEach(function (t) { counts[t.label] = 0; });
+            usedTypes.forEach(function (t) { counts[t.label] = (counts[t.label] || 0) + 1; });
+            var lastLabel = lastType ? lastType.label : "";
+            var options = types.filter(function (t) { return t.label !== lastLabel; });
+            var totalWeight = 0;
+            var weights = options.map(function (t) {
+                var w = 1 / (counts[t.label] + 1);
+                totalWeight += w;
+                return w;
+            });
+            var roll = Math.random() * totalWeight;
+            var cumulative = 0;
+            for (var i = 0; i < options.length; i++) {
+                cumulative += weights[i];
+                if (roll <= cumulative) return options[i];
+            }
+            return options[options.length - 1];
+        }
+
         function addFood() {
             if (simState.foodBlocks.length >= MAX_BLOCKS) return;
-            var type = FOOD_TYPES[simState.foodIndex % FOOD_TYPES.length];
-            simState.foodBlocks.push(type);
-            simState.foodIndex++;
+            var lastType = simState.foodBlocks.length > 0 ? simState.foodBlocks[simState.foodBlocks.length - 1] : null;
+            simState.foodBlocks.push(pickNextType(FOOD_TYPES, simState.foodBlocks, lastType));
             playSound("click");
             updateSeesaw();
         }
@@ -1514,9 +1530,8 @@
 
         function addActivity() {
             if (simState.activityBlocks.length >= MAX_BLOCKS) return;
-            var type = ACTIVITY_TYPES[simState.activityIndex % ACTIVITY_TYPES.length];
-            simState.activityBlocks.push(type);
-            simState.activityIndex++;
+            var lastType = simState.activityBlocks.length > 0 ? simState.activityBlocks[simState.activityBlocks.length - 1] : null;
+            simState.activityBlocks.push(pickNextType(ACTIVITY_TYPES, simState.activityBlocks, lastType));
             playSound("click");
             updateSeesaw();
         }
