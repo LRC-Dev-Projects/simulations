@@ -591,24 +591,41 @@
             overflow: hidden;
         }
         .dropzone .zone-icon {
-            font-size: 1.3rem;
-            opacity: 0.85;
+            font-size: 1.5rem;
+            opacity: 0.9;
             pointer-events: none;
         }
         .zone-tag {
-            font-size: 0.66rem;
+            font-size: 0.72rem;
             font-weight: 800;
             letter-spacing: 0.12em;
             text-transform: uppercase;
             color: #e0b45c;
         }
         .zone-text {
-            font-size: 0.74rem;
+            font-size: 0.78rem;
             line-height: 1.3;
-            opacity: 0.92;
-            max-width: 84%;
+            opacity: 0.95;
+            max-width: 88%;
             color: var(--text-soft);
         }
+        /* Each zone's content sits inside its own ring band at a distinct
+           clock position so labels never pile up at the target centre. */
+        .zone-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+        #zoneCentre .zone-body { justify-content: center; }
+        #zoneRing1 .zone-body { justify-content: flex-start; padding-top: 14%; }
+        #zoneRing2 .zone-body { justify-content: flex-end; align-items: flex-end; padding-right: 12%; padding-bottom: 8%; }
+        #zoneRing3 .zone-body { justify-content: flex-end; align-items: flex-start; padding-left: 14%; padding-bottom: 4%; }
         /* Zone labels must never intercept drags or clicks — they sit inside
            the circular drop zones, which are the actual controls. */
         .dropzone * {
@@ -620,7 +637,77 @@
         #zoneRing3 { width: 100%; height: 100%; left: 0; top: 0; z-index: 10; }
         #zoneRing2 { width: 78%; height: 78%; left: 11%; top: 11%; z-index: 20; }
         #zoneRing1 { width: 56%; height: 56%; left: 22%; top: 22%; z-index: 30; }
-        #zoneCentre { width: 36%; height: 36%; left: 32%; top: 32%; z-index: 40; }
+        #zoneCentre { width: 40%; height: 40%; left: 30%; top: 30%; z-index: 40; }
+
+        /* ---- Floating ring cards ---- */
+        /* Filled supporting-detail sentences render in readable cards that
+           sit at distinct clock positions around the target, so they never
+           choke inside the thin ring bands or overlap each other. */
+        .zone-floats {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 45;
+        }
+        .zone-float {
+            position: absolute;
+            display: none;
+            max-width: 46%;
+            pointer-events: none;
+            box-sizing: border-box;
+            background: color-mix(in srgb, var(--bg) 88%, var(--surface));
+            border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+            border-left-width: 5px;
+            border-radius: 10px;
+            padding: 8px 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+            text-align: left;
+        }
+        .zone-float.show { display: block; }
+        .zone-float .float-tag {
+            display: block;
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+        .zone-float .float-text {
+            display: block;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            font-weight: 600;
+            color: var(--text);
+        }
+        #floatRing1 { left: 50%; top: 28%; transform: translate(-50%, -50%); }
+        #floatRing2 { left: 74%; top: 50%; transform: translate(-50%, -50%); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+        #floatRing3 { left: 26%; top: 50%; transform: translate(-50%, -50%); border-color: color-mix(in srgb, #e0b45c 45%, transparent); }
+        #floatRing1 .float-tag { color: #e0b45c; }
+        #floatRing2 .float-tag { color: var(--accent); }
+        #floatRing3 .float-tag { color: #e0b45c; }
+
+        .zone-hover-tip {
+            position: absolute;
+            left: 50%;
+            bottom: 8%;
+            transform: translateX(-50%);
+            z-index: 60;
+            display: none;
+            max-width: 88%;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--bg) 86%, #fff);
+            border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-align: center;
+            pointer-events: none;
+            white-space: normal;
+        }
+        .zone-hover-tip.show {
+            display: block;
+        }
 
         .dropzone.dragover {
             border-color: var(--accent);
@@ -638,15 +725,16 @@
             box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 40%, transparent);
         }
         .dropzone .zone-card-text {
-            font-size: clamp(0.72rem, 1.8vw, 0.82rem);
-            line-height: 1.3;
+            font-size: clamp(0.82rem, 2vw, 0.98rem);
+            line-height: 1.35;
             font-weight: 600;
             color: var(--text);
-            max-width: 88%;
-            background: color-mix(in srgb, var(--bg) 70%, transparent);
-            border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
-            border-radius: 8px;
-            padding: 6px 8px;
+            max-width: 92%;
+            background: color-mix(in srgb, var(--bg) 85%, var(--surface));
+            border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+            border-radius: 10px;
+            padding: 8px 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
         }
         .dropzone.filled.correct-zone[data-zone="centre"] .zone-card-text {
             border-color: rgba(224, 180, 92, 0.55);
@@ -892,13 +980,16 @@
         }
 
         /* ---- Zone star / reject -- */
+        .zone-body {
+            position: relative;
+        }
         .zone-star {
             position: absolute;
-            top: 6px;
-            right: 9px;
-            font-size: 0.9rem;
+            top: -14px;
+            right: -6px;
+            font-size: 1.1rem;
             color: var(--success);
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
         .dropzone.zone-reject {
             border-color: var(--danger);
@@ -1046,7 +1137,17 @@
                 display: none;
             }
             .dropzone .zone-card-text {
-                font-size: 0.68rem;
+                font-size: 0.76rem;
+            }
+            .zone-float {
+                max-width: 50%;
+                padding: 6px 10px;
+            }
+            #floatRing1 { top: 26%; }
+            #floatRing2 { left: 72%; }
+            #floatRing3 { left: 28%; }
+            .zone-float .float-text {
+                font-size: 0.82rem;
             }
         }
         /* Short/minimised windows: compact the board so the whole target
@@ -1069,7 +1170,7 @@
                 font-size: 0.68rem;
             }
             .dropzone .zone-card-text {
-                font-size: 0.72rem;
+                font-size: 0.8rem;
             }
         }
         @supports (height: 100dvh) {
@@ -1242,25 +1343,39 @@
                             <div class="target-wrap">
                                 <div class="target" id="targetView" role="group" aria-label="Information target with a bullseye and three supporting rings">
                                     <button class="dropzone zone-centre" id="zoneCentre" type="button" data-zone="centre" aria-label="Bullseye drop zone">
-                                        <span class="zone-icon" id="zoneCentreIcon" aria-hidden="true">◎</span>
-                                        <span class="zone-tag" id="zoneCentreTag">Bullseye</span>
-                                        <span class="zone-text" id="zoneCentreText">Drag the topic sentence here</span>
+                                        <span class="zone-body">
+                                            <span class="zone-icon" id="zoneCentreIcon" aria-hidden="true">◎</span>
+                                            <span class="zone-tag" id="zoneCentreTag">Bullseye</span>
+                                            <span class="zone-text" id="zoneCentreText">Drag the topic sentence here</span>
+                                        </span>
                                     </button>
                                     <button class="dropzone zone-ring" id="zoneRing1" type="button" data-zone="ring1" aria-label="Supporting ring 1 drop zone">
-                                        <span class="zone-icon" id="zoneRing1Icon" aria-hidden="true">◍</span>
-                                        <span class="zone-tag" id="zoneRing1Tag">Ring 1</span>
-                                        <span class="zone-text" id="zoneRing1Text">Drag a supporting detail here</span>
+                                        <span class="zone-body">
+                                            <span class="zone-icon" id="zoneRing1Icon" aria-hidden="true">◍</span>
+                                            <span class="zone-tag" id="zoneRing1Tag">Ring 1</span>
+                                            <span class="zone-text" id="zoneRing1Text">Drag a supporting detail here</span>
+                                        </span>
                                     </button>
                                     <button class="dropzone zone-ring" id="zoneRing2" type="button" data-zone="ring2" aria-label="Supporting ring 2 drop zone">
-                                        <span class="zone-icon" id="zoneRing2Icon" aria-hidden="true">◍</span>
-                                        <span class="zone-tag" id="zoneRing2Tag">Ring 2</span>
-                                        <span class="zone-text" id="zoneRing2Text">Drag a supporting detail here</span>
+                                        <span class="zone-body">
+                                            <span class="zone-icon" id="zoneRing2Icon" aria-hidden="true">◍</span>
+                                            <span class="zone-tag" id="zoneRing2Tag">Ring 2</span>
+                                            <span class="zone-text" id="zoneRing2Text">Drag a supporting detail here</span>
+                                        </span>
                                     </button>
                                     <button class="dropzone zone-ring" id="zoneRing3" type="button" data-zone="ring3" aria-label="Supporting ring 3 drop zone">
-                                        <span class="zone-icon" id="zoneRing3Icon" aria-hidden="true">◍</span>
-                                        <span class="zone-tag" id="zoneRing3Tag">Ring 3</span>
-                                        <span class="zone-text" id="zoneRing3Text">Drag a supporting detail here</span>
+                                        <span class="zone-body">
+                                            <span class="zone-icon" id="zoneRing3Icon" aria-hidden="true">◍</span>
+                                            <span class="zone-tag" id="zoneRing3Tag">Ring 3</span>
+                                            <span class="zone-text" id="zoneRing3Text">Drag a supporting detail here</span>
+                                        </span>
                                     </button>
+                                    <div class="zone-floats" id="zoneFloats" aria-hidden="true">
+                                        <div class="zone-float" id="floatRing1"></div>
+                                        <div class="zone-float" id="floatRing2"></div>
+                                        <div class="zone-float" id="floatRing3"></div>
+                                        <div class="zone-hover-tip" id="zoneHoverTip"></div>
+                                    </div>
                                 </div>
                                 <div class="hits-bar" id="hitsBar">
                                     <span class="hits-label">Hits</span>
@@ -1278,23 +1393,20 @@
                                 </div>
                                 <div class="feedback-area" id="feedbackArea" aria-live="polite"></div>
                                 <div class="game-actions" id="gameActions"></div>
+                                <div class="expansion-phase" id="expansionPhase" style="display:none;">
+                                    <div class="game-topbar">
+                                        <button class="game-btn" id="expBackBtn" type="button">← Back</button>
+                                        <div class="game-progress-text" id="expProgressText">Target 1 · Expansion Check</div>
+                                        <div></div>
+                                    </div>
+                                    <h3 class="expansion-heading">Expansion Check</h3>
+                                    <div class="expansion-prompt" id="expansionPrompt"></div>
+                                    <div class="expansion-question" id="expansionQuestion"></div>
+                                    <div class="feedback-area" id="expansionFeedback" aria-live="polite"></div>
+                                    <div class="expansion-choices" id="expansionChoices"></div>
+                                    <div class="game-actions" id="expansionActions"></div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="expansion-phase" id="expansionPhase" style="display:none;">
-                        <div class="game-topbar">
-                            <button class="game-btn" id="expBackBtn" type="button">← Back</button>
-                            <div class="game-progress-text" id="expProgressText">Target 1 · Expansion Check</div>
-                            <div></div>
-                        </div>
-                        <div class="expansion-content">
-                            <h3 class="expansion-heading">Expansion Check</h3>
-                            <div class="expansion-prompt" id="expansionPrompt"></div>
-                            <div class="expansion-question" id="expansionQuestion"></div>
-                            <div class="expansion-choices" id="expansionChoices"></div>
-                            <div class="feedback-area" id="expansionFeedback" aria-live="polite"></div>
-                            <div class="game-actions" id="expansionActions"></div>
                         </div>
                     </div>
                 </section>
@@ -1828,6 +1940,7 @@
                 el.classList.remove("filled", "correct-zone");
                 el.innerHTML = gameEls.zoneOriginal[key];
                 el.setAttribute("aria-label", zoneAria[key]);
+                hideFloat(key);
             });
 
             renderTask();
@@ -1874,17 +1987,48 @@
                 el.classList.remove("filled", "correct-zone");
                 el.innerHTML = gameEls.zoneOriginal[zoneKey];
                 el.setAttribute("aria-label", zoneAria[zoneKey]);
+                hideFloat(zoneKey);
                 return;
             }
             const card = findCard(cardId);
             const tag = card.kind === "topic" ? "Topic sentence" : "Supporting detail";
             const tagClass = card.kind === "topic" ? "tag-topic" : "tag-detail";
             el.classList.add("filled", "correct-zone");
-            el.innerHTML =
-                '<span class="zone-star" aria-hidden="true">&#9733;</span>' +
-                '<span class="zone-card-tag ' + tagClass + '">' + escapeHtml(tag) + "</span>" +
-                '<span class="zone-card-text">' + escapeHtml(card.text) + "</span>";
+            if (zoneKey === "centre") {
+                el.innerHTML =
+                    '<span class="zone-body">' +
+                    '<span class="zone-card-tag ' + tagClass + '">' + escapeHtml(tag) + "</span>" +
+                    '<span class="zone-card-text">' + escapeHtml(card.text) + "</span>" +
+                    "</span>";
+            } else {
+                el.innerHTML =
+                    '<span class="zone-body">' +
+                    '<span class="zone-star" aria-hidden="true">&#9733;</span>' +
+                    '<span class="zone-card-tag ' + tagClass + '">' + escapeHtml(tag) + "</span>" +
+                    "</span>";
+            }
             el.setAttribute("aria-label", tag + ": " + card.text);
+            showFloat(zoneKey, tag, card.text);
+        }
+
+        function floatElFor(zoneKey) {
+            return document.getElementById("float" + zoneKey.charAt(0).toUpperCase() + zoneKey.slice(1));
+        }
+
+        function showFloat(zoneKey, tag, text) {
+            const el = floatElFor(zoneKey);
+            if (!el) return;
+            el.className = "zone-float show";
+            el.innerHTML =
+                '<span class="float-tag">' + escapeHtml(tag) + "</span>" +
+                '<span class="float-text">' + escapeHtml(text) + "</span>";
+        }
+
+        function hideFloat(zoneKey) {
+            const el = floatElFor(zoneKey);
+            if (!el) return;
+            el.className = "zone-float";
+            el.innerHTML = "";
         }
 
         function renderHits() {
@@ -1948,7 +2092,7 @@
         function showMasteryCheck() {
             const root = document.getElementById("gameRoot");
             const phase = document.getElementById("expansionPhase");
-            if (root) root.style.display = "none";
+            if (root) root.style.display = "";
             if (phase) {
                 document.getElementById("expProgressText").textContent = "Mission · Mastery Check";
                 phase.style.display = "";
@@ -2357,8 +2501,8 @@
         }
 
         // Radius fractions of the full target radius, matching the CSS zones:
-        // centre 18% (box 36%), ring1 28% (box 56%), ring2 39% (box 78%), ring3 50%.
-        const ZONE_RADII = { centre: 0.18, ring1: 0.28, ring2: 0.39, ring3: 0.5 };
+        // centre 20% (box 40%), ring1 28% (box 56%), ring2 39% (box 78%), ring3 50%.
+        const ZONE_RADII = { centre: 0.20, ring1: 0.28, ring2: 0.39, ring3: 0.5 };
 
         function zoneFromPoint(x, y) {
             const t = gameEls.zones.centre.closest(".target").getBoundingClientRect();
@@ -2453,6 +2597,32 @@
                         showFeedback("info", '<div class="fb-row">Tap a sentence card first, then tap a ring or the bullseye to place it. On a keyboard: press Enter on a card, then arrow-navigate to a ring and press Enter.</div>');
                     }
                 });
+                el.addEventListener("mouseenter", () => {
+                    const tip = document.getElementById("zoneHoverTip");
+                    const filled = game.slots[key];
+                    if (filled) {
+                        const card = findCard(filled);
+                        const tag = card.kind === "topic" ? "Topic sentence" : "Supporting detail";
+                        showFloat(key, tag, card.text);
+                        if (tip) {
+                            tip.textContent = (key === "centre" ? "Bullseye" : "Ring " + key.slice(4)) +
+                                " · " + tag + " — “" + card.text + "”";
+                            tip.classList.add("show");
+                        }
+                    } else if (tip) {
+                        const hint = key === "centre"
+                            ? "Bullseye · drop the topic sentence here"
+                            : "Ring " + key.slice(4) + " · drop a supporting detail here";
+                        tip.textContent = hint;
+                        tip.classList.add("show");
+                    }
+                    el.classList.add("zone-hovering");
+                });
+                el.addEventListener("mouseleave", () => {
+                    const tip = document.getElementById("zoneHoverTip");
+                    if (tip) tip.classList.remove("show");
+                    el.classList.remove("zone-hovering");
+                });
             });
         }
 
@@ -2515,7 +2685,7 @@
         function showExpansionCheck() {
             expansionStep = "expansion";
             expansionCorrect = false;
-            document.getElementById("gameRoot").style.display = "none";
+            document.getElementById("gameRoot").style.display = "";
             document.getElementById("expansionPhase").style.display = "";
             document.getElementById("expProgressText").textContent = "Target 1 · Expansion Check";
             renderExpansionQuestion();
