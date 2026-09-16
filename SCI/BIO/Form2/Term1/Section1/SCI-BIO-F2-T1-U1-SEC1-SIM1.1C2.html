@@ -1497,7 +1497,10 @@
             types.forEach(function (t) { counts[t.label] = 0; });
             usedTypes.forEach(function (t) { counts[t.label] = (counts[t.label] || 0) + 1; });
             var lastLabel = lastType ? lastType.label : "";
-            var options = types.filter(function (t) { return t.label !== lastLabel; });
+            var options = types.filter(function (t) { return t.label !== lastLabel && counts[t.label] < 2; });
+            if (options.length === 0) {
+                options = types.filter(function (t) { return counts[t.label] < 2; });
+            }
             var totalWeight = 0;
             var weights = options.map(function (t) {
                 var w = 1 / (counts[t.label] + 1);
