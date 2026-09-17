@@ -1408,7 +1408,7 @@
                 closeInstructionsModal();
                 closeResetConfirmModal();
             }
-            if (event.key === " " && !event.repeat && simState.phase === "running") {
+            if (event.key === " " && !event.repeat && simState.phase === "running" || simState.phase === "results") {
                 const target = event.target;
                 const onEditable = target.closest("input, select, textarea");
                 if (onEditable && onEditable.id !== "tapBtn") return;
