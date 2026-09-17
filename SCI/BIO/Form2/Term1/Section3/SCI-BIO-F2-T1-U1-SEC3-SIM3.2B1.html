@@ -708,6 +708,24 @@
                     el.addEventListener("animationend", () => { el.classList.remove("lung-inhale", "lung-exhale"); });
                 }
             });
+
+            /* Show the scroll prompt only when the Check My Understanding
+               button is below the viewport (user is scrolled above it). */
+            window.addEventListener("scroll", updateScrollPrompt, { passive: true });
+        }
+
+        function updateScrollPrompt() {
+            const prompt = document.getElementById("scrollPrompt");
+            const checkWrap = document.getElementById("checkBtnWrap");
+            if (!prompt || !checkWrap) return;
+            /* Permanently hidden once answered correctly */
+            if (assessmentAnswered) { prompt.classList.add("hidden"); return; }
+            /* Hidden until the check button has been revealed */
+            if (checkWrap.classList.contains("hidden")) { prompt.classList.add("hidden"); return; }
+            const rect = checkWrap.getBoundingClientRect();
+            /* Button visible in the viewport → hide prompt; scrolled above it → show */
+            const buttonOnScreen = rect.top < window.innerHeight - 40 && rect.bottom > 0;
+            prompt.classList.toggle("hidden", buttonOnScreen);
         }
 
         function setButtonsDisabled(disabled) {
@@ -771,8 +789,7 @@
             if (exhaleCount === 3) {
                 const checkWrap = document.getElementById("checkBtnWrap");
                 if (checkWrap) checkWrap.classList.remove("hidden");
-                const prompt = document.getElementById("scrollPrompt");
-                if (prompt) prompt.classList.remove("hidden");
+                updateScrollPrompt();
             }
 
             /* Log entry */
@@ -943,6 +960,9 @@
                     result.innerHTML = '<strong style="color:var(--success);">&#10003; Correct!</strong> Flask B turned milky because exhaled air contains a higher percentage of carbon dioxide. This gas reacts with the clear limewater, causing the cloudy colour change. Flask A only receives room air, which has very little CO&#x2082;';
                     playSound("correct");
                     assessmentAnswered = true;
+                    /* Permanently hide the scroll prompt once answered correctly */
+                    const scrollPrompt = document.getElementById("scrollPrompt");
+                    if (scrollPrompt) scrollPrompt.classList.add("hidden");
                     submitBtn.classList.add("hidden");
                     closeBtn2.classList.add("hidden");
                     doneBtn.classList.remove("hidden");
