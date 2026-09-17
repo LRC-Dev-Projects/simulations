@@ -1,0 +1,1685 @@
+﻿<!DOCTYPE html>
+<!-- ============================================================
+     The Pressure Pump — SCI-BIO-F2-T1-U1-SEC3-SIM3.1B1
+     Built on blank-template v2.2.1
+     ============================================================ -->
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Pressure Pump</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0f1222;
+            --bg-soft: #171b31;
+            --surface: #1d2340;
+            --surface-2: #252d52;
+            --text: #eef2ff;
+            --text-soft: #c7d0f0;
+            --muted: #98a4c8;
+            --border: rgba(255, 255, 255, 0.12);
+            --accent: #7dd3fc;
+            --accent-2: #a78bfa;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #fb7185;
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+            --radius-xl: 24px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --focus: 0 0 0 3px rgba(125, 211, 252, 0.35);
+        }
+        html[data-theme="light"] {
+            color-scheme: light;
+            --bg: #f4f7ff;
+            --bg-soft: #e7edff;
+            --surface: #ffffff;
+            --surface-2: #eef3ff;
+            --text: #17203f;
+            --text-soft: #344267;
+            --muted: #5d6b95;
+            --border: rgba(23, 32, 63, 0.12);
+            --accent: #0ea5e9;
+            --accent-2: #7c3aed;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #e11d48;
+            --shadow: 0 18px 40px rgba(46, 64, 112, 0.14);
+            --focus: 0 0 0 3px rgba(14, 165, 233, 0.22);
+        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; font-family: Arial, Helvetica, sans-serif; background: radial-gradient(circle at top right, rgba(167,139,250,0.12), transparent 30%), radial-gradient(circle at top left, rgba(125,211,252,0.12), transparent 25%), var(--bg); color: var(--text); }
+        body { min-height: 100vh; padding: 16px; }
+        button, input, select { font: inherit; }
+        button { border: 0; cursor: pointer; transition: transform 0.18s ease, background 0.18s ease; }
+        button:hover { transform: translateY(-1px); }
+        button:focus-visible, input:focus-visible { outline: none; box-shadow: var(--focus); }
+
+        .app-shell { max-width: 1180px; margin: 0 auto; min-height: calc(100vh - 32px); display: flex; flex-direction: column; gap: 16px; }
+        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+        .brand-wrap { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .brand-badge { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; font-weight: 700; box-shadow: var(--shadow); }
+        .brand-copy { min-width: 0; }
+        .brand-copy h1, .brand-copy p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .brand-copy h1 { font-size: 1.08rem; }
+        .brand-copy p { color: var(--muted); margin-top: 2px; font-size: 0.92rem; }
+        .controls { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+        .control-btn, .primary-btn, .secondary-btn, .ghost-btn, .danger-btn { border-radius: 999px; padding: 11px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-icon { width: 1em; height: 1em; vertical-align: -0.125em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .control-btn, .secondary-btn { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+        .primary-btn { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: var(--shadow); }
+        .ghost-btn { background: transparent; color: var(--text-soft); border: 1px dashed var(--border); }
+        .danger-btn { background: color-mix(in srgb, var(--danger) 18%, var(--surface)); color: var(--text); border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent); }
+        .pulse-help { position: relative; }
+        .pulse-help::after { content: ""; position: absolute; inset: -4px; border-radius: 999px; border: 2px solid color-mix(in srgb, var(--warning) 70%, transparent); animation: pulseRing 1.7s infinite; pointer-events: none; }
+        @keyframes pulseRing { 0% { opacity: 0.9; transform: scale(0.98); } 70% { opacity: 0; transform: scale(1.12); } 100% { opacity: 0; } }
+
+        .screen { display: none; flex: 1; }
+        .screen.active { display: flex; }
+        .center-stage { flex: 1; display: grid; place-items: center; padding: 8px; }
+        .hero-card, .modal-card { width: min(100%, 920px); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); }
+        .hero-card { padding: clamp(24px, 4vw, 42px); text-align: center; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 8px 14px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--text-soft); border: 1px solid var(--border); }
+        .hero-card h2 { margin: 0 0 12px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; }
+        .hero-card p { width: min(100%, 700px); margin: 0 auto; color: var(--text-soft); font-size: 1.05rem; line-height: 1.65; }
+        .hero-actions { margin-top: 26px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+        .sim-layout { flex: 1; display: grid; place-items: center; padding: 8px; }
+        .sim-card { width: min(100%, 960px); padding: clamp(18px, 3vw, 28px); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); }
+
+        .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(6,10,20,0.64); z-index: 60; }
+        .modal.show { display: flex; }
+        .modal-card { padding: clamp(18px, 3vw, 30px); position: relative; max-height: min(90vh, 90dvh); overflow-y: auto; }
+        .close-btn { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 1.15rem; font-weight: 800; }
+        .modal-card h3 { margin: 0 0 12px; font-size: clamp(1.35rem, 2vw, 1.8rem); }
+        .modal-card p, .modal-card li { color: var(--text-soft); line-height: 1.65; }
+        .modal-card ul { padding-left: 20px; margin-top: 10px; }
+        .muted { color: var(--muted); }
+        .hidden { display: none !important; }
+        .button-row { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+        .footer-note { text-align: center; color: var(--muted); padding-bottom: 4px; font-size: 0.9rem; }
+
+        @media (max-width: 760px) { body { padding: 12px; } .topbar { padding: 12px; } .controls { width: 100%; justify-content: flex-start; } }
+
+        /* ============================================================
+           DEV-EDIT: SIM STYLES
+           ============================================================ */
+        .sim-main { display: flex; justify-content: center; align-items: flex-start; gap: 28px; width: 100%; }
+
+        .slider-col { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 40px; }
+        .slider-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+        .slider-end-label { font-size: 0.7rem; line-height: 1.2; color: var(--muted); text-align: center; white-space: nowrap; }
+        .slider-end-label.relaxed { padding-top: 6px; }
+        .slider-end-label.contracted { padding-top: 6px; }
+        .vert-slider { writing-mode: vertical-lr; direction: rtl; width: 44px; height: 300px; accent-color: var(--accent); cursor: pointer; }
+        .slider-row { position: relative; display: flex; align-items: flex-start; }
+
+        .cavity-col { position: relative; }
+        .cavity-canvas-wrap { width: 420px; height: 380px; position: relative; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+        .cavity-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+
+        .gauge-col { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 40px; }
+        .gauge-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+        .gauge-wrap { width: 60px; height: 300px; position: relative; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+        .gauge-wrap canvas { width: 100%; height: 100%; display: block; }
+        .gauge-label { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-align: center; min-height: 2em; }
+
+        .sim-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 16px; padding: 16px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+        .state-readout { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 0.85rem; }
+        .readout-item { color: var(--text-soft); }
+        .readout-item strong { color: var(--text); }
+
+        .caption-bar { margin-top: 12px; padding: 12px 16px; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); border-radius: var(--radius-md); font-size: 0.92rem; color: var(--text-soft); line-height: 1.5; min-height: 3em; }
+
+        .assessment-section { margin-top: 16px; padding: 20px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+        .assessment-section h3 { margin: 0 0 10px; font-size: 1.05rem; color: var(--text); }
+        .assessment-question { font-size: 0.95rem; color: var(--text-soft); margin-bottom: 12px; }
+        .assessment-choices { display: flex; flex-direction: column; gap: 8px; }
+        .assessment-choice { padding: 12px 16px; background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-md); cursor: pointer; font-size: 0.92rem; color: var(--text-soft); text-align: left; transition: border-color 0.2s, background 0.2s; min-height: 44px; }
+        .assessment-choice:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+        .assessment-choice:focus-visible { box-shadow: var(--focus); outline: none; }
+        .assessment-choice.correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 15%, var(--surface)); color: var(--text); }
+        .assessment-choice.incorrect { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, var(--surface)); color: var(--text); }
+        .assessment-choice.disabled { pointer-events: none; opacity: 0.6; }
+        .assessment-feedback { margin-top: 12px; padding: 12px 16px; border-radius: var(--radius-md); font-size: 0.92rem; line-height: 1.6; display: none; }
+        .assessment-feedback.correct { display: block; background: color-mix(in srgb, var(--success) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--success) 30%, transparent); color: var(--text-soft); }
+        .assessment-feedback.incorrect { display: block; background: color-mix(in srgb, var(--danger) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent); color: var(--text-soft); }
+        .hint-text { margin-top: 10px; padding: 10px 14px; background: color-mix(in srgb, var(--warning) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-soft); line-height: 1.5; }
+        .completion-banner { margin-top: 16px; padding: 20px; background: color-mix(in srgb, var(--success) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--success) 30%, transparent); border-radius: var(--radius-lg); text-align: center; }
+        .completion-banner h3 { margin: 0 0 8px; font-size: 1.15rem; color: var(--success); }
+        .completion-banner p { margin: 0; font-size: 0.92rem; color: var(--text-soft); line-height: 1.6; }
+
+        .label-toggle-btn { border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 0.88rem; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px; }
+        .label-toggle-btn.active { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); border-color: var(--accent); color: var(--accent); }
+
+        .cavity-canvas-wrap { cursor: default; }
+        .hotspot-tooltip { position: absolute; z-index: 20; max-width: 220px; padding: 10px 12px; border-radius: 10px; background: var(--surface); color: var(--text); border: 1px solid var(--accent); font-size: 0.85rem; line-height: 1.5; box-shadow: 0 6px 20px rgba(0,0,0,0.25); pointer-events: none; }
+        .hotspot-tooltip .hs-title { display: block; font-weight: 800; color: var(--accent); margin-bottom: 3px; font-size: 0.92rem; }
+        .cavity-hint { display: block; margin-top: 8px; font-size: 0.78rem; color: var(--muted); text-align: center; }
+
+        .airflow-indicator { display: inline-flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 700; color: var(--muted); padding: 6px 10px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); }
+        .airflow-indicator .airflow-arrow { display: inline-block; font-size: 1.1rem; }
+        .airflow-indicator.in { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+        .airflow-indicator.out { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+
+        .why-btn { border-radius: 999px; padding: 5px 12px; font-size: 0.78rem; font-weight: 700; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); cursor: pointer; }
+        .why-btn:hover { border-color: var(--warning); color: var(--warning); }
+        .why-btn.active { background: color-mix(in srgb, var(--warning) 14%, var(--surface)); border-color: var(--warning); color: var(--warning); }
+
+        .scenario-card { margin-top: 12px; padding: 14px 18px; background: color-mix(in srgb, var(--danger) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--danger) 25%, transparent); border-radius: var(--radius-md); font-size: 0.92rem; color: var(--text-soft); line-height: 1.6; }
+        .scenario-card .sc-title { font-weight: 700; color: var(--danger); margin-bottom: 2px; }
+
+        .why-panel { margin-top: 12px; padding: 14px 18px; background: color-mix(in srgb, var(--warning) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent); border-radius: var(--radius-md); font-size: 0.92rem; color: var(--text-soft); line-height: 1.6; }
+        .why-panel .why-title { display: block; font-weight: 700; color: var(--warning); margin-bottom: 4px; }
+
+        .results-table { width: 100%; max-width: 520px; margin: 12px auto 0; border-collapse: collapse; text-align: left; }
+        .results-table th, .results-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 0.92rem; }
+        .results-table th { color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.78rem; }
+        .result-mark.correct-mark { color: var(--success); font-weight: 700; }
+        .result-mark.incorrect-mark { color: var(--danger); font-weight: 700; }
+        .restart-result-btn { margin-top: 16px; padding: 11px 20px; border-radius: 999px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; cursor: pointer; }
+        .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+        .result-actions .restart-result-btn { margin-top: 16px; }
+        .print-result-btn { margin-top: 16px; padding: 11px 20px; border-radius: 999px; font-weight: 700; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); cursor: pointer; }
+        .print-result-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .recap-card { margin-top: 16px; padding: 16px 18px; background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); border-radius: var(--radius-md); text-align: left; }
+        .recap-card .recap-title { font-weight: 700; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .recap-card ul { margin: 0; padding-left: 18px; color: var(--text-soft); line-height: 1.7; font-size: 0.9rem; }
+        .confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
+
+        .sim-extras { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 12px; padding: 14px 16px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+        .sim-extras label { font-size: 0.82rem; font-weight: 700; color: var(--text-soft); }
+        .auto-btn { border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 0.88rem; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px; }
+        .auto-btn.active { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: var(--accent); color: var(--accent); }
+        .obstruction-btn { border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 0.88rem; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px; }
+        .obstruction-btn.active { background: color-mix(in srgb, var(--danger) 18%, var(--surface)); border-color: var(--danger); color: var(--danger); }
+
+        .graph-section { margin-top: 12px; padding: 14px 16px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+        .graph-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .graph-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+        .graph-legend { display: flex; gap: 14px; font-size: 0.75rem; color: var(--muted); }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-swatch { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+        .graph-wrap { width: 100%; height: 90px; position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+        .graph-wrap canvas { width: 100%; height: 100%; display: block; }
+
+        .walkthrough-banner { padding: 18px 20px; background: color-mix(in srgb, var(--accent-2) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent-2) 22%, transparent); border-radius: var(--radius-lg); margin-bottom: 14px; }
+        .walkthrough-progress { font-size: 0.78rem; font-weight: 700; color: var(--accent-2); margin-bottom: 8px; }
+        .walkthrough-text { font-size: 0.95rem; color: var(--text-soft); line-height: 1.65; margin-bottom: 14px; }
+        .walkthrough-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .q-progress { display: flex; gap: 7px; margin-bottom: 12px; }
+        .q-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border); transition: background 0.25s; }
+        .q-dot.active { background: var(--accent); }
+        .q-dot.correct { background: var(--success); }
+        .q-dot.incorrect { background: var(--danger); }
+
+        @media (max-width: 700px) {
+            .sim-main { gap: 14px; flex-wrap: wrap; }
+            .cavity-canvas-wrap { width: 300px; height: 280px; }
+            .vert-slider { height: 220px; }
+            .gauge-wrap { height: 220px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="brand-wrap">
+                <div class="brand-badge" id="brandBadge">SIM</div>
+                <div class="brand-copy">
+                    <h1 id="brandTitle">Simulation Title Placeholder</h1>
+                    <p id="brandSubtitle">Offline interactive learning shell</p>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="control-btn pulse-help" id="helpBtn" aria-label="Open instructions">Help</button>
+                <button class="control-btn" id="themeToggleBtn" aria-label="Switch theme">Dark</button>
+                <button class="control-btn" id="fullscreenBtn" aria-label="Toggle fullscreen"><svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg> Full Screen</button>
+                <button class="danger-btn" id="resetBtn" aria-label="Reset simulation"><svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg> Reset</button>
+            </div>
+        </header>
+
+        <main class="screen active" id="homeScreen">
+            <div class="center-stage">
+                <section class="hero-card">
+                    <div class="eyebrow" id="homeEyebrow">Biology</div>
+                    <h2 id="homeTitle">The Pressure Pump</h2>
+                    <p id="homeDescription">Explore how the diaphragm, ribs, and air pressure work together during breathing. Use the slider to move the diaphragm and observe the changes.</p>
+                    <div class="hero-actions">
+                        <button class="primary-btn" id="startBtn">Start</button>
+                        <button class="secondary-btn" id="openInstructionsBtn">Read Instructions</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <main class="screen" id="simScreen">
+            <div class="sim-layout">
+                <section class="sim-card" id="simContainer"></section>
+            </div>
+        </main>
+
+        <div class="footer-note">The Pressure Pump — SCI-BIO-F2-T1-U1-SEC3-SIM3.1B1</div>
+    </div>
+
+    <div class="modal" id="instructionsModal" role="dialog" aria-modal="true" aria-labelledby="instructionsHeading">
+        <section class="modal-card">
+            <button class="close-btn" id="closeInstructionsBtn" aria-label="Close instructions">&times;</button>
+            <h3 id="instructionsHeading">How to Use This Simulation</h3>
+            <div id="instructionsBody"></div>
+            <div class="button-row" style="margin-top: 18px; justify-content: flex-start;">
+                <button class="primary-btn" id="gotItBtn">Got it</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal" id="resetConfirmModal" role="dialog" aria-modal="true" aria-labelledby="resetConfirmHeading">
+        <section class="modal-card">
+            <button class="close-btn" id="closeResetConfirmBtn" aria-label="Close reset confirmation">&times;</button>
+            <h3 id="resetConfirmHeading">Reset simulation?</h3>
+            <p>This will clear your current progress and return you to the home screen.</p>
+            <div class="button-row" style="margin-top: 18px; justify-content: flex-start;">
+                <button class="secondary-btn" id="cancelResetBtn">Cancel</button>
+                <button class="danger-btn" id="confirmResetBtn">Reset</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        "use strict";
+        document.addEventListener("submit", function (e) { e.preventDefault(); }, true);
+
+        /* ============================================================
+           DEV-EDIT: SIM CONFIG
+           ============================================================ */
+        const SIM_CONFIG = {
+            templateVersion: "2.2.1",
+            simId: "the-pressure-pump",
+            title: "The Pressure Pump",
+            subtitle: "Biology — Breathing Mechanics",
+            badgeText: "BIO",
+            homeEyebrow: "Biology",
+            homeDescription: "Explore how the diaphragm, ribs, and air pressure work together during breathing. Use the slider to move the diaphragm and observe the changes.",
+            instructions: [
+                "Move the Diaphragm Position slider up and down.",
+                "Observe how the ribs, chest volume, and air pressure change.",
+                "Watch the blue air particles flow in and out through the trachea.",
+                "Use Auto-Breathe to watch the full breathing cycle automatically.",
+                "Try Obstructed Airway mode to see how a narrowed airway affects breathing.",
+                "Read the Volume-Pressure graph to see the inverse relationship.",
+                "Answer the three assessment questions when you are ready."
+            ]
+        };
+
+        /* ============================================================
+           CHROME — DO NOT EDIT
+           ============================================================ */
+        const state = { currentScreen: "home", theme: "dark" };
+        const dom = {
+            html: document.documentElement,
+            brandBadge: document.getElementById("brandBadge"),
+            brandTitle: document.getElementById("brandTitle"),
+            brandSubtitle: document.getElementById("brandSubtitle"),
+            homeEyebrow: document.getElementById("homeEyebrow"),
+            homeTitle: document.getElementById("homeTitle"),
+            homeDescription: document.getElementById("homeDescription"),
+            homeScreen: document.getElementById("homeScreen"),
+            simScreen: document.getElementById("simScreen"),
+            simContainer: document.getElementById("simContainer"),
+            startBtn: document.getElementById("startBtn"),
+            openInstructionsBtn: document.getElementById("openInstructionsBtn"),
+            audioBtn: null,
+            helpBtn: document.getElementById("helpBtn"),
+            themeToggleBtn: document.getElementById("themeToggleBtn"),
+            fullscreenBtn: document.getElementById("fullscreenBtn"),
+            resetBtn: document.getElementById("resetBtn"),
+            instructionsModal: document.getElementById("instructionsModal"),
+            instructionsBody: document.getElementById("instructionsBody"),
+            closeInstructionsBtn: document.getElementById("closeInstructionsBtn"),
+            gotItBtn: document.getElementById("gotItBtn"),
+            resetConfirmModal: document.getElementById("resetConfirmModal"),
+            closeResetConfirmBtn: document.getElementById("closeResetConfirmBtn"),
+            cancelResetBtn: document.getElementById("cancelResetBtn"),
+            confirmResetBtn: document.getElementById("confirmResetBtn")
+        };
+
+        initializeApp();
+
+        function initializeApp() {
+            try { Object.keys(localStorage).filter((k) => k.indexOf(SIM_CONFIG.simId + "-") === 0).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
+            applyConfigToUI(); bindEvents(); renderInstructions(); loadTheme(); loadHelpSeen();
+            setTimeout(() => openInstructionsModal(), 300);
+        }
+
+        function loadHelpSeen() { const s = storageGet(SIM_CONFIG.simId + "-help-seen"); if (s === "true") dom.helpBtn.classList.remove("pulse-help"); }
+        function applyConfigToUI() { document.title = SIM_CONFIG.title; dom.brandBadge.textContent = SIM_CONFIG.badgeText; dom.brandTitle.textContent = SIM_CONFIG.title; dom.brandSubtitle.textContent = SIM_CONFIG.subtitle; dom.homeEyebrow.textContent = SIM_CONFIG.homeEyebrow; dom.homeTitle.textContent = SIM_CONFIG.title; dom.homeDescription.textContent = SIM_CONFIG.homeDescription; }
+
+        function bindEvents() {
+            dom.startBtn.addEventListener("click", () => { showScreen("sim"); devInit(); });
+            dom.openInstructionsBtn.addEventListener("click", openInstructionsModal);
+            dom.helpBtn.addEventListener("click", () => { dom.helpBtn.classList.remove("pulse-help"); storageSet(SIM_CONFIG.simId + "-help-seen", "true"); openInstructionsModal(); });
+            dom.closeInstructionsBtn.addEventListener("click", closeInstructionsModal);
+            dom.gotItBtn.addEventListener("click", closeInstructionsModal);
+            dom.instructionsModal.addEventListener("click", (e) => { if (e.target === dom.instructionsModal) closeInstructionsModal(); });
+            dom.themeToggleBtn.addEventListener("click", toggleTheme);
+            dom.fullscreenBtn.addEventListener("click", toggleFullscreen);
+            dom.resetBtn.addEventListener("click", openResetConfirmModal);
+            dom.closeResetConfirmBtn.addEventListener("click", closeResetConfirmModal);
+            dom.cancelResetBtn.addEventListener("click", closeResetConfirmModal);
+            dom.confirmResetBtn.addEventListener("click", () => { devReset(); showScreen("home"); closeResetConfirmModal(); });
+            dom.resetConfirmModal.addEventListener("click", (e) => { if (e.target === dom.resetConfirmModal) closeResetConfirmModal(); });
+            document.addEventListener("fullscreenchange", updateFullscreenButton);
+            document.addEventListener("keydown", handleKeyShortcuts);
+        }
+
+        function renderInstructions() {
+            const intro = document.createElement("p"); intro.textContent = "Here is how this simulation works:";
+            const list = document.createElement("ul");
+            SIM_CONFIG.instructions.forEach((item) => { const li = document.createElement("li"); li.textContent = item; list.appendChild(li); });
+            dom.instructionsBody.replaceChildren(intro, list);
+        }
+
+        function openInstructionsModal() { dom.instructionsModal.classList.add("show"); }
+        function closeInstructionsModal() { dom.instructionsModal.classList.remove("show"); }
+        function openResetConfirmModal() { dom.resetConfirmModal.classList.add("show"); }
+        function closeResetConfirmModal() { dom.resetConfirmModal.classList.remove("show"); }
+        function showScreen(name) { state.currentScreen = name; dom.homeScreen.classList.toggle("active", name === "home"); dom.simScreen.classList.toggle("active", name === "sim"); window.scrollTo({ top: 0, left: 0, behavior: "auto" }); }
+
+        function toggleTheme() { state.theme = state.theme === "dark" ? "light" : "dark"; dom.html.setAttribute("data-theme", state.theme); updateThemeToggleLabel(); storageSet(SIM_CONFIG.simId + "-theme", state.theme); }
+        function loadTheme() { const s = storageGet(SIM_CONFIG.simId + "-theme"); if (s === "light" || s === "dark") { state.theme = s; } else { state.theme = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark"; } dom.html.setAttribute("data-theme", state.theme); updateThemeToggleLabel(); }
+        function updateThemeToggleLabel() { const tl = state.theme === "dark"; dom.themeToggleBtn.textContent = tl ? "Light Mode" : "Dark Mode"; dom.themeToggleBtn.setAttribute("aria-label", tl ? "Switch to light mode" : "Switch to dark mode"); }
+
+        async function toggleFullscreen() { try { if (!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); } catch (e) {} }
+        const FS_ENTER = '<svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg> Full Screen';
+        const FS_EXIT = '<svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg> Exit Full Screen';
+        function updateFullscreenButton() { dom.fullscreenBtn.innerHTML = document.fullscreenElement ? FS_EXIT : FS_ENTER; }
+        function handleKeyShortcuts(e) { if (e.key === "Escape") { closeInstructionsModal(); closeResetConfirmModal(); } }
+        function storageGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+        function storageSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
+        /* ============================================================
+           DEV-EDIT: SIM LOGIC
+           ============================================================ */
+        let simState = null;
+        let animFrame = null;
+        let cavityCanvas, cavityCtx;
+        let gaugeCanvas, gaugeCtx;
+        let graphCanvas, graphCtx;
+
+        const WALKTHROUGH_STEPS = [
+            "Welcome to The Pressure Pump! This simulation shows how your diaphragm, ribs, and air pressure work together during breathing.",
+            "Use the Diaphragm Position slider to move it DOWN slowly. Watch how the ribs, lungs, and diaphragm change in the chest cavity.",
+            "Look at the Air Pressure gauge on the right. What zone does the pointer enter when the diaphragm moves down?",
+            "Watch the blue air particles flowing through the trachea. Which direction do they travel?",
+            "Try the Auto-Breathe button to watch the full breathing cycle automatically. You can also toggle Obstructed Airway to see what happens when the airway is narrowed.",
+            "Observe the Volume & Pressure graph below. Notice how the two lines move in opposite directions. You are ready for the assessment!"
+        ];
+
+        const QUESTIONS = [
+            {
+                question: "What happens to the air pressure immediately after the diaphragm moves down?",
+                choices: [
+                    "The air pressure inside the chest decreases.",
+                    "The air pressure inside the chest increases.",
+                    "The air pressure stays exactly the same.",
+                    "The ribs move inward and reduce the space."
+                ],
+                correctIndex: 0,
+                feedbackCorrect: "Your observation is correct! When the diaphragm contracts and moves downwards, the volume inside the chest cavity increases. This extra space causes the internal air pressure to drop. Because the pressure inside the lungs is now lower than the pressure outside the body, air is drawn inwards to balance it out.",
+                feedbackIncorrect: "Think about what happens to the space inside the chest when the diaphragm moves downward.",
+                hint: "Think about what happens to the volume of the chest cavity when the diaphragm moves down. How does a change in volume affect air pressure?"
+            },
+            {
+                question: "What happens to the rib position during inhalation?",
+                choices: [
+                    "The ribs move upward and outward.",
+                    "The ribs move downward and inward.",
+                    "The ribs stay in the same position.",
+                    "The ribs pull the diaphragm upward."
+                ],
+                correctIndex: 0,
+                feedbackCorrect: "Correct! During inhalation, the intercostal muscles contract and pull the ribs upward and outward. This increases the width of the chest cavity, contributing to the increase in volume.",
+                feedbackIncorrect: "Watch the rib animation carefully when you move the slider down. The ribs move to create more space in the chest.",
+                hint: "Watch the rib lines in the chest cavity carefully as you move the slider down. Do they spread apart or come together?"
+            },
+            {
+                question: "Why does air flow into the lungs during inhalation?",
+                choices: [
+                    "Because the internal air pressure drops below the outside pressure.",
+                    "Because the diaphragm pushes air in directly.",
+                    "Because the ribs squeeze the trachea open.",
+                    "Because the lungs generate their own suction force."
+                ],
+                correctIndex: 0,
+                feedbackCorrect: "Correct! Air always flows from areas of higher pressure to areas of lower pressure. When the diaphragm moves down and the chest expands, the pressure inside the lungs becomes lower than the atmospheric pressure outside, so air rushes in to equalise.",
+                feedbackIncorrect: "Air moves from high pressure to low pressure. Think about what happens to the pressure inside the lungs compared to the pressure outside the body.",
+                hint: "Air always moves from high pressure to low pressure. What happens to the pressure inside the lungs compared to outside?"
+            },
+            {
+                question: "What happens during EXHALATION?",
+                choices: [
+                    "The diaphragm relaxes and moves up (domed), the chest volume decreases, and air flows out.",
+                    "The diaphragm contracts and moves down, pulling air in.",
+                    "The ribs move upward and outward, increasing volume.",
+                    "The trachea swells up, forcing air out."
+                ],
+                correctIndex: 0,
+                feedbackCorrect: "Correct! During exhalation the diaphragm relaxes and returns to its domed shape, the ribs move down and in, and the chest volume shrinks. This raises the pressure inside the lungs above the outside pressure, pushing air out.",
+                feedbackIncorrect: "Think about the opposite of inhalation. What happens to the diaphragm, the chest volume, and the air when you breathe out?",
+                hint: "Exhalation is the reverse of inhalation. What happens to the diaphragm, the chest volume, and the direction the air moves?"
+            },
+            {
+                question: "In the Obstructed Airway mode, the trachea becomes narrowed. Which of these is the most likely result?",
+                choices: [
+                    "Air moves more slowly and with greater difficulty through the airway.",
+                    "Air moves faster because it is squeezed through a smaller tube.",
+                    "The diaphragm stops moving completely.",
+                    "More oxygen is absorbed because the air speeds up."
+                ],
+                correctIndex: 0,
+                feedbackCorrect: "Correct! A narrowed airway offers more resistance, so air flows more slowly and it becomes harder to move air in and out. This is similar to what happens during an asthma attack, making breathing feel difficult.",
+                feedbackIncorrect: "A narrower tube creates more resistance to the flow. What does that mean for how easily the air moves?",
+                hint: "Compare how the particles move in Normal vs. Obstructed Airway mode. A narrower tube makes it harder for air to get through."
+            },
+            {
+                question: "Look at the Volume & Pressure graph. Which statement best describes the relationship you see?",
+                choices: [
+                    "Volume and pressure move in opposite directions \u2014 when one rises, the other falls.",
+                    "Volume and pressure always rise together.",
+                    "Volume and pressure stay constant over time.",
+                    "The graph shows that pressure depends only on the obstruction setting."
+                ],
+                correctIndex: 0,
+                feedbackCorrect: "Correct! The graph shows an inverse relationship: when the chest volume increases, the pressure inside decreases, and when the volume decreases, the pressure rises. This is the key to understanding why air moves in and out.",
+                feedbackIncorrect: "Watch the two graph lines again. When the volume line goes up, what does the pressure line do?",
+                hint: "Watch the two coloured lines carefully. As the green Volume line goes up, what happens to the red Pressure line?"
+            }
+        ];
+
+        const HOTSPOT_INFO = {
+            trachea: {
+                title: "Trachea (windpipe)",
+                text: "A tube that carries air between the mouth/nose and the lungs. During inhalation, air travels down through it; during exhalation, air travels back up. When it narrows (obstruction), airflow is harder."
+            },
+            diaphragm: {
+                title: "Diaphragm",
+                text: "A dome-shaped muscle below the lungs. When it contracts it moves down and flattens, increasing chest volume and lowering pressure to pull air IN. When it relaxes it domes up, decreasing volume and raising pressure to push air OUT."
+            },
+            ribs: {
+                title: "Ribs & rib cage",
+                text: "The intercostal muscles between the ribs help expand the chest. During inhalation the rib cage moves up and out; during exhalation it moves down and in, helping to change lung volume."
+            },
+            lungs: {
+                title: "Lungs",
+                text: "Elastic, spongy organs that fill with air when pressure inside drops below outside pressure, and empty when pressure rises. They do not have muscles of their own \u2014 the diaphragm and ribs drive the changes."
+            }
+        };
+
+        function shuffleIndices(n) {
+            const arr = [];
+            for (let i = 0; i < n; i++) arr.push(i);
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+            }
+            return arr;
+        }
+
+        function devInit() {
+            /* Fresh session: clear leftover progress from a previous session so a
+               reload always starts cleanly (walkthrough, completion, hints, time). */
+            ["walkthroughDone", "completion", "questionsCorrect", "questionsTotal", "totalAttempts", "firstAttemptCorrect", "hintUsed", "timeOnTask", "finalMastery"].forEach(function (k) {
+                try { sessionStorage.removeItem(SIM_CONFIG.simId + ":" + k); } catch (e) {}
+            });
+            buildSimUI();
+            simState = {
+                diaphragmPos: 0,
+                smoothPos: 0,
+                particles: [],
+                lastTime: 0,
+                pressureLabel: "Equal to outside",
+                phase: "exhaled",
+                smoothPressure: 50,
+                volumeHistory: [],
+                pressureHistory: [],
+                autoBreathing: false,
+                autoPhase: 0,
+                obstructed: false,
+                showLabels: true,
+                lungFill: 0,
+                hotspots: [],
+                hoverHotspot: null,
+                pinnedHotspot: null,
+                walkthroughStep: 0,
+                walkthroughDone: false,
+                currentQuestion: 0,
+                questionAnswered: false,
+                questionAttempts: [0, 0, 0, 0, 0, 0],
+                questionCorrectCount: 0,
+                questionResults: [],
+                choiceOrder: QUESTIONS.map(function (q) { return shuffleIndices(q.choices.length); }),
+                hintUsed: false,
+                startTime: Date.now()
+            };
+            initCanvases();
+            startAnimation();
+
+            if (storageGet(SIM_CONFIG.simId + ":walkthroughDone") === "true") {
+                simState.walkthroughDone = true;
+                document.getElementById("assessmentSection").style.display = "block";
+                renderQuestion(0);
+            } else {
+                document.getElementById("walkthroughBanner").style.display = "block";
+                renderWalkthroughStep();
+            }
+        }
+
+        function devReset() {
+            if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+            simState = null;
+            dom.simContainer.innerHTML = "";
+        }
+
+        function buildSimUI() {
+            dom.simContainer.innerHTML = `
+                <div class="walkthrough-banner" id="walkthroughBanner" style="display:none;"></div>
+                <div class="sim-main">
+                    <div class="slider-col">
+                        <span class="slider-title">Diaphragm Position</span>
+                        <span class="slider-end-label relaxed">Relaxed (Up)</span>
+                        <div class="slider-row">
+                            <input type="range" id="diaphragmSlider" class="vert-slider" min="0" max="100" value="0" step="1" orient="vertical" aria-label="Diaphragm Position: Up is Relaxed, Down is Contracted">
+                        </div>
+                        <span class="slider-end-label contracted">Contracted (Down)</span>
+                    </div>
+                    <div class="cavity-col">
+                        <div class="cavity-canvas-wrap">
+                            <canvas id="cavityCanvas"></canvas>
+                            <div class="hotspot-tooltip" id="hotspotTooltip" style="display:none;"></div>
+                        </div>
+                        <span class="cavity-hint">Click a part (trachea, ribs, diaphragm, lungs) to learn more</span>
+                    </div>
+                    <div class="gauge-col">
+                        <span class="gauge-title">Air Pressure</span>
+                        <div class="gauge-wrap"><canvas id="gaugeCanvas"></canvas></div>
+                        <span class="gauge-label" id="gaugeLabel">Equal to outside</span>
+                    </div>
+                </div>
+                <div class="sim-controls">
+                    <div class="state-readout" id="stateReadout">
+                        <div class="readout-item"><strong>Diaphragm:</strong> Relaxed (domed)</div>
+                        <div class="readout-item"><strong>Ribs:</strong> Down and in</div>
+                        <div class="readout-item"><strong>Chest Volume:</strong> Low</div>
+                        <div class="readout-item"><strong>Airflow:</strong> None</div>
+                    </div>
+                </div>
+                <div class="sim-extras">
+                    <button class="auto-btn" id="autoBreathBtn" aria-label="Toggle auto-breathe">&#9654; Auto-Breathe</button>
+                    <button class="obstruction-btn" id="obstructionBtn" aria-label="Toggle obstructed airway">&#9711; Normal Airway</button>
+                    <button class="label-toggle-btn" id="labelToggleBtn" aria-label="Toggle anatomy labels">&#128300; Labels: On</button>
+                    <span class="airflow-indicator" id="airflowIndicator" aria-live="polite"><span class="airflow-arrow">&#8212;&#8212;</span> No airflow</span>
+                </div>
+                <div class="scenario-card" id="scenarioCard" style="display:none;">
+                    <span class="sc-title">&#9888; Obstructed airway \u2014 the real-world link (asthma)</span>
+                    <p>When the airway narrows \u2014 as in an asthma attack \u2014 the tube becomes harder to get air through. This adds resistance, so air moves more slowly and it takes more effort to breathe in and out. The same volume of air is harder to move, which is why a person may feel short of breath or wheeze while trying to breathe.</p>
+                </div>
+                <div class="graph-section">
+                    <div class="graph-header">
+                        <span class="graph-title">Volume &amp; Pressure Over Time</span>
+                        <div class="graph-legend">
+                            <span class="legend-item"><span class="legend-swatch" style="background:#34d399;"></span> Volume</span>
+                            <span class="legend-item"><span class="legend-swatch" style="background:#fb7185;"></span> Pressure</span>
+                            <button class="why-btn" id="whyBtn" aria-expanded="false">&#10067; Why?</button>
+                        </div>
+                    </div>
+                    <div class="graph-wrap"><canvas id="graphCanvas"></canvas></div>
+                    <div class="why-panel" id="whyPanel" style="display:none;">
+                        <span class="why-title">Why do Volume and Pressure move in opposite directions?</span>
+                        <span>This is Boyle\u2019s law: for a fixed amount of gas, when the space (volume) gets bigger, the pressure gets smaller, and when the space gets smaller, the pressure gets bigger. So when the diaphragm moves down and the chest expands, volume rises and pressure falls \u2014 pulling air in. When the chest shrinks back, volume falls and pressure rises \u2014 pushing air out.</span>
+                    </div>
+                </div>
+                <div class="caption-bar" id="captionBar" role="status" aria-live="polite">
+                    Exhalation complete. The diaphragm is relaxed and domed. Air pressure inside the chest is equal to the pressure outside.
+                </div>
+                <div class="assessment-section" id="assessmentSection" style="display:none;">
+                    <div class="q-progress" id="qProgress"></div>
+                    <h3 id="assessHeading">Question 1 of 3</h3>
+                    <p class="assessment-question" id="assessQuestion"></p>
+                    <div class="assessment-choices" id="assessmentChoices"></div>
+                    <div class="button-row" style="margin-top: 10px; justify-content: flex-start;">
+                        <button class="ghost-btn" id="hintBtn">Hint</button>
+                        <button class="secondary-btn hidden" id="retryBtn">Try Again</button>
+                    </div>
+                    <div class="assessment-feedback" id="assessmentFeedback"></div>
+                    <div id="assessNav"></div>
+                </div>
+                <div id="completionArea"></div>
+            `;
+
+            document.getElementById("diaphragmSlider").addEventListener("input", onSliderChange);
+            document.getElementById("autoBreathBtn").addEventListener("click", toggleAutoBreathe);
+            document.getElementById("obstructionBtn").addEventListener("click", toggleObstruction);
+            document.getElementById("labelToggleBtn").addEventListener("click", toggleLabels);
+            document.getElementById("whyBtn").addEventListener("click", toggleWhyPanel);
+            document.getElementById("hintBtn").addEventListener("click", showHint);
+            document.getElementById("retryBtn").addEventListener("click", retryQuestion);
+
+            const slider = document.getElementById("diaphragmSlider");
+            slider.addEventListener("mousedown", () => { if (simState && simState.autoBreathing) toggleAutoBreathe(); });
+            slider.addEventListener("touchstart", () => { if (simState && simState.autoBreathing) toggleAutoBreathe(); });
+            slider.addEventListener("keydown", () => { if (simState && simState.autoBreathing) toggleAutoBreathe(); });
+        }
+
+        function initCanvases() {
+            cavityCanvas = document.getElementById("cavityCanvas");
+            const cWrap = cavityCanvas.parentElement;
+            cavityCanvas.width = cWrap.clientWidth * 2;
+            cavityCanvas.height = cWrap.clientHeight * 2;
+            cavityCtx = cavityCanvas.getContext("2d");
+            cavityCanvas.addEventListener("mousemove", onCavityMouseMove);
+            cavityCanvas.addEventListener("mouseleave", onCavityMouseLeave);
+            cavityCanvas.addEventListener("click", onCavityClick);
+
+            gaugeCanvas = document.getElementById("gaugeCanvas");
+            const gWrap = gaugeCanvas.parentElement;
+            gaugeCanvas.width = gWrap.clientWidth * 2;
+            gaugeCanvas.height = gWrap.clientHeight * 2;
+            gaugeCtx = gaugeCanvas.getContext("2d");
+
+            graphCanvas = document.getElementById("graphCanvas");
+            const grWrap = graphCanvas.parentElement;
+            graphCanvas.width = grWrap.clientWidth * 2;
+            graphCanvas.height = grWrap.clientHeight * 2;
+            graphCtx = graphCanvas.getContext("2d");
+        }
+
+        function hitTestHotspot(x, y) {
+            for (const hs of simState.hotspots) {
+                const dx = (x - hs.cx) / hs.rx;
+                const dy = (y - hs.cy) / hs.ry;
+                if (dx * dx + dy * dy <= 1) {
+                    if (hs.key === "ribs" && simState.hotspots.some(l => {
+                        if (l.key !== "lungs") return false;
+                        const ldx = (x - l.cx) / l.rx;
+                        const ldy = (y - l.cy) / l.ry;
+                        return ldx * ldx + ldy * ldy <= 1;
+                    })) continue;
+                    return hs.key;
+                }
+            }
+            return null;
+        }
+
+        function setTooltipForKey(key, ev) {
+            const tip = document.getElementById("hotspotTooltip");
+            if (!tip) return;
+            if (!key) { tip.style.display = "none"; return; }
+            const info = HOTSPOT_INFO[key];
+            tip.innerHTML = "<span class=\"hs-title\">" + info.title + "</span>" + info.text;
+            tip.style.display = "block";
+            const rect = cavityCanvas.getBoundingClientRect();
+            const scaleX = cavityCanvas.width / rect.width;
+            const scaleY = cavityCanvas.height / rect.height;
+            const mx = (ev.clientX - rect.left) * scaleX;
+            const my = (ev.clientY - rect.top) * scaleY;
+            const hs = simState.hotspots.find(h => h.key === key);
+            if (hs) {
+                const tipW = tip.offsetWidth;
+                const tipH = tip.offsetHeight;
+                const wrapW = cavityCanvas.clientWidth;
+                const wrapH = cavityCanvas.clientHeight;
+                let left = (hs.cx + 20) / scaleX;
+                if (left + tipW > wrapW - 8) left = (hs.cx - 20) / scaleX - tipW;
+                left = Math.max(8, Math.min(left, wrapW - tipW - 8));
+                let top = (hs.cy / scaleY) - tipH / 2;
+                top = Math.max(8, Math.min(top, wrapH - tipH - 8));
+                tip.style.left = left + "px";
+                tip.style.top = top + "px";
+            }
+        }
+
+        function onCavityMouseMove(ev) {
+            if (!simState) return;
+            const rect = cavityCanvas.getBoundingClientRect();
+            const scaleX = cavityCanvas.width / rect.width;
+            const scaleY = cavityCanvas.height / rect.height;
+            const mx = (ev.clientX - rect.left) * scaleX;
+            const my = (ev.clientY - rect.top) * scaleY;
+            const key = hitTestHotspot(mx, my);
+            simState.hoverHotspot = key;
+            cavityCanvas.style.cursor = key ? "pointer" : "default";
+            if (!simState.pinnedHotspot || (simState.pinnedHotspot && !key)) {
+                setTooltipForKey(key, ev);
+            }
+        }
+
+        function onCavityMouseLeave() {
+            if (!simState) return;
+            simState.hoverHotspot = null;
+            cavityCanvas.style.cursor = "default";
+            if (!simState.pinnedHotspot) {
+                const tip = document.getElementById("hotspotTooltip");
+                if (tip) tip.style.display = "none";
+            }
+        }
+
+        function onCavityClick(ev) {
+            if (!simState) return;
+            const rect = cavityCanvas.getBoundingClientRect();
+            const scaleX = cavityCanvas.width / rect.width;
+            const scaleY = cavityCanvas.height / rect.height;
+            const mx = (ev.clientX - rect.left) * scaleX;
+            const my = (ev.clientY - rect.top) * scaleY;
+            const key = hitTestHotspot(mx, my);
+            if (simState.pinnedHotspot === key) {
+                simState.pinnedHotspot = null;
+            } else {
+                simState.pinnedHotspot = key || null;
+            }
+            if (key) setTooltipForKey(key, ev);
+            else { const tip = document.getElementById("hotspotTooltip"); if (tip) tip.style.display = "none"; }
+            if (typeof playSound === "function") { try { playSound("click"); } catch (e) {} }
+        }
+
+        function onSliderChange() {
+            simState.diaphragmPos = Number(document.getElementById("diaphragmSlider").value);
+        }
+        /* ---- Auto-Breathe ---- */
+        function toggleAutoBreathe() {
+            simState.autoBreathing = !simState.autoBreathing;
+            const btn = document.getElementById("autoBreathBtn");
+            if (simState.autoBreathing) {
+                simState.autoPhase = Math.asin((simState.diaphragmPos - 50) / 50) || 0;
+                btn.innerHTML = "&#9646;&#9646; Pause";
+                btn.classList.add("active");
+            } else {
+                btn.innerHTML = "&#9654; Auto-Breathe";
+                btn.classList.remove("active");
+            }
+        }
+
+        function updateAutoBreathe(dt) {
+            if (!simState.autoBreathing) return;
+            simState.autoPhase += dt * 1.57;
+            const newPos = 50 + 50 * Math.sin(simState.autoPhase);
+            simState.diaphragmPos = Math.round(Math.max(0, Math.min(100, newPos)));
+            document.getElementById("diaphragmSlider").value = simState.diaphragmPos;
+        }
+
+        /* ---- Obstruction ---- */
+        function toggleObstruction() {
+            simState.obstructed = !simState.obstructed;
+            const btn = document.getElementById("obstructionBtn");
+            const card = document.getElementById("scenarioCard");
+            if (simState.obstructed) {
+                btn.innerHTML = "&#9888; Obstructed Airway";
+                btn.classList.add("active");
+                if (card) card.style.display = "block";
+            } else {
+                btn.innerHTML = "&#9711; Normal Airway";
+                btn.classList.remove("active");
+                if (card) card.style.display = "none";
+            }
+        }
+
+        function toggleLabels() {
+            simState.showLabels = !simState.showLabels;
+            const btn = document.getElementById("labelToggleBtn");
+            if (btn) {
+                btn.innerHTML = "&#128300; Labels: " + (simState.showLabels ? "On" : "Off");
+                btn.classList.toggle("active", simState.showLabels);
+            }
+        }
+
+        /* ---- Walkthrough ---- */
+        function renderWalkthroughStep() {
+            const banner = document.getElementById("walkthroughBanner");
+            const step = simState.walkthroughStep;
+            const total = WALKTHROUGH_STEPS.length;
+            const isLast = step >= total - 1;
+            banner.innerHTML = '<div class="walkthrough-progress">Step ' + (step + 1) + ' of ' + total + '</div>' +
+                '<div class="walkthrough-text">' + WALKTHROUGH_STEPS[step] + '</div>' +
+                '<div class="walkthrough-actions">' +
+                '<button class="primary-btn" id="walkNextBtn">' + (isLast ? 'Start Assessment' : 'Next') + '</button>' +
+                '<button class="ghost-btn" id="walkSkipBtn">Skip Walkthrough</button>' +
+                '</div>';
+            document.getElementById("walkNextBtn").addEventListener("click", nextWalkthroughStep);
+            document.getElementById("walkSkipBtn").addEventListener("click", completeWalkthrough);
+        }
+
+        function nextWalkthroughStep() {
+            simState.walkthroughStep++;
+            if (simState.walkthroughStep >= WALKTHROUGH_STEPS.length) {
+                completeWalkthrough();
+            } else {
+                renderWalkthroughStep();
+            }
+        }
+
+        function completeWalkthrough() {
+            simState.walkthroughDone = true;
+            document.getElementById("walkthroughBanner").style.display = "none";
+            document.getElementById("assessmentSection").style.display = "block";
+            renderQuestion(0);
+            storageSet(SIM_CONFIG.simId + ":walkthroughDone", "true");
+        }
+
+        /* ---- Lung Fill ---- */
+        function updateLungFill() {
+            const settled = simState.particles.filter(p => p.settled).length;
+            const target = Math.min(1, settled / 40);
+            simState.lungFill += (target - simState.lungFill) * 0.05;
+        }
+
+        /* ---- Smooth Pressure ---- */
+        function updateSmoothPressure(dt) {
+            let target = 50;
+            if (simState.phase === "inhaling") target = 25;
+            else if (simState.phase === "exhaling") target = 75;
+            else target = 50;
+            simState.smoothPressure += (target - simState.smoothPressure) * Math.min(1, dt * 4);
+        }
+
+        /* ---- Graph History ---- */
+        function updateGraphHistory() {
+            simState.volumeHistory.push(simState.smoothPos);
+            const ph = simState.smoothPressure;
+            simState.pressureHistory.push(ph);
+            if (simState.volumeHistory.length > 200) {
+                simState.volumeHistory.shift();
+                simState.pressureHistory.shift();
+            }
+        }
+
+        /* ---- Animation loop ---- */
+        function startAnimation() { simState.lastTime = performance.now(); animFrame = requestAnimationFrame(animationLoop); }
+
+        function animationLoop(ts) {
+            if (!simState) return;
+            const dt = Math.min((ts - simState.lastTime) / 1000, 0.1);
+            simState.lastTime = ts;
+
+            updateAutoBreathe(dt);
+            const target = simState.diaphragmPos;
+            simState.smoothPos += (target - simState.smoothPos) * Math.min(1, dt * 5);
+
+            updatePressureAndPhase();
+            updateSmoothPressure(dt);
+            updateLungFill();
+            updateReadout();
+            updateCaption();
+            updateAirflowIndicator();
+            spawnAndMoveParticles(dt);
+            updateGraphHistory();
+            drawCavity();
+            drawGauge();
+            drawGraph();
+
+            animFrame = requestAnimationFrame(animationLoop);
+        }
+
+        function toggleWhyPanel() {
+            const panel = document.getElementById("whyPanel");
+            const btn = document.getElementById("whyBtn");
+            if (!panel || !btn) return;
+            const open = panel.style.display === "block";
+            panel.style.display = open ? "none" : "block";
+            btn.setAttribute("aria-expanded", open ? "false" : "true");
+            btn.classList.toggle("active", !open);
+        }
+
+        function updateAirflowIndicator() {
+            const el = document.getElementById("airflowIndicator");
+            if (!el) return;
+            const phase = simState.phase;
+            if (phase === "inhaling") {
+                el.className = "airflow-indicator in";
+                el.innerHTML = "<span class=\"airflow-arrow\">&#9660;&#9660;</span> Air flowing IN (inhalation)";
+            } else if (phase === "exhaling") {
+                el.className = "airflow-indicator out";
+                el.innerHTML = "<span class=\"airflow-arrow\">&#9650;&#9650;</span> Air flowing OUT (exhalation)";
+            } else if (phase === "inhaled") {
+                el.className = "airflow-indicator in";
+                el.innerHTML = "<span class=\"airflow-arrow\">&#8212;&#8212;</span> Lungs full (hold)";
+            } else if (phase === "exhaled") {
+                el.className = "airflow-indicator";
+                el.innerHTML = "<span class=\"airflow-arrow\">&#8212;&#8212;</span> Lungs empty";
+            } else {
+                el.className = "airflow-indicator";
+                el.innerHTML = "<span class=\"airflow-arrow\">&#8212;&#8212;</span> No airflow";
+            }
+        }
+
+        function updatePressureAndPhase() {
+            const pos = simState.smoothPos;
+            const target = simState.diaphragmPos;
+            const moving = Math.abs(target - pos) > 1;
+
+            if (moving) {
+                if (target > pos + 1) {
+                    simState.pressureLabel = "Low";
+                    simState.phase = "inhaling";
+                } else if (target < pos - 1) {
+                    simState.pressureLabel = "High";
+                    simState.phase = "exhaling";
+                }
+            } else {
+                simState.pressureLabel = "Equal to outside";
+                simState.phase = pos < 10 ? "exhaled" : pos > 90 ? "inhaled" : "holding";
+            }
+
+            const gl = document.getElementById("gaugeLabel");
+            if (gl) gl.textContent = simState.pressureLabel;
+        }
+
+        function updateReadout() {
+            const pos = simState.smoothPos;
+            const readout = document.getElementById("stateReadout");
+            if (!readout) return;
+
+            const diaState = pos < 20 ? "Relaxed (domed)" : pos > 80 ? "Contracted (flat)" : "Transitioning";
+            const ribState = pos < 20 ? "Down and in" : pos > 80 ? "Up and out" : "Moving...";
+            const volState = pos < 20 ? "Low" : pos > 80 ? "High" : "Changing";
+            const airState = simState.phase === "inhaling" ? "Flowing in" : simState.phase === "exhaling" ? "Flowing out" : "None";
+
+            readout.innerHTML = `
+                <div class="readout-item"><strong>Diaphragm:</strong> ${diaState}</div>
+                <div class="readout-item"><strong>Ribs:</strong> ${ribState}</div>
+                <div class="readout-item"><strong>Chest Volume:</strong> ${volState}</div>
+                <div class="readout-item"><strong>Airflow:</strong> ${airState}</div>
+            `;
+        }
+
+        function updateCaption() {
+            const c = document.getElementById("captionBar");
+            if (!c) return;
+
+            if (simState.obstructed && (simState.phase === "inhaling" || simState.phase === "exhaling")) {
+                const base = simState.phase === "inhaling"
+                    ? "Obstructed airway: The trachea is narrowed. Airflow is restricted and breathing requires more effort."
+                    : "Obstructed airway: The trachea is narrowed. Exhaled air is pushed out slowly through the restricted passage.";
+                c.textContent = base;
+                return;
+            }
+
+            const pos = simState.smoothPos;
+            const phase = simState.phase;
+
+            if (phase === "exhaled" || pos < 10) {
+                c.textContent = "Exhalation complete. The diaphragm is relaxed and domed. Air pressure inside the chest is equal to the pressure outside.";
+            } else if (phase === "inhaling") {
+                c.textContent = "Inhalation: The diaphragm contracts and moves downward. Chest volume increases and air pressure drops. Air rushes in through the trachea.";
+            } else if (phase === "inhaled" || pos > 90) {
+                c.textContent = "Inhalation complete. The diaphragm is fully contracted and flat. Chest volume is at its maximum and pressure has equalised.";
+            } else if (phase === "exhaling") {
+                c.textContent = "Exhalation: The diaphragm relaxes and moves upward. Chest volume decreases and air pressure rises. Air is pushed out through the trachea.";
+            } else {
+                c.textContent = "The diaphragm is between positions. Move the slider to observe the full breathing cycle.";
+            }
+        }
+        /* ---- Particles ---- */
+        function spawnAndMoveParticles(dt) {
+            const w = cavityCanvas.width;
+            const h = cavityCanvas.height;
+            const pos = simState.smoothPos;
+            const phase = simState.phase;
+
+            /* When a new breath phase begins, clear leftover settled particles so
+               the air fills/empties rather than piling up at the diaphragm. */
+            if (simState.lastPhase && simState.lastPhase !== phase && (phase === "inhaling" || phase === "exhaling")) {
+                simState.particles = simState.particles.filter(p => !p.settled);
+            }
+            simState.lastPhase = phase;
+
+            const tracheaX = w * 0.5;
+            const tracheaTop = h * 0.02;
+            const lungTop = h * 0.18;
+            const lungBottom = h * (0.72 - pos * 0.002);
+
+            const spawnRate = simState.obstructed ? 4 : 12;
+
+            if (phase === "inhaling" && Math.random() < (pos / 100) * spawnRate * dt) {
+                simState.particles.push({
+                    x: tracheaX + (Math.random() - 0.5) * 14,
+                    y: tracheaTop,
+                    vx: (Math.random() - 0.5) * 30,
+                    vy: (60 + Math.random() * 80) * (simState.obstructed ? 0.6 : 1),
+                    size: 5 + Math.random() * 3,
+                    alpha: 1,
+                    settled: false
+                });
+            }
+
+            if (phase === "exhaling" && Math.random() < ((100 - pos) / 100) * spawnRate * dt) {
+                simState.particles.push({
+                    x: tracheaX + (Math.random() - 0.5) * 30,
+                    y: lungTop + Math.random() * (lungBottom - lungTop),
+                    vx: (Math.random() - 0.5) * 40,
+                    vy: (-60 - Math.random() * 80) * (simState.obstructed ? 0.6 : 1),
+                    size: 5 + Math.random() * 3,
+                    alpha: 1,
+                    settled: false
+                });
+            }
+
+            for (let i = simState.particles.length - 1; i >= 0; i--) {
+                const p = simState.particles[i];
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+
+                if (phase === "inhaling" && p.y > lungBottom && !p.settled) {
+                    p.settled = true;
+                    p.vy = 0;
+                    p.vx = 0;
+                    p.life = 1.1 + Math.random() * 1.2;
+                }
+
+                if (p.settled) {
+                    p.life -= dt;
+                    p.alpha = Math.max(0, Math.min(1, p.life));
+                    if (p.life <= 0) { simState.particles.splice(i, 1); continue; }
+                }
+
+                if (p.y < tracheaTop - 10 || p.y > h + 10 || p.x < -10 || p.x > w + 10) {
+                    simState.particles.splice(i, 1);
+                }
+            }
+
+            if (simState.particles.length > 120) {
+                simState.particles.splice(0, simState.particles.length - 120);
+            }
+        }
+
+        /* ---- Draw chest cavity ---- */
+        function drawCavity() {
+            const w = cavityCanvas.width;
+            const h = cavityCanvas.height;
+            const ctx = cavityCtx;
+            ctx.clearRect(0, 0, w, h);
+
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            const pos = simState.smoothPos;
+
+            ctx.fillStyle = isDark ? "#171b31" : "#e7edff";
+            ctx.fillRect(0, 0, w, h);
+
+            const cx = w * 0.5;
+            const ribTop = h * 0.1;
+            const ribBottom = h * (0.7 - pos * 0.001);
+            const ribSpread = 0.28 + pos * 0.0018;
+            const diaphragmY = h * (0.72 - pos * 0.002);
+            const lungTop = h * 0.16;
+            const lungBottom = diaphragmY - 5;
+            const lungW = w * (0.14 + pos * 0.0012);
+
+            /* Build clickable hotspot hit-regions for this frame */
+            simState.hotspots = [
+                { key: "trachea", cx: cx, cy: (h * 0.04 + lungTop) / 2, rx: 16, ry: (lungTop - h * 0.04) / 2 + 10 },
+                { key: "ribs", cx: cx - w * ribSpread * 0.72, cy: (ribTop + ribBottom) / 2, rx: w * ribSpread * 0.72, ry: (ribBottom - ribTop) / 2 + 12 },
+                { key: "ribs", cx: cx + w * ribSpread * 0.72, cy: (ribTop + ribBottom) / 2, rx: w * ribSpread * 0.72, ry: (ribBottom - ribTop) / 2 + 12 },
+                { key: "lungs", cx: cx - lungW * 1.1, cy: (lungTop + lungBottom) / 2, rx: lungW * 0.72, ry: (lungBottom - lungTop) / 2 * 0.6 },
+                { key: "lungs", cx: cx + lungW * 1.1, cy: (lungTop + lungBottom) / 2, rx: lungW * 0.72, ry: (lungBottom - lungTop) / 2 * 0.6 },
+                { key: "diaphragm", cx: cx, cy: diaphragmY, rx: w * ribSpread + 8, ry: 32 }
+            ];
+
+            /* Body outline */
+            ctx.strokeStyle = isDark ? "rgba(200,210,240,0.2)" : "rgba(50,60,100,0.2)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.ellipse(cx, h * 0.45, w * 0.38, h * 0.44, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            /* Ribs — left */
+            ctx.strokeStyle = isDark ? "rgba(200,210,240,0.4)" : "rgba(50,60,100,0.4)";
+            ctx.lineWidth = 3;
+            for (let i = 0; i < 5; i++) {
+                const ry = ribTop + (ribBottom - ribTop) * (i / 4);
+                const rw = w * (ribSpread - i * 0.012);
+                ctx.beginPath();
+                ctx.moveTo(cx - rw, ry);
+                ctx.quadraticCurveTo(cx - rw * 0.5, ry - 8, cx - 10, ry);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(cx + rw, ry);
+                ctx.quadraticCurveTo(cx + rw * 0.5, ry - 8, cx + 10, ry);
+                ctx.stroke();
+            }
+
+            /* Lungs */
+            const fillAlpha = 0.22 + simState.lungFill * 0.35;
+            ctx.fillStyle = isDark ? `rgba(125,211,252,${fillAlpha})` : `rgba(2,111,190,${Math.max(0.42, fillAlpha * 0.95)})`;
+            ctx.strokeStyle = isDark ? "rgba(125,211,252,0.75)" : "rgba(2,111,190,0.6)";
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath();
+            ctx.ellipse(cx - lungW * 1.1, (lungTop + lungBottom) / 2, lungW, (lungBottom - lungTop) / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.ellipse(cx + lungW * 1.1, (lungTop + lungBottom) / 2, lungW, (lungBottom - lungTop) / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            /* Trachea */
+            const tracheaWidth = simState.obstructed ? 3 : 6;
+            const tracheaColor = simState.obstructed
+                ? (isDark ? "rgba(251,113,133,0.7)" : "rgba(225,29,72,0.5)")
+                : (isDark ? "rgba(167,139,250,0.5)" : "rgba(124,58,237,0.4)");
+            ctx.strokeStyle = tracheaColor;
+            ctx.lineWidth = tracheaWidth;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(cx, h * 0.02);
+            ctx.lineTo(cx, lungTop);
+            ctx.stroke();
+
+            if (simState.obstructed) {
+                ctx.fillStyle = isDark ? "rgba(251,113,133,0.25)" : "rgba(225,29,72,0.15)";
+                ctx.beginPath(); ctx.ellipse(cx - 9, h * 0.09, 7, 14, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(cx + 9, h * 0.09, 7, 14, 0, 0, Math.PI * 2); ctx.fill();
+            }
+
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = isDark ? "rgba(167,139,250,0.2)" : "rgba(124,58,237,0.15)";
+            ctx.beginPath();
+            ctx.moveTo(cx, lungTop);
+            ctx.lineTo(cx - lungW * 1.1, (lungTop + lungBottom) / 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(cx, lungTop);
+            ctx.lineTo(cx + lungW * 1.1, (lungTop + lungBottom) / 2);
+            ctx.stroke();
+
+            /* Labels (toggleable) */
+            if (simState.showLabels) {
+                /* Trachea label */
+                ctx.fillStyle = isDark ? "rgba(167,139,250,0.5)" : "rgba(124,58,237,0.4)";
+                ctx.font = "bold 16px Arial, sans-serif";
+                ctx.fillText("Trachea", cx + 14, h * 0.08);
+
+                /* Ribs label */
+                ctx.fillStyle = isDark ? "rgba(200,210,240,0.45)" : "rgba(50,60,100,0.4)";
+                ctx.font = "bold 16px Arial, sans-serif";
+const ribsLabelY = Math.max(28, ribTop - 14);
+                const ribsLabelX = Math.max(16, cx - w * ribSpread * 0.5);
+                ctx.fillText("Ribs", ribsLabelX, ribsLabelY);
+            }
+
+            /* Diaphragm (color reflects contraction/tension) */
+            const tension = Math.min(1, pos / 100);
+            const diaArc = tension * (Math.PI * 2) - 0.5;
+            const diaArcColor = isDark ? "rgba(52,211,153,0.8)" : "rgba(5,150,105,0.8)";
+            const diaRelaxColor = isDark ? "rgba(251,191,36,0.7)" : "rgba(217,119,6,0.6)";
+            ctx.strokeStyle = tension > 0.05 ? diaArcColor : diaRelaxColor;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            const domeHeight = 30 * (1 - pos / 100);
+            ctx.moveTo(cx - w * ribSpread, diaphragmY);
+            ctx.quadraticCurveTo(cx, diaphragmY - domeHeight, cx + w * ribSpread, diaphragmY);
+            ctx.stroke();
+
+            /* Tension arc: grows as the diaphragm contracts */
+            if (tension > 0.05) {
+                ctx.strokeStyle = diaArcColor;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(cx + w * ribSpread + 14, diaphragmY - 4, 9, Math.PI * 0.5, Math.PI * 0.5 + diaArc);
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = tension > 0.05
+                ? (isDark ? "rgba(52,211,153,0.18)" : "rgba(5,150,105,0.14)")
+                : (isDark ? "rgba(251,191,36,0.15)" : "rgba(217,119,6,0.1)");
+            ctx.beginPath();
+            ctx.moveTo(cx - w * ribSpread, diaphragmY);
+            ctx.quadraticCurveTo(cx, diaphragmY - domeHeight, cx + w * ribSpread, diaphragmY);
+            ctx.lineTo(cx + w * ribSpread, diaphragmY + 15);
+            ctx.lineTo(cx - w * ribSpread, diaphragmY + 15);
+            ctx.closePath();
+            ctx.fill();
+
+            if (simState.showLabels) {
+                ctx.fillStyle = isDark ? "rgba(251,191,36,0.6)" : "rgba(217,119,6,0.5)";
+                ctx.font = "bold 16px Arial, sans-serif";
+                ctx.fillText("Diaphragm", cx + 14, diaphragmY + 32);
+            }
+
+            /* Lung labels */
+            if (simState.showLabels) {
+                ctx.font = "bold 16px Arial, sans-serif";
+                ctx.lineJoin = "round";
+                ctx.fillStyle = isDark ? "#e8f7ff" : "#04294d";
+                ctx.strokeStyle = isDark ? "rgba(10,15,35,0.75)" : "rgba(255,255,255,0.95)";
+                ctx.lineWidth = 5;
+                ctx.strokeText("Lung", cx - lungW * 1.1 - 26, (lungTop + lungBottom) / 2);
+                ctx.strokeText("Lung", cx + lungW * 1.1 + 10, (lungTop + lungBottom) / 2);
+                ctx.fillText("Lung", cx - lungW * 1.1 - 26, (lungTop + lungBottom) / 2);
+                ctx.fillText("Lung", cx + lungW * 1.1 + 10, (lungTop + lungBottom) / 2);
+            }
+
+            /* Highlight the hovered or pinned (clicked) hotspot */
+            const hl = simState.hoverHotspot || simState.pinnedHotspot;
+            if (hl) {
+                ctx.fillStyle = isDark ? "rgba(255,255,255,0.18)" : "rgba(14,165,233,0.32)";
+                ctx.strokeStyle = isDark ? "rgba(255,255,255,0.65)" : "rgba(2,111,190,0.95)";
+                ctx.lineWidth = 2;
+                for (const hs of simState.hotspots) {
+                    if (hs.key !== hl) continue;
+                    ctx.beginPath();
+                    ctx.ellipse(hs.cx, hs.cy, hs.rx, hs.ry, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+
+            /* Air particles */
+            for (const p of simState.particles) {
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(125,211,252,0.85)";
+                ctx.fill();
+                ctx.strokeStyle = "rgba(125,211,252,0.4)";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+
+            /* Volume indicator */
+            ctx.fillStyle = isDark ? "rgba(52,211,153,0.3)" : "rgba(5,150,105,0.2)";
+            const volH = lungBottom - lungTop;
+            ctx.fillRect(cx - 6, lungTop, 12, volH);
+            ctx.fillStyle = isDark ? "#34d399" : "#059669";
+            ctx.font = "bold 14px Arial, sans-serif";
+            ctx.textAlign = "center";
+            if (simState.showLabels) ctx.fillText("Volume", cx, lungTop - 8);
+            ctx.textAlign = "start";
+        }
+        /* ---- Draw pressure gauge ---- */
+        function drawGauge() {
+            const w = gaugeCanvas.width;
+            const h = gaugeCanvas.height;
+            const ctx = gaugeCtx;
+            ctx.clearRect(0, 0, w, h);
+
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            ctx.fillStyle = isDark ? "#171b31" : "#e7edff";
+            ctx.fillRect(0, 0, w, h);
+
+            const pos = simState.smoothPos;
+            const barX = w * 0.3;
+            const barW = w * 0.4;
+            const barTop = h * 0.1;
+            const barBot = h * 0.9;
+            const barH = barBot - barTop;
+
+            /* High zone (top) */
+            ctx.fillStyle = isDark ? "rgba(251,113,133,0.2)" : "rgba(225,29,72,0.12)";
+            ctx.fillRect(barX, barTop, barW, barH * 0.3);
+
+            /* Equal zone (middle) */
+            ctx.fillStyle = isDark ? "rgba(52,211,153,0.2)" : "rgba(5,150,105,0.12)";
+            ctx.fillRect(barX, barTop + barH * 0.3, barW, barH * 0.4);
+
+            /* Low zone (bottom) */
+            ctx.fillStyle = isDark ? "rgba(125,211,252,0.2)" : "rgba(14,165,233,0.12)";
+            ctx.fillRect(barX, barTop + barH * 0.7, barW, barH * 0.3);
+
+            /* Zone labels */
+            ctx.fillStyle = isDark ? "#fb7185" : "#e11d48";
+            ctx.font = "bold 14px Arial, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("High", w * 0.5, barTop + barH * 0.18);
+
+            ctx.fillStyle = isDark ? "#34d399" : "#059669";
+            ctx.fillText("Equal", w * 0.5, barTop + barH * 0.52);
+
+            ctx.fillStyle = isDark ? "#7dd3fc" : "#0ea5e9";
+            ctx.fillText("Low", w * 0.5, barTop + barH * 0.82);
+
+            /* Pointer */
+            const pointerY = barTop + barH * (1 - pos / 100);
+            ctx.fillStyle = isDark ? "#eef2ff" : "#17203f";
+            ctx.beginPath();
+            ctx.moveTo(barX - 6, pointerY);
+            ctx.lineTo(barX + barW + 6, pointerY);
+            ctx.lineTo(barX + barW + 6, pointerY + 5);
+            ctx.lineTo(barX - 6, pointerY + 5);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = isDark ? "#eef2ff" : "#17203f";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(barX - 6, pointerY + 2);
+            ctx.lineTo(barX + barW + 6, pointerY + 2);
+            ctx.stroke();
+
+            /* Border */
+            ctx.strokeStyle = isDark ? "rgba(200,210,240,0.15)" : "rgba(50,60,100,0.15)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(barX, barTop, barW, barH);
+
+            ctx.textAlign = "start";
+        }
+
+        /* ---- Draw graph ---- */
+        function drawGraph() {
+            const w = graphCanvas.width;
+            const h = graphCanvas.height;
+            const ctx = graphCtx;
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = isDark ? "#1d2340" : "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            const pad = 20;
+            const gw = w - pad * 2;
+            const gh = h - pad * 2;
+
+            ctx.strokeStyle = isDark ? "rgba(200,210,240,0.08)" : "rgba(50,60,100,0.08)";
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = pad + (gh / 4) * i;
+                ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w - pad, y); ctx.stroke();
+            }
+
+            const vol = simState.volumeHistory;
+            const prs = simState.pressureHistory;
+            if (vol.length < 2) return;
+
+            function drawLine(data, color) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let i = 0; i < data.length; i++) {
+                    const x = pad + (gw * i) / 200;
+                    const y = pad + gh - (data[i] / 100) * gh;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+
+            drawLine(vol, "#34d399");
+            drawLine(prs, "#fb7185");
+        }
+
+        /* ---- Assessment ---- */
+        function renderQuestion(idx) {
+            const q = QUESTIONS[idx];
+            const dots = QUESTIONS.map((_, i) => {
+                let cls = "q-dot";
+                if (i < idx) cls += simState.questionResults[i] ? " correct" : " incorrect";
+                if (i === idx) cls += " active";
+                return '<div class="' + cls + '"></div>';
+            }).join("");
+            document.getElementById("qProgress").innerHTML = dots;
+            document.getElementById("assessHeading").textContent = "Question " + (idx + 1) + " of " + QUESTIONS.length;
+            document.getElementById("assessQuestion").textContent = q.question;
+
+            const choicesHTML = simState.choiceOrder[idx].map((origIdx, i) =>
+                '<button class="assessment-choice" data-oindex="' + origIdx + '" aria-label="Choice ' + (i + 1) + '">' + q.choices[origIdx] + '</button>'
+            ).join("");
+            document.getElementById("assessmentChoices").innerHTML = choicesHTML;
+            document.querySelectorAll(".assessment-choice").forEach(btn => {
+                btn.addEventListener("click", () => onAssessmentChoice(btn));
+            });
+            document.getElementById("assessmentFeedback").className = "assessment-feedback";
+            document.getElementById("assessmentFeedback").innerHTML = "";
+            document.getElementById("hintBtn").classList.remove("hidden");
+            document.getElementById("retryBtn").classList.add("hidden");
+            document.getElementById("assessNav").innerHTML = "";
+            const hintEl = document.getElementById("hintText");
+            if (hintEl) hintEl.remove();
+            simState.questionAnswered = false;
+        }
+
+        let assessmentLocked = false;
+
+        function onAssessmentChoice(btn) {
+            if (simState.questionAnswered || assessmentLocked) return;
+            assessmentLocked = true;
+            try {
+                const qi = simState.currentQuestion;
+                const q = QUESTIONS[qi];
+                const origIdx = Number(btn.dataset.oindex);
+                simState.questionAttempts[qi]++;
+                const allChoices = document.querySelectorAll(".assessment-choice");
+                allChoices.forEach(c => c.classList.add("disabled"));
+                document.getElementById("hintBtn").classList.add("hidden");
+                const feedback = document.getElementById("assessmentFeedback");
+
+                if (origIdx === q.correctIndex) {
+                    btn.classList.add("correct");
+                    feedback.className = "assessment-feedback correct";
+                    feedback.innerHTML = "<strong>Correct!</strong> " + q.feedbackCorrect;
+                    simState.questionResults[qi] = true;
+                    simState.questionCorrectCount++;
+                    onQuestionDone();
+                } else {
+                    btn.classList.add("incorrect");
+                    allChoices.forEach(c => { if (Number(c.dataset.oindex) === q.correctIndex) c.classList.add("correct"); });
+                    feedback.className = "assessment-feedback incorrect";
+                    if (simState.questionAttempts[qi] < 2) {
+                        feedback.innerHTML = "<strong>Not quite.</strong> " + q.feedbackIncorrect + " Try again!";
+                        document.getElementById("retryBtn").classList.remove("hidden");
+                    } else {
+                        feedback.innerHTML = "<strong>Not quite.</strong> The correct answer is: " + q.choices[q.correctIndex] + ". " + q.feedbackCorrect;
+                        simState.questionResults[qi] = false;
+                        document.getElementById("retryBtn").classList.add("hidden");
+                        onQuestionDone();
+                    }
+                }
+            } finally {
+                assessmentLocked = false;
+            }
+        }
+
+        function onQuestionDone() {
+            simState.questionAnswered = true;
+            const nav = document.getElementById("assessNav");
+            const isLast = simState.currentQuestion >= QUESTIONS.length - 1;
+            const btn = document.createElement("button");
+            btn.className = "primary-btn";
+            btn.style.marginTop = "12px";
+            btn.textContent = isLast ? "See Results" : "Next Question";
+            btn.addEventListener("click", () => {
+                if (isLast) {
+                    showFinalCompletion();
+                } else {
+                    simState.currentQuestion++;
+                    renderQuestion(simState.currentQuestion);
+                }
+            });
+            nav.innerHTML = "";
+            nav.appendChild(btn);
+        }
+
+        function retryQuestion() {
+            if (simState.questionAnswered || assessmentLocked) return;
+            try {
+                simState.questionAnswered = false;
+                document.getElementById("retryBtn").classList.add("hidden");
+                document.getElementById("hintBtn").classList.remove("hidden");
+                const fb = document.getElementById("assessmentFeedback");
+                fb.className = "assessment-feedback"; fb.innerHTML = "";
+                document.querySelectorAll(".assessment-choice").forEach(c => c.classList.remove("disabled", "correct", "incorrect"));
+            } catch (e) {}
+        }
+
+        function showHint() {
+            if (simState.questionAnswered) return;
+            const section = document.getElementById("assessmentSection");
+            if (document.getElementById("hintText")) return;
+            const qi = simState.currentQuestion;
+            if (!QUESTIONS[qi]) return;
+            simState.hintUsed = true;
+            storageSet(SIM_CONFIG.simId + ":hintUsed", "true");
+            const div = document.createElement("div");
+            div.id = "hintText"; div.className = "hint-text";
+            div.textContent = QUESTIONS[qi].hint;
+            section.appendChild(div);
+        }
+
+        function showFinalCompletion() {
+            const area = document.getElementById("completionArea");
+            const total = QUESTIONS.length;
+            const correct = simState.questionCorrectCount;
+            const totalAttempts = simState.questionAttempts.reduce((a, b) => a + b, 0);
+            const allFirstTry = simState.questionResults.every((r) => r);
+            const elapsed = Math.round((Date.now() - simState.startTime) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            const timeStr = mins > 0 ? mins + "m " + secs + "s" : secs + "s";
+            const mastery = Math.round((correct / total) * 100);
+            let firstTryCount = 0;
+            for (let i = 0; i < QUESTIONS.length; i++) { if (simState.questionAttempts[i] === 1 && simState.questionResults[i]) firstTryCount++; }
+
+            storageSet(SIM_CONFIG.simId + ":completion", "true");
+            storageSet(SIM_CONFIG.simId + ":questionsCorrect", String(correct));
+            storageSet(SIM_CONFIG.simId + ":questionsTotal", String(total));
+            storageSet(SIM_CONFIG.simId + ":totalAttempts", String(totalAttempts));
+            storageSet(SIM_CONFIG.simId + ":firstAttemptCorrect", allFirstTry ? "true" : "false");
+            storageSet(SIM_CONFIG.simId + ":hintUsed", simState.hintUsed ? "true" : "false");
+            storageSet(SIM_CONFIG.simId + ":timeOnTask", String(elapsed));
+            storageSet(SIM_CONFIG.simId + ":finalMastery", String(mastery));
+
+            let rowsHtml = "";
+            for (let i = 0; i < QUESTIONS.length; i++) {
+                const str = QUESTIONS[i].question;
+                const short = str.length > 58 ? str.slice(0, 58) + "\u2026" : str;
+                const isFirst = simState.questionAttempts[i] === 1 && simState.questionResults[i];
+                if (simState.questionResults[i]) {
+                    rowsHtml += '<tr><td>' + (i + 1) + "</td><td>" + short + '</td><td class="result-mark correct-mark">Correct' + (isFirst ? " (1st try)" : "") + "</td></tr>";
+                } else {
+                    rowsHtml += '<tr><td>' + (i + 1) + "</td><td>" + short + '</td><td class="result-mark incorrect-mark">Incorrect</td></tr>';
+                }
+            }
+
+            let extra = "";
+            if (simState.hintUsed) extra += " You used hints.";
+            extra += " Time on task: " + timeStr + ".";
+
+            area.innerHTML =
+                '<div class="completion-banner">' +
+                '<h3>Simulation Complete!</h3>' +
+                '<p>You got <strong>' + correct + ' out of ' + total + '</strong> questions correct (' + mastery + '% mastery). ' +
+                (allFirstTry ? "You got every question right on your first try \u2014 excellent work!" : "First-try correct: " + firstTryCount + "/" + total + ". Keep studying the breathing mechanics!") +
+                extra + '</p>' +
+                '<table class="results-table"><thead><tr><th>#</th><th>Question</th><th>Result</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>' +
+                '<div class="recap-card"><span class="recap-title">Key Takeaways</span><ul>' +
+                    '<li>Inhalation: diaphragm contracts and moves down, chest volume increases, pressure drops, air flows in.</li>' +
+                    '<li>Exhalation: diaphragm relaxes and domes up, chest volume decreases, pressure rises, air flows out.</li>' +
+                    '<li>Air always moves from high pressure to low pressure (Boyle\u2019s law).</li>' +
+                    '<li>Ribs move up and out during inhalation, and down and in during exhalation.</li>' +
+                    '<li>A narrowed airway (obstruction) adds resistance and makes breathing harder.</li>' +
+                '</ul></div>' +
+                '<div class="result-actions">' +
+                '<button class="restart-result-btn" id="restartResultBtn">&#8635; Try the Simulation Again</button>' +
+                '<button class="print-result-btn" id="printResultBtn">&#128424; Print / Save Report</button>' +
+                '</div>' +
+                '</div>';
+
+            const resBtn = document.getElementById("restartResultBtn");
+            if (resBtn) {
+                resBtn.addEventListener("click", function () {
+                    devReset();
+                    devInit();
+                });
+            }
+            const printBtn = document.getElementById("printResultBtn");
+            if (printBtn) {
+                printBtn.addEventListener("click", function () {
+                    printReport(correct, total, mastery, allFirstTry, firstTryCount, rowsHtml, timeStr, simState.hintUsed);
+                });
+            }
+            if (allFirstTry) playConfetti();
+
+            document.getElementById("assessmentSection").style.display = "none";
+        }
+
+        function printReport(correct, total, mastery, allFirstTry, firstTryCount, rowsHtml, timeStr, hintUsed) {
+            let hintNote = hintUsed ? "Hints were used during the assessment." : "No hints were used.",
+                firstNote = allFirstTry ? "All questions answered correctly on the first attempt." : "First-try correct: " + firstTryCount + "/" + total + ".";
+            const title = SIM_CONFIG.title + " \u2014 " + SIM_CONFIG.subtitle;
+            const when = new Date().toLocaleString();
+            let win = window.open("", "_blank", "width=760,height=900");
+            if (!win) return;
+            win.document.write(
+                '<!doctype html><html><head><meta charset="utf-8"><title>Report \u2014 ' + SIM_CONFIG.title + '</title>' +
+                '<style>' +
+                    'body{font-family:Arial,sans-serif;color:#111;padding:32px;max-width:680px;margin:0 auto;}' +
+                    'h1{font-size:22px;margin:0 0 4px;}' +
+                    '.sub{color:#555;font-size:13px;margin-bottom:18px;}' +
+                    '.summary{background:#eef5fb;border-left:4px solid #1f6f8b;padding:10px 16px;margin-bottom:18px;font-size:14px;}' +
+                    'table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px;}' +
+                    'th,td{border:1px solid #ccc;padding:7px 9px;text-align:left;}' +
+                    'th{background:#f2f2f2;}' +
+                    '.correct{color:#0a6b3c;font-weight:600;} .incorrect{color:#a31621;font-weight:600;}' +
+                    '</style></head><body>' +
+                    '<h1>' + title + '</h1>' +
+                    '<div class="sub">Student Report \u2014 generated ' + when + '</div>' +
+                    '<div class="summary"><strong>Score:</strong> ' + correct + ' of ' + total + ' (' + mastery + '% mastery). ' + firstNote + ' ' + hintNote + ' Time on task: ' + timeStr + '.</div>' +
+                    '<table><thead><tr><th>#</th><th>Question</th><th>Result</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>' +
+                    '</body></html>'
+            );
+            win.document.close();
+            setTimeout(function () { win.focus(); win.print(); }, 300);
+        }
+
+        function playConfetti() {
+            const existing = document.getElementById("confettiCanvas");
+            if (existing) existing.remove();
+            const canvas = document.createElement("canvas");
+            canvas.id = "confettiCanvas";
+            canvas.className = "confetti-canvas";
+            document.body.appendChild(canvas);
+            const ctx = canvas.getContext("2d");
+            const W = canvas.width = window.innerWidth;
+            const H = canvas.height = window.innerHeight;
+            const parts = [];
+            const colors = ["#34d399", "#7dd3fc", "#a78bfa", "#fbbf24", "#fb7185", "#f472b6"];
+            for (let i = 0; i < 160; i++) {
+                parts.push({
+                    x: Math.random() * W,
+                    y: Math.random() * -H,
+                    w: 6 + Math.random() * 6,
+                    h: 8 + Math.random() * 8,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: 2 + Math.random() * 3,
+                    vx: -1.5 + Math.random() * 3,
+                    rot: Math.random() * Math.PI * 2,
+                    vr: -0.15 + Math.random() * 0.3
+                });
+            }
+            let frames = 0;
+            function tick() {
+                ctx.clearRect(0, 0, W, H);
+                ctx.save();
+                parts.forEach(function (p) {
+                    p.y += p.vy;
+                    p.x += p.vx + Math.sin((Date.now() / 400) + p.rot) * 0.6;
+                    p.rot += p.vr;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+                ctx.restore();
+                frames++;
+                if (frames < 380) {
+                    window.requestAnimationFrame(tick);
+                } else {
+                    canvas.remove();
+                }
+            }
+            tick();
+        }
+    </script>
+</body>
+
+</html>
