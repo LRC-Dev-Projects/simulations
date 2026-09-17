@@ -1575,6 +1575,23 @@
                     ctx.stroke();
 
                     drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
+                } else if (sweep > 0) {
+                    /* Tiny but real slices (e.g. 0.04% CO2 in inhaled air) must not vanish.
+                       Guarantee them a visible sliver centred on their true mid-angle. */
+                    var minSweep = 0.02;
+                    var sliverStart = startAngle + sweep / 2 - minSweep / 2;
+                    var sliverEnd = sliverStart + minSweep;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, r, sliverStart, sliverEnd);
+                    ctx.closePath();
+                    ctx.fillStyle = slice.color;
+                    ctx.fill();
+                    ctx.strokeStyle = "#1d2340";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    drawPattern(ctx, cx, cy, r, sliverStart, sliverEnd, slice.pattern);
                 }
 
                 drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
@@ -1619,6 +1636,23 @@
                     ctx.stroke();
 
                     drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
+                } else if (sweep > 0) {
+                    /* Tiny but real slices (e.g. 0.04% CO2 in inhaled air) must not vanish.
+                       Draw them as a guaranteed-visible sliver centred on their true mid-angle. */
+                    var minSweep = 0.02;
+                    var sliverStart = startAngle + sweep / 2 - minSweep / 2;
+                    var sliverEnd = sliverStart + minSweep;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, r, sliverStart, sliverEnd);
+                    ctx.closePath();
+                    ctx.fillStyle = slice.color;
+                    ctx.fill();
+                    ctx.strokeStyle = "#1d2340";
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    drawPattern(ctx, cx, cy, r, sliverStart, sliverEnd, slice.pattern);
                 }
 
                 drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
