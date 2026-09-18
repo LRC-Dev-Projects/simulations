@@ -1742,6 +1742,21 @@
             return Math.max(0, Math.min(100, pct));
         }
 
+        function shuffleChoices() {
+            /* Randomise the on-screen order of the answer choices for every
+               embedded assessment question. Each .choice-item keeps its own
+               data-idx, radio name and correct-answer marker, so moving the
+               DOM nodes only changes the order in which they are displayed —
+               the grading logic is unchanged. */
+            document.querySelectorAll(".assessment-q .choice-list").forEach((list) => {
+                const items = Array.from(list.children).filter((n) => n.classList.contains("choice-item"));
+                for (let i = items.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    list.insertBefore(items[i], items[j]);
+                }
+            });
+        }
+
         function renderResults() {
             const diff = simState.tapCount - simState.totalBeats;
             const absDiff = Math.abs(diff);
@@ -1834,6 +1849,8 @@
                     </div>
                 </div>
             `;
+
+            shuffleChoices();
 
             document.querySelectorAll(".assessment-q .choice-item").forEach((item) => {
                 item.addEventListener("click", () => {
