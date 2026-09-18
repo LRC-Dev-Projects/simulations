@@ -1,73 +1,112 @@
 <!DOCTYPE html>
+<!--
+  ============================================================
+  BLANK SIMULATION TEMPLATE v2.2.1
+  SPANISH FORM 1 | TERM 1 | UNIT 4 | SECTION 11
+  Activity 2: Drag the Capitals to Match the Countries
+  ============================================================
+
 <html lang="es" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drag the Capitals to Match the Countries</title>
+
+  <!-- ==========================================================
+       DEV-EDIT ZONE 1: PAGE TITLE
+       ========================================================== -->
+  <title>Actividad 2: Relaciona las capitales con los países</title>
 
   <style>
+    /* ==========================================================
+       TEMPLATE BASE
+       ========================================================== */
+
     :root {
-      --bg: #111827;
-      --panel: #1f2937;
-      --panel-2: #273449;
-      --text: #f9fafb;
-      --muted: #cbd5e1;
-      --border: #475569;
-      --accent: #60a5fa;
-      --accent-2: #3b82f6;
-      --success: #22c55e;
-      --success-bg: #14532d;
-      --error: #ef4444;
-      --error-bg: #7f1d1d;
-      --white: #ffffff;
-      --shadow: 0 8px 24px rgba(0,0,0,0.25);
+      --bg: #0f1222;
+      --bg-soft: #171b31;
+      --surface: #1d2340;
+      --surface-2: #252d52;
+      --text: #eef2ff;
+      --soft: #c7d0f0;
+      --muted: #98a4c8;
+      --border: rgba(255,255,255,.14);
+      --accent: #7dd3fc;
+      --accent-2: #a78bfa;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #fb7185;
+      --map-land: #2c614d;
+      --map-land-2: #315b6b;
+      --country-fill: #355f4f;
+      --country-hover: #416f5e;
     }
 
-    [data-theme="light"] {
-      --bg: #f3f4f6;
-      --panel: #ffffff;
-      --panel-2: #e5e7eb;
-      --text: #111827;
-      --muted: #4b5563;
-      --border: #cbd5e1;
-      --accent: #2563eb;
-      --accent-2: #1d4ed8;
-      --success: #16a34a;
-      --success-bg: #dcfce7;
-      --error: #dc2626;
-      --error-bg: #fee2e2;
-      --white: #ffffff;
-      --shadow: 0 8px 24px rgba(0,0,0,0.12);
+    html[data-theme="light"] {
+      --bg: #f4f7ff;
+      --bg-soft: #e7edff;
+      --surface: #ffffff;
+      --surface-2: #eef3ff;
+      --text: #17203f;
+      --soft: #344267;
+      --muted: #5d6b95;
+      --border: rgba(23,32,63,.14);
+      --accent: #0284c7;
+      --accent-2: #7c3aed;
+      --success: #047857;
+      --warning: #b45309;
+      --danger: #be123c;
+      --map-land: #a8cdb8;
+      --map-land-2: #aacbd8;
+      --country-fill: #b7d7c3;
+      --country-hover: #9fc9b0;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
+      padding: 16px;
+      font-family: Arial, Helvetica, sans-serif;
       background: var(--bg);
       color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
     }
 
     button {
       font: inherit;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .58;
+    }
+
+    .app {
+      max-width: 1220px;
+      margin: auto;
+    }
+
+    .topbar,
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
     }
 
     .topbar {
-      min-height: 64px;
-      padding: 12px 20px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
     }
 
     .brand {
@@ -76,591 +115,804 @@
       gap: 12px;
     }
 
-    .brand-badge {
-      padding: 6px 10px;
-      border-radius: 8px;
-      background: var(--accent);
-      color: white;
-      font-weight: 800;
-      font-size: 12px;
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      font-size: 1.4rem;
     }
 
-    .brand-title {
-      font-weight: 800;
-      font-size: 18px;
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .toolbar button {
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-      color: var(--text);
-      border-radius: 8px;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-
-    .toolbar button:hover {
-      border-color: var(--accent);
-    }
-
-    main {
-      width: min(1400px, 96%);
-      margin: 0 auto;
-      padding: 28px 0 50px;
-    }
-
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    .home-card {
-      max-width: 850px;
-      margin: 50px auto;
-      padding: 40px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    .home-card h1 {
-      margin: 0 0 12px;
-      font-size: clamp(28px, 5vw, 46px);
-    }
-
-    .home-card h2 {
-      color: var(--accent);
+    h1,
+    h2,
+    h3,
+    p {
       margin-top: 0;
-      font-size: 20px;
     }
 
-    .home-card p {
+    .brand h1 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
       color: var(--muted);
-      line-height: 1.6;
-      max-width: 700px;
-      margin: 14px auto;
+    }
+
+    .controls,
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .control-btn,
+    .primary-btn,
+    .secondary-btn,
+    .danger-btn {
+      padding: 10px 15px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-weight: bold;
+    }
+
+    .control-btn,
+    .secondary-btn {
+      background: var(--surface-2);
+      color: var(--text);
     }
 
     .primary-btn {
-      margin-top: 20px;
-      padding: 13px 26px;
+      background: linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent-2)
+      );
+      color: #fff;
       border: 0;
-      border-radius: 10px;
-      background: var(--accent-2);
-      color: white;
-      font-weight: 800;
-      cursor: pointer;
     }
 
-    .primary-btn:hover {
-      filter: brightness(1.1);
-    }
-
-    .game-header {
-      margin-bottom: 20px;
-    }
-
-    .game-header h1 {
-      margin: 0 0 8px;
-      font-size: clamp(24px, 4vw, 36px);
-    }
-
-    .game-header p {
-      margin: 5px 0;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .spanish-instructions {
-      font-weight: 700;
+    .danger-btn {
+      background: var(--surface-2);
       color: var(--text);
+      border-color: var(--danger);
     }
 
-    .progress-wrap {
-      margin: 20px 0;
-      padding: 14px;
-      background: var(--panel);
+    main {
+      display: none;
+      padding: 24px 0;
+    }
+
+    main.active {
+      display: block;
+    }
+
+    .hero {
+      max-width: 920px;
+      margin: auto;
+      text-align: center;
+      padding: 42px 25px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 13px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+
+    .hero p {
+      color: var(--soft);
+      line-height: 1.65;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero .button-row {
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .bilingual {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .instruction-box {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      text-align: left;
+      line-height: 1.55;
     }
 
-    .progress-top {
+    .instruction-box strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    /* ==========================================================
+       ACTIVITY LAYOUT
+       ========================================================== */
+
+    .sim-card {
+      max-width: 1180px;
+      margin: auto;
+      padding: 22px;
+    }
+
+    .mission-head {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 8px;
-      font-weight: 700;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+      margin-bottom: 18px;
+    }
+
+    .mission-head p {
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .objective {
+      color: var(--accent);
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .progress {
+      min-width: 180px;
+      text-align: right;
+      font-weight: bold;
     }
 
     .progress-bar {
-      height: 12px;
-      background: var(--panel-2);
+      width: 180px;
+      height: 9px;
+      background: var(--bg-soft);
       border-radius: 999px;
+      margin-top: 7px;
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
-      width: 0%;
-      background: var(--success);
-      transition: width 0.3s ease;
+      width: 0;
+      background: linear-gradient(
+        90deg,
+        var(--accent),
+        var(--accent-2)
+      );
+      transition: width .25s ease;
     }
+
+    .activity-instructions {
+      margin-bottom: 18px;
+    }
+
+    .game-instruction {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      line-height: 1.55;
+    }
+
+    .game-instruction p {
+      margin: 0 0 8px;
+    }
+
+    .game-instruction p:last-child {
+      margin-bottom: 0;
+    }
+
+    .english-line {
+      color: var(--muted);
+    }
+
+    /* ==========================================================
+       MAP + CAPITAL CARD AREA
+       ========================================================== */
 
     .game-layout {
       display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 20px;
+      grid-template-columns: minmax(0, 1.7fr) minmax(300px, .9fr);
+      gap: 18px;
       align-items: start;
     }
 
-    .capital-panel {
-      background: var(--panel);
+    .map-panel,
+    .cards-panel,
+    .review-panel {
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .capital-panel h2,
-    .map-panel h2 {
-      margin: 0 0 12px;
-      font-size: 20px;
-    }
-
-    .capital-panel p {
-      color: var(--muted);
-      font-size: 14px;
-      margin-top: 0;
-    }
-
-    .capital-cards {
-      display: grid;
-      gap: 10px;
-    }
-
-    .capital-card {
-      padding: 14px 16px;
-      background: var(--panel-2);
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 18px;
-      font-weight: 800;
-      text-align: center;
-      cursor: grab;
-      user-select: none;
-      touch-action: none;
-      transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
-    }
-
-    .capital-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-    }
-
-    .capital-card.dragging {
-      opacity: 0.55;
-      transform: scale(1.03);
-    }
-
-    .capital-card.matched {
-      cursor: default;
-      opacity: 0.45;
-      border-color: var(--success);
-      text-decoration: line-through;
+      border-radius: 18px;
+      background: var(--bg-soft);
     }
 
     .map-panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: var(--shadow);
+      padding: 16px;
     }
 
-    .map-area {
+    .cards-panel {
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .panel-title {
+      margin-bottom: 6px;
+    }
+
+    .panel-subtitle {
+      color: var(--muted);
+      font-size: .92rem;
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+
+    /* ==========================================================
+       SCHEMATIC MAP
+       ========================================================== */
+
+    .map-stage {
       position: relative;
-      width: 100%;
-      min-height: 680px;
-      border-radius: 18px;
+      min-height: 650px;
       overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
       background:
-        radial-gradient(circle at 20% 30%, rgba(96,165,250,.15), transparent 25%),
-        radial-gradient(circle at 70% 70%, rgba(34,197,94,.12), transparent 25%),
-        var(--panel-2);
-      border: 2px solid var(--border);
+        radial-gradient(
+          circle at 50% 40%,
+          rgba(125,211,252,.08),
+          transparent 55%
+        ),
+        #102d35;
     }
 
-    .map-title {
+    html[data-theme="light"] .map-stage {
+      background:
+        radial-gradient(
+          circle at 50% 40%,
+          rgba(2,132,199,.08),
+          transparent 55%
+        ),
+        #dceff3;
+    }
+
+    .map-region {
       position: absolute;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 22px;
-      font-weight: 900;
-      opacity: 0.8;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: .05em;
       pointer-events: none;
     }
 
+    .region-spain {
+      top: 5%;
+      left: 7%;
+    }
+
+    .region-mexico {
+      top: 29%;
+      left: 8%;
+    }
+
+    .region-central {
+      top: 42%;
+      left: 38%;
+    }
+
+    .region-caribbean {
+      top: 31%;
+      right: 19%;
+    }
+
+    .region-south {
+      top: 58%;
+      left: 49%;
+    }
+
+    {
+      position: absolute;
+      background: var(--map-land);
+      opacity: .45;
+      border: 1px solid rgba(255,255,255,.13);
+      pointer-events: none;
+    }
+
+    .land-spain {
+      left: 5%;
+      top: 10%;
+      width: 25%;
+      height: 13%;
+      border-radius: 35% 55% 42% 50%;
+      transform: rotate(-5deg);
+    }
+
+    .land-mexico {
+      left: 5%;
+      top: 32%;
+      width: 30%;
+      height: 20%;
+      border-radius: 30% 45% 25% 55%;
+      transform: rotate(8deg);
+    }
+
+    .land-central {
+      left: 31%;
+      top: 40%;
+      width: 21%;
+      height: 17%;
+      border-radius: 40% 35% 50% 45%;
+      transform: rotate(22deg);
+      background: var(--map-land-2);
+    }
+
+    .land-caribbean {
+      right: 7%;
+      top: 27%;
+      width: 27%;
+      height: 24%;
+      border-radius: 50%;
+      background: var(--map-land-2);
+    }
+
+    .land-south {
+      left: 45%;
+      top: 51%;
+      width: 36%;
+      height: 43%;
+      border-radius: 48% 48% 55% 45%;
+      transform: rotate(8deg);
+    }
+
     /*
-      The following areas form a simplified interactive map.
-      They are deliberately large enough for drag-and-drop practice.
+      Country zones are deliberately outlined individually so
+      learners can distinguish each target.
     */
 
-    .country {
+    .country-zone {
       position: absolute;
-      min-width: 125px;
-      min-height: 78px;
-      padding: 10px;
-      border: 2px dashed var(--border);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.04);
+      z-index: 5;
+      min-width: 106px;
+      min-height: 68px;
+      padding: 9px;
+      border: 2px solid rgba(255,255,255,.78);
+      border-radius: 12px;
+      background: var(--country-fill);
+      color: var(--text);
+      box-shadow: 0 4px 12px rgba(0,0,0,.16);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      gap: 7px;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+      transition:
+        transform .15s ease,
+        background .15s ease,
+        border-color .15s ease,
+        box-shadow .15s ease;
+    }
+
+    .country-zone:focus {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .country-zone.hovered {
+      background: var(--country-hover);
+      border-color: var(--accent);
+      transform: scale(1.04);
+      box-shadow: 0 0 0 3px rgba(125,211,252,.18);
+    }
+
+    .country-zone.matched {
+      border-color: var(--success);
+      background: rgba(52,211,153,.18);
+      box-shadow: 0 0 0 2px rgba(52,211,153,.18);
     }
 
     .country-name {
-      font-weight: 900;
-      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.15;
     }
 
-    .drop-hint {
-      font-size: 11px;
+    .country-drop-label {
+      margin-top: 4px;
+      font-size: .72rem;
       color: var(--muted);
     }
 
-    .country.drag-over {
+    /* Target positions */
+
+    #zone-espana {
+      left: 8%;
+      top: 13%;
+    }
+
+    #zone-mexico {
+      left: 8%;
+      top: 35%;
+    }
+
+    #zone-colombia {
+      left: 34%;
+      top: 57%;
+    }
+
+    #zone-argentina {
+      left: 57%;
+      top: 80%;
+    }
+
+    #zone-peru {
+      left: 43%;
+      top: 68%;
+    }
+
+    #zone-ecuador {
+      left: 31%;
+      top: 66%;
+      min-width: 118px;
+      min-height: 78px;
+    }
+
+    #zone-cuba {
+      right: 27%;
+      top: 35%;
+      min-width: 125px;
+      min-height: 78px;
+    }
+
+    #zone-dominican {
+      right: 8%;
+      top: 40%;
+      min-width: 160px;
+      min-height: 82px;
+    }
+
+    #zone-chile {
+      left: 52%;
+      top: 69%;
+    }
+
+    #zone-venezuela {
+      left: 52%;
+      top: 53%;
+    }
+
+    /* ==========================================================
+       CAPITAL CARDS
+       ========================================================== */
+
+    .capital-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .capital-card {
+      min-height: 62px;
+      width: 100%;
+      padding: 11px 9px;
+      border: 2px solid var(--border);
+      border-radius: 13px;
+      background: var(--surface);
+      color: var(--text);
+      font-weight: bold;
+      line-height: 1.2;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: grab;
+      transition:
+        transform .12s ease,
+        border-color .12s ease,
+        background .12s ease,
+        box-shadow .12s ease;
+    }
+
+    .capital-card:hover {
       border-color: var(--accent);
-      background: rgba(96,165,250,0.18);
-      transform: scale(1.04);
+      transform: translateY(-2px);
     }
 
-    .country.correct {
-      border-color: var(--success);
-      background: rgba(34,197,94,0.15);
+    .capital-card:focus {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
     }
 
-    .country.incorrect {
-      animation: shake 0.3s ease;
+    .capital-card.selected {
+      border-color: var(--accent);
+      background: var(--surface-2);
+      box-shadow: 0 0 0 3px rgba(125,211,252,.15);
+      transform: translateY(-2px);
     }
 
-    .placed-card {
-      width: 95%;
-      padding: 7px 5px;
-      border-radius: 7px;
-      background: var(--success);
-      color: white;
-      font-weight: 800;
-      font-size: 13px;
+    .capital-card.dragging {
+      opacity: .35;
+    }
+
+    .capital-card.shake {
+      animation: shake .35s ease;
+      border-color: var(--danger);
     }
 
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-6px); }
-      75% { transform: translateX(6px); }
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-7px); }
+      40% { transform: translateX(7px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
     }
 
-    /* Approximate map positions */
-
-    #country-spain {
-      left: 7%;
-      top: 18%;
-    }
-
-    #country-mexico {
-      left: 14%;
-      top: 42%;
-    }
-
-    #country-cuba {
-      left: 43%;
-      top: 35%;
+    .drag-ghost {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
       min-width: 145px;
+      max-width: 210px;
+      padding: 12px 14px;
+      border-radius: 13px;
+      background: var(--surface);
+      color: var(--text);
+      border: 2px solid var(--accent);
+      box-shadow: 0 12px 28px rgba(0,0,0,.25);
+      text-align: center;
+      font-weight: bold;
+      transform: translate(-50%, -50%) rotate(2deg);
     }
 
-    #country-dominican {
-      left: 59%;
-      top: 41%;
-      min-width: 175px;
+    .selected-help {
+      margin-top: 14px;
+      padding: 11px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.45;
     }
 
-    #country-colombia {
-      left: 39%;
-      top: 58%;
-    }
-
-    #country-venezuela {
-      left: 58%;
-      top: 58%;
-    }
-
-    #country-ecuador {
-      left: 29%;
-      top: 70%;
-    }
-
-    #country-peru {
-      left: 39%;
-      top: 76%;
-    }
-
-    #country-chile {
-      left: 53%;
-      top: 82%;
-    }
-
-    #country-argentina {
-      left: 65%;
-      top: 79%;
-    }
+    /* ==========================================================
+       FEEDBACK
+       ========================================================== */
 
     .feedback {
-      margin-top: 18px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      display: none;
+      min-height: 52px;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      color: var(--soft);
       line-height: 1.45;
-      font-weight: 700;
+      border-left: 4px solid var(--muted);
     }
 
-    .feedback.show {
-      display: block;
+    .feedback.good {
+      border-left-color: var(--success);
     }
 
-    .feedback.correct {
-      background: var(--success-bg);
-      border-color: var(--success);
+    .feedback.try {
+      border-left-color: var(--warning);
     }
 
-    .feedback.incorrect {
-      background: var(--error-bg);
-      border-color: var(--error);
+    /* ==========================================================
+       REVIEW
+       ========================================================== */
+
+    .review-panel {
+      margin-top: 20px;
+      padding: 20px;
     }
 
-    .review-card {
-      max-width: 900px;
-      margin: 40px auto;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: var(--shadow);
-    }
-
-    .review-card h1 {
-      text-align: center;
-      margin-top: 0;
-    }
-
-    .completion-message {
-      text-align: center;
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 25px;
-      color: var(--success);
+    .review-table-wrap {
+      overflow-x: auto;
     }
 
     .review-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 14px;
     }
 
     .review-table th,
     .review-table td {
-      padding: 13px;
-      border: 1px solid var(--border);
+      padding: 11px 12px;
       text-align: left;
+      border-bottom: 1px solid var(--border);
     }
 
     .review-table th {
-      background: var(--panel-2);
-      font-weight: 900;
+      background: var(--surface-2);
     }
 
-    .review-actions {
-      text-align: center;
-      margin-top: 25px;
+    .review-table td:last-child {
+      font-weight: bold;
+      color: var(--success);
     }
 
-    .small-note {
-      margin-top: 14px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
+    .review-message {
+      padding: 13px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      line-height: 1.5;
     }
 
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.65);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+    /* ==========================================================
+       TEMPLATE MODAL / FOOTER
+       ========================================================== */
 
-    .modal-backdrop.show {
-      display: flex;
+    .hidden {
+      display: none !important;
     }
 
     .modal {
-      max-width: 650px;
-      width: 100%;
-      background: var(--panel);
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0,0,0,.68);
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      position: relative;
+      width: min(700px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 28px;
+      border-radius: 20px;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: var(--shadow);
     }
 
-    .modal h2 {
-      margin-top: 0;
+    .modal-card li {
+      margin-bottom: 10px;
+      line-height: 1.5;
     }
 
-    .modal p {
-      color: var(--muted);
-      line-height: 1.6;
+    .close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 1.2rem;
     }
 
-    .modal-close {
-      margin-top: 10px;
-      padding: 10px 18px;
-      border: 0;
-      border-radius: 8px;
-      background: var(--accent-2);
-      color: white;
-      cursor: pointer;
-      font-weight: 800;
-    }
-
-    footer {
+    .footer {
       text-align: center;
-      padding: 20px;
       color: var(--muted);
-      font-size: 13px;
+      padding-bottom: 10px;
     }
 
-    @media (max-width: 1000px) {
+    /* ==========================================================
+       RESPONSIVE
+       ========================================================== */
+
+    @media (max-width: 950px) {
       .game-layout {
         grid-template-columns: 1fr;
       }
 
-      .capital-panel {
-        order: 2;
-      }
-
-      .map-panel {
-        order: 1;
+      .cards-panel {
+        position: static;
       }
 
       .capital-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .map-area {
-        min-height: 650px;
+        grid-template-columns: repeat(5, 1fr);
       }
     }
 
-    @media (max-width: 650px) {
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
+    @media (max-width: 700px) {
+      body {
+        padding: 10px;
       }
 
-      .toolbar {
+      .topbar,
+      .mission-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .progress {
+        text-align: left;
         width: 100%;
       }
 
-      .toolbar button {
-        flex: 1;
-      }
-
-      .home-card {
-        padding: 25px 18px;
-        margin: 20px auto;
+      .progress-bar {
+        width: 100%;
       }
 
       .capital-cards {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
       }
 
-      .map-area {
-        min-height: 780px;
+      .map-stage {
+        min-height: 690px;
       }
 
-      .country {
+      .country-zone {
+        min-width: 90px;
+        min-height: 62px;
+        padding: 7px;
+        font-size: .86rem;
+      }
+
+      #zone-dominican {
+        min-width: 120px;
+      }
+
+      #zone-cuba,
+      #zone-ecuador {
         min-width: 105px;
-        min-height: 70px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .map-stage {
+        min-height: 760px;
       }
 
-      #country-spain {
+      #zone-espana {
         left: 4%;
-        top: 10%;
       }
 
-      #country-mexico {
-        left: 5%;
-        top: 29%;
+      #zone-mexico {
+        left: 4%;
       }
 
-      #country-cuba {
-        left: 50%;
-        top: 27%;
+      #zone-cuba {
+        right: 5%;
       }
 
-      #country-dominican {
-        left: 42%;
-        top: 40%;
+      #zone-dominican {
+        right: 3%;
       }
 
-      #country-colombia {
-        left: 5%;
-        top: 50%;
+      #zone-colombia {
+        left: 28%;
       }
 
-      #country-venezuela {
-        left: 53%;
-        top: 50%;
-      }
-
-      #country-ecuador {
-        left: 5%;
-        top: 64%;
-      }
-
-      #country-peru {
-        left: 50%;
-        top: 63%;
-      }
-
-      #country-chile {
+      #zone-ecuador {
         left: 8%;
-        top: 79%;
       }
 
-      #country-argentina {
-        left: 54%;
-        top: 78%;
+      #zone-venezuela {
+        left: 47%;
+      }
+
+      #zone-peru {
+        left: 30%;
+      }
+
+      #zone-chile {
+        left: 42%;
+      }
+
+      #zone-argentina {
+        left: 45%;
       }
     }
 
@@ -668,9 +920,10 @@
       *,
       *::before,
       *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
-        transition: none !important;
-        animation: none !important;
+        transition-duration: .001ms !important;
       }
     }
   </style>
@@ -678,888 +931,2016 @@
 
 <body>
 
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-badge">SPAN</span>
-      <span class="brand-title">Recipe &amp; Geography Practice</span>
-    </div>
+  <div class="app">
 
-    <div class="toolbar">
-      <button id="themeBtn" type="button">☀️ Tema</button>
-      <button id="helpBtn" type="button">❓ Ayuda</button>
-      <button id="resetBtn" type="button">↻ Reiniciar</button>
-    </div>
-  </header>
+    <!-- ========================================================
+         TEMPLATE HEADER
+         ======================================================== -->
 
-  <main>
+    <header class="topbar">
 
-    <!-- HOME SCREEN -->
-    <section id="homeScreen" class="screen active">
-      <div class="home-card">
-        <h1>Actividad 2</h1>
-        <h2>Drag the Capitals to Match the Countries</h2>
+      <div class="brand">
+        <div class="brand-mark">🌎</div>
 
-        <p class="spanish-instructions">
-          ¡Relaciona las capitales con los países!
-        </p>
+        <div>
+          <h1>Actividad 2</h1>
+          <p>Capitales y países</p>
+        </div>
+      </div>
 
-        <p>
-          Lee el nombre de cada capital y arrastra la tarjeta hasta el país
-          correcto en el mapa. Si tu respuesta es incorrecta, la tarjeta
-          volverá a su posición para que puedas intentarlo de nuevo.
-        </p>
+      <div class="controls">
+        <button
+          class="control-btn"
+          id="helpBtn"
+          type="button"
+        >
+          ❔ Reglas
+        </button>
 
-        <p>
-          Match all ten capital cities with their countries.
-        </p>
+        <button
+          class="control-btn"
+          id="themeBtn"
+          type="button"
+        >
+          ☀ Claro
+        </button>
 
-        <button id="startBtn" class="primary-btn" type="button">
-          Comenzar
+        <button
+          class="control-btn"
+          id="exitBtn"
+          type="button"
+        >
+          Salir
+        </button>
+
+        <button
+          class="danger-btn"
+          id="resetBtn"
+          type="button"
+        >
+          ↻ Reiniciar
         </button>
       </div>
-    </section>
+
+    </header>
 
 
-    <!-- GAME SCREEN -->
-    <section id="gameScreen" class="screen">
+    <!-- ========================================================
+         HOME SCREEN
+         ======================================================== -->
 
-      <div class="game-header">
-        <h1>¡Relaciona las capitales con los países!</h1>
+    <main id="homeScreen" class="active">
 
-        <p class="spanish-instructions">
-          Lee el nombre de cada capital y arrastra la tarjeta hasta el país correcto en el mapa.
-        </p>
+      <section class="card hero">
 
-        <p>
-          Read each capital city and drag the card to the correct country.
-          If your answer is incorrect, try again.
-        </p>
-      </div>
-
-      <div class="progress-wrap">
-        <div class="progress-top">
-          <span>Progreso</span>
-          <span id="progressText">0 de 10</span>
+        <div class="eyebrow">
+          Actividad 2
         </div>
 
-        <div class="progress-bar">
-          <div id="progressFill" class="progress-fill"></div>
+        <h2>
+          Relaciona las capitales con los países
+        </h2>
+
+        <div class="bilingual">
+
+          <div class="instruction-box">
+            <strong>Español</strong>
+
+            ¡Relaciona las capitales con los países!
+            Lee el nombre de cada capital y arrastra la tarjeta
+            hasta el país correcto en el mapa. Si tu respuesta es
+            incorrecta, la tarjeta volverá a su posición para que
+            puedas intentarlo de nuevo.
+          </div>
+
+          <div class="instruction-box">
+            <strong>English</strong>
+
+            Match the capitals to the countries! Read the name of
+            each capital and drag the card to the correct country
+            on the map. If your answer is incorrect, the card will
+            return to its original position so that you can try again.
+          </div>
+
         </div>
-      </div>
 
-      <div class="game-layout">
+        <div class="button-row">
 
-        <!-- CAPITAL CARDS -->
-        <aside class="capital-panel">
-          <h2>Capitales</h2>
+          <button
+            class="primary-btn"
+            id="startBtn"
+            type="button"
+          >
+            Comenzar
+          </button>
 
-          <p>
-            Arrastra cada tarjeta hasta el país correspondiente.
-          </p>
+          <button
+            class="secondary-btn"
+            id="homeRulesBtn"
+            type="button"
+          >
+            Leer las reglas
+          </button>
 
-          <div id="capitalCards" class="capital-cards"></div>
-        </aside>
+        </div>
+
+      </section>
+
+    </main>
 
 
-        <!-- MAP -->
-        <section class="map-panel">
-          <h2>Mapa de práctica</h2>
+    <!-- ========================================================
+         SIMULATION SCREEN
+         ======================================================== -->
 
-          <div id="mapArea" class="map-area">
+    <main id="simScreen">
 
-            <div class="map-title">
-              España • América Latina • Caribe
+      <section class="card sim-card">
+
+        <div class="mission-head">
+
+          <div>
+            <div class="objective">
+              Actividad 2
             </div>
 
-            <div class="country" id="country-spain" data-country="España">
-              <div class="country-name">España</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
+            <h2>
+              Relaciona las capitales con los países
+            </h2>
 
-            <div class="country" id="country-mexico" data-country="México">
-              <div class="country-name">México</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
+            <p>
+              Arrastra cada capital hasta el país correcto.
+            </p>
+          </div>
 
-            <div class="country" id="country-cuba" data-country="Cuba">
-              <div class="country-name">Cuba</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
+          <div class="progress">
 
-            <div class="country" id="country-dominican" data-country="República Dominicana">
-              <div class="country-name">República Dominicana</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
+            <span id="progressText">
+              0 de 10 parejas
+            </span>
 
-            <div class="country" id="country-colombia" data-country="Colombia">
-              <div class="country-name">Colombia</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
-
-            <div class="country" id="country-venezuela" data-country="Venezuela">
-              <div class="country-name">Venezuela</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
-
-            <div class="country" id="country-ecuador" data-country="Ecuador">
-              <div class="country-name">Ecuador</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
-
-            <div class="country" id="country-peru" data-country="Perú">
-              <div class="country-name">Perú</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
-
-            <div class="country" id="country-chile" data-country="Chile">
-              <div class="country-name">Chile</div>
-              <div class="drop-hint">Suelta aquí</div>
-            </div>
-
-            <div class="country" id="country-argentina" data-country="Argentina">
-              <div class="country-name">Argentina</div>
-              <div class="drop-hint">Suelta aquí</div>
+            <div class="progress-bar">
+              <div
+                id="progressFill"
+                class="progress-fill"
+              ></div>
             </div>
 
           </div>
 
-          <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+        </div>
+
+
+        <!-- ======================================================
+             REQUIRED INSTRUCTIONS
+             ====================================================== -->
+
+        <div class="activity-instructions">
+
+          <div class="game-instruction">
+
+            <p>
+              <strong>Español:</strong>
+              ¡Relaciona las capitales con los países! Lee el nombre
+              de cada capital y arrastra la tarjeta hasta el país
+              correcto en el mapa. Si tu respuesta es incorrecta,
+              la tarjeta volverá a su posición para que puedas
+              intentarlo de nuevo.
+            </p>
+
+            <p class="english-line">
+              <strong>English:</strong>
+              Match the capitals to the countries! Read the name of
+              each capital and drag the card to the correct country
+              on the map. If your answer is incorrect, the card will
+              return to its original position so that you can try again.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================
+             GAME
+             ====================================================== -->
+
+        <div class="game-layout">
+
+
+          <!-- ====================================================
+               MAP
+               ==================================================== -->
+
+          <section class="map-panel">
+
+            <h3 class="panel-title">
+              Mapa
+            </h3>
+
+            <p class="panel-subtitle">
+              Arrastra cada capital al país correspondiente.
+            </p>
+
+            <div
+              id="mapStage"
+              class="map-stage"
+              aria-label="Mapa interactivo de práctica"
+            >
+
+              <!-- Region labels -->
+
+              <span class="map-region region-spain">
+                España
+              </span>
+
+              <span class="map-region region-mexico">
+                México
+              </span>
+
+              <span class="map-region region-central">
+                América Central
+              </span>
+
+              <span class="map-region region-caribbean">
+                Caribe
+              </span>
+
+              <span class="map-region region-south">
+                América del Sur
+              </span>
+
+
+              <!-- Decorative land masses -->
+
+              <div class="landmass land-spain"></div>
+              <div class="landmass land-mexico"></div>
+              <div class="landmass land-central"></div>
+              <div class="landmass land-caribbean"></div>
+              <div class="landmass land-south"></div>
+
+
+              <!-- =================================================
+                   COUNTRY DROP ZONES
+                   ================================================= -->
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-espana"
+                data-country="España"
+                aria-label="España. Zona para colocar una capital."
+              >
+                <span class="country-name">
+                  España
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-mexico"
+                data-country="México"
+                aria-label="México. Zona para colocar una capital."
+              >
+                <span class="country-name">
+                  México
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-colombia"
+                data-country="Colombia"
+                aria-label="Colombia. Zona para colocar una capital."
+              >
+                <span class="country-name">
+                  Colombia
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-argentina"
+                data-country="Argentina"
+                aria-label="Argentina. Zona para colocar una capital."
+              >
+                <span class="country-name">
+                  Argentina
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-peru"
+                data-country="Perú"
+                aria-label="Perú. Zona para colocar una capital."
+              >
+                <span class="country-name">
+                  Perú
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-ecuador"
+                data-country="Ecuador"
+                aria-label="Ecuador. Zona grande para colocar una capital."
+              >
+                <span class="country-name">
+                  Ecuador
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-cuba"
+                data-country="Cuba"
+                aria-label="Cuba. Zona grande para colocar una capital."
+              >
+                <span class="country-name">
+                  Cuba
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-dominican"
+                data-country="República Dominicana"
+                aria-label="República Dominicana. Zona grande para colocar una capital."
+              >
+                <span class="country-name">
+                  República Dominicana
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-chile"
+                data-country="Chile"
+                aria-label="Chile. Zona para colocar una capital."
+              >
+                <span class="country-name">
+                  Chile
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="country-zone"
+                id="zone-venezuela"
+                data-country="Venezuela"
+                aria-label="Venezuela. Zona para colocar una capital."
+              >
+                <span class="country-name">
+                  Venezuela
+                </span>
+
+                <span class="country-drop-label">
+                  Coloca aquí
+                </span>
+              </button>
+
+            </div>
+
+          </section>
+
+
+          <!-- ====================================================
+               CAPITAL CARDS
+               ==================================================== -->
+
+          <aside class="cards-panel">
+
+            <h3 class="panel-title">
+              Capitales
+            </h3>
+
+            <p class="panel-subtitle">
+              Arrastra una tarjeta hasta el país correcto.
+              También puedes tocar una tarjeta y luego tocar un país.
+            </p>
+
+            <div
+              id="capitalCards"
+              class="capital-cards"
+              aria-label="Tarjetas de capitales"
+            ></div>
+
+            <div class="selected-help">
+              <strong>Ayuda:</strong>
+              si estás usando un dispositivo táctil, toca una capital
+              para seleccionarla y después toca el país correspondiente.
+            </div>
+
+            <div
+              id="feedback"
+              class="feedback"
+              role="status"
+              aria-live="polite"
+            >
+              Selecciona una capital para comenzar.
+            </div>
+
+          </aside>
+
+        </div>
+
+
+        <!-- ======================================================
+             REVIEW
+             ====================================================== -->
+
+        <section
+          id="reviewPanel"
+          class="review-panel hidden"
+        >
+
+          <h3>
+            Revisión final
+          </h3>
+
+          <div class="review-message">
+            ¡Muy bien! Has relacionado correctamente las capitales
+            con sus países.
+          </div>
+
+          <div class="review-table-wrap">
+
+            <table class="review-table">
+
+              <thead>
+                <tr>
+                  <th>País</th>
+                  <th>Capital</th>
+                  <th>Resultado</th>
+                </tr>
+              </thead>
+
+              <tbody id="reviewTableBody"></tbody>
+
+            </table>
+
+          </div>
+
+          <div class="button-row" style="margin-top:18px;">
+
+            <button
+              id="reviewRestartBtn"
+              class="primary-btn"
+              type="button"
+            >
+              Volver a jugar
+            </button>
+
+            <button
+              id="reviewHomeBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              Volver al inicio
+            </button>
+
+          </div>
 
         </section>
 
-      </div>
+      </section>
 
-    </section>
-
-
-    <!-- REVIEW SCREEN -->
-    <section id="reviewScreen" class="screen">
-
-      <div class="review-card">
-
-        <h1>🎉 Actividad completada</h1>
-
-        <div class="completion-message">
-          ¡Muy bien! Has relacionado correctamente las capitales con sus países.
-        </div>
-
-        <p>
-          Aquí está tu revisión de las parejas correctas:
-        </p>
-
-        <table class="review-table">
-          <thead>
-            <tr>
-              <th>País</th>
-              <th>Capital</th>
-            </tr>
-          </thead>
-
-          <tbody id="reviewTableBody"></tbody>
-        </table>
-
-        <div class="review-actions">
-          <button id="playAgainBtn" class="primary-btn" type="button">
-            Intentarlo de nuevo
-          </button>
-        </div>
-
-        <div class="small-note">
-          Puedes reiniciar la actividad para practicar otra vez.
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-  <footer>
-    SPAN-F1-T1-U4-SEC11-SIM1 • Activity 2
-  </footer>
+    </main>
 
 
-  <!-- HELP MODAL -->
-  <div id="helpModal" class="modal-backdrop" role="dialog" aria-modal="true">
-    <div class="modal">
-      <h2>¿Cómo jugar?</h2>
+    <!-- ========================================================
+         FOOTER
+         ======================================================== -->
 
-      <p>
-        1. Lee una tarjeta de capital.
-      </p>
+    <p class="footer">
+      Español Form 1 • Term 1 • Unit 4 • Section 11 • Activity 2
+    </p>
 
-      <p>
-        2. Arrastra la tarjeta hasta el país que corresponde.
-      </p>
-
-      <p>
-        3. Si es correcta, la tarjeta permanecerá en el país.
-      </p>
-
-      <p>
-        4. Si es incorrecta, la tarjeta volverá al panel de capitales.
-      </p>
-
-      <p>
-        5. Continúa hasta relacionar las diez capitales correctamente.
-      </p>
-
-      <button id="closeHelpBtn" class="modal-close" type="button">
-        Cerrar
-      </button>
-    </div>
   </div>
 
 
+  <!-- ==========================================================
+       RULES MODAL
+       ========================================================== -->
+
+  <div
+    class="modal"
+    id="rulesModal"
+    aria-hidden="true"
+  >
+
+    <section
+      class="modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rulesTitle"
+    >
+
+      <button
+        class="close"
+        id="closeRulesBtn"
+        type="button"
+        aria-label="Cerrar reglas"
+      >
+        ×
+      </button>
+
+      <h2 id="rulesTitle">
+        Cómo jugar
+      </h2>
+
+      <ol>
+
+        <li>
+          Lee el nombre de cada capital.
+        </li>
+
+        <li>
+          Arrastra la tarjeta hasta el país correcto en el mapa.
+        </li>
+
+        <li>
+          Si la respuesta es correcta, la capital permanecerá
+          colocada en el país y la tarjeta dejará de estar activa.
+        </li>
+
+        <li>
+          Si la respuesta es incorrecta, aparecerá un mensaje de
+          apoyo y la tarjeta volverá a su posición para que puedas
+          intentarlo de nuevo.
+        </li>
+
+        <li>
+          Continúa hasta relacionar las diez capitales con sus países.
+        </li>
+
+        <li>
+          Al terminar, revisa todas las parejas correctas.
+        </li>
+
+      </ol>
+
+      <p>
+        No hay temporizador ni vidas. Puedes intentarlo de nuevo.
+      </p>
+
+    </section>
+
+  </div>
+
+
+  <!-- ==========================================================
+       DEV-EDIT ZONE 5: SIM LOGIC
+       ========================================================== -->
+
   <script>
-    "use strict";
 
-    /*
-      ============================================================
-      SPAN-F1-T1-U4-SEC11-SIM1
-      Activity 2: Drag the Capitals to Match the Countries
-      ============================================================
-    */
+    /* ==========================================================
+       SIM CONFIG
+       ========================================================== */
 
-    const capitalData = [
+    const SIM_CONFIG = {
+      templateVersion: "2.2.1",
+
+      simId: "SPAN-F1-T1-U4-SEC11-SIM1",
+
+      title:
+        "Actividad 2: Relaciona las capitales con los países",
+
+      subtitle:
+        "Práctica de capitales y países",
+
+      badgeText: "ES",
+
+      homeEyebrow:
+        "Actividad 2",
+
+      homeDescription:
+        "¡Relaciona las capitales con los países! Lee el nombre de cada capital y arrastra la tarjeta hasta el país correcto en el mapa. Si tu respuesta es incorrecta, la tarjeta volverá a su posición para que puedas intentarlo de nuevo.",
+
+      instructions: [
+        "Lee el nombre de cada capital.",
+        "Arrastra la tarjeta hasta el país correcto en el mapa.",
+        "Si la respuesta es incorrecta, la tarjeta volverá a su posición para que puedas intentarlo de nuevo.",
+        "Cuando termines, revisa las parejas correctas de país y capital."
+      ]
+    };
+
+
+    /* ==========================================================
+       ACTIVITY DATA
+       ========================================================== */
+
+    const CAPITAL_DATA = [
       {
         capital: "Madrid",
         country: "España",
-        feedback: "Correcto. Madrid es la capital de España."
+        feedback:
+          "Correcto. Madrid es la capital de España."
       },
+
       {
         capital: "Bogotá",
         country: "Colombia",
-        feedback: "Correcto. Bogotá es la capital de Colombia."
+        feedback:
+          "Correcto. Bogotá es la capital de Colombia."
       },
+
       {
         capital: "Buenos Aires",
         country: "Argentina",
-        feedback: "Correcto. Buenos Aires es la capital de Argentina."
+        feedback:
+          "Correcto. Buenos Aires es la capital de Argentina."
       },
+
       {
         capital: "Lima",
         country: "Perú",
-        feedback: "Correcto. Lima es la capital del Perú."
+        feedback:
+          "Correcto. Lima es la capital del Perú."
       },
+
       {
         capital: "Quito",
         country: "Ecuador",
-        feedback: "Correcto. Quito es la capital del Ecuador."
+        feedback:
+          "Correcto. Quito es la capital del Ecuador."
       },
+
       {
         capital: "La Habana",
         country: "Cuba",
-        feedback: "Correcto. La Habana es la capital de Cuba."
+        feedback:
+          "Correcto. La Habana es la capital de Cuba."
       },
+
       {
         capital: "Santo Domingo",
         country: "República Dominicana",
-        feedback: "Correcto. Santo Domingo es la capital de la República Dominicana."
+        feedback:
+          "Correcto. Santo Domingo es la capital de la República Dominicana."
       },
+
       {
         capital: "Santiago",
         country: "Chile",
-        feedback: "Correcto. Santiago es la capital de Chile."
+        feedback:
+          "Correcto. Santiago es la capital de Chile."
       },
+
       {
         capital: "Caracas",
         country: "Venezuela",
-        feedback: "Correcto. Caracas es la capital de Venezuela."
+        feedback:
+          "Correcto. Caracas es la capital de Venezuela."
       },
+
       {
         capital: "Ciudad de México",
         country: "México",
-        feedback: "Correcto. Ciudad de México es la capital de México."
+        feedback:
+          "Correcto. Ciudad de México es la capital de México."
       }
     ];
 
 
-    const state = {
+    /* ==========================================================
+       DOM HELPER
+       ========================================================== */
+
+    const $ = id => document.getElementById(id);
+
+
+    /* ==========================================================
+       STATE
+       ========================================================== */
+
+    const simState = {
       matched: new Set(),
-      draggedCapital: null,
-      started: false
+
+      cards: [],
+
+      selectedCard: null,
+
+      activeDrag: null,
+
+      ghost: null
     };
 
 
-    const homeScreen = document.getElementById("homeScreen");
-    const gameScreen = document.getElementById("gameScreen");
-    const reviewScreen = document.getElementById("reviewScreen");
+    /* ==========================================================
+       UTILITY
+       ========================================================== */
 
-    const startBtn = document.getElementById("startBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const playAgainBtn = document.getElementById("playAgainBtn");
+    function shuffleArray(array) {
 
-    const capitalCards = document.getElementById("capitalCards");
-    const feedback = document.getElementById("feedback");
-
-    const progressText = document.getElementById("progressText");
-    const progressFill = document.getElementById("progressFill");
-
-    const helpBtn = document.getElementById("helpBtn");
-    const helpModal = document.getElementById("helpModal");
-    const closeHelpBtn = document.getElementById("closeHelpBtn");
-
-    const themeBtn = document.getElementById("themeBtn");
-
-
-    function shuffle(array) {
       const copy = [...array];
 
       for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
 
-        [copy[i], copy[j]] = [copy[j], copy[i]];
+        const j =
+          Math.floor(Math.random() * (i + 1));
+
+        [copy[i], copy[j]] =
+          [copy[j], copy[i]];
       }
 
       return copy;
     }
 
 
-    function showScreen(screen) {
-      homeScreen.classList.remove("active");
-      gameScreen.classList.remove("active");
-      reviewScreen.classList.remove("active");
+    function getAnswerForCapital(capital) {
 
-      screen.classList.add("active");
-    }
-
-
-    function startGame() {
-      state.started = true;
-      state.matched.clear();
-      state.draggedCapital = null;
-
-      clearFeedback();
-      clearCountryPlacements();
-
-      renderCapitalCards();
-      updateProgress();
-
-      showScreen(gameScreen);
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-
-
-    function renderCapitalCards() {
-      capitalCards.innerHTML = "";
-
-      const shuffled = shuffle(capitalData);
-
-      shuffled.forEach((item) => {
-        const card = document.createElement("div");
-
-        card.className = "capital-card";
-        card.textContent = item.capital;
-
-        card.draggable = true;
-        card.dataset.capital = item.capital;
-        card.dataset.country = item.country;
-
-        card.setAttribute("role", "button");
-        card.setAttribute("aria-label", `Capital ${item.capital}`);
-
-        card.addEventListener("dragstart", handleDragStart);
-        card.addEventListener("dragend", handleDragEnd);
-
-        /*
-          Pointer/touch support.
-          Desktop drag-and-drop uses native HTML5 drag events.
-          The pointer listeners make the card usable on touch devices.
-        */
-        card.addEventListener("pointerdown", handlePointerDown);
-
-        capitalCards.appendChild(card);
-      });
-    }
-
-
-    function handleDragStart(event) {
-      const card = event.currentTarget;
-
-      state.draggedCapital = card.dataset.capital;
-
-      card.classList.add("dragging");
-
-      event.dataTransfer.effectAllowed = "move";
-      event.dataTransfer.setData("text/plain", state.draggedCapital);
-    }
-
-
-    function handleDragEnd(event) {
-      event.currentTarget.classList.remove("dragging");
-
-      document.querySelectorAll(".country").forEach((country) => {
-        country.classList.remove("drag-over");
-      });
-    }
-
-
-    function setupDropZones() {
-      document.querySelectorAll(".country").forEach((country) => {
-
-        country.addEventListener("dragover", (event) => {
-          event.preventDefault();
-
-          if (country.classList.contains("correct")) {
-            return;
-          }
-
-          country.classList.add("drag-over");
-
-          event.dataTransfer.dropEffect = "move";
-        });
-
-
-        country.addEventListener("dragleave", () => {
-          country.classList.remove("drag-over");
-        });
-
-
-        country.addEventListener("drop", (event) => {
-          event.preventDefault();
-
-          country.classList.remove("drag-over");
-
-          const capital =
-            event.dataTransfer.getData("text/plain") ||
-            state.draggedCapital;
-
-          if (!capital) {
-            return;
-          }
-
-          handleDrop(country, capital);
-        });
-
-      });
-    }
-
-
-    function handleDrop(countryElement, capital) {
-
-      if (state.matched.size === capitalData.length) {
-        return;
-      }
-
-      if (countryElement.classList.contains("correct")) {
-        return;
-      }
-
-      const selected = capitalData.find(
+      return CAPITAL_DATA.find(
         item => item.capital === capital
       );
+    }
 
-      if (!selected) {
+
+    function getAnswerForCountry(country) {
+
+      return CAPITAL_DATA.find(
+        item => item.country === country
+      );
+    }
+
+
+    /* ==========================================================
+       SCREEN CONTROL
+       ========================================================== */
+
+    function showScreen(name) {
+
+      $("homeScreen")
+        .classList.toggle(
+          "active",
+          name === "home"
+        );
+
+      $("simScreen")
+        .classList.toggle(
+          "active",
+          name === "sim"
+        );
+    }
+
+
+    /* ==========================================================
+       FEEDBACK
+       ========================================================== */
+
+    function showFeedback(
+      message,
+      type = ""
+    ) {
+
+      const feedback = $("feedback");
+
+      feedback.className =
+        "feedback" +
+        (type ? " " + type : "");
+
+      feedback.textContent = message;
+    }
+
+
+    /* ==========================================================
+       PROGRESS
+       ========================================================== */
+
+    function updateProgress() {
+
+      const matched =
+        simState.matched.size;
+
+      $("progressText").textContent =
+        `${matched} de 10 parejas`;
+
+      $("progressFill").style.width =
+        `${matched * 10}%`;
+    }
+
+
+    /* ==========================================================
+       CAPITAL CARD CREATION
+       ========================================================== */
+
+    function createCapitalCard(item) {
+
+      const card =
+        document.createElement("button");
+
+      card.type = "button";
+
+      card.className =
+        "capital-card";
+
+      card.textContent =
+        item.capital;
+
+      card.dataset.capital =
+        item.capital;
+
+      card.dataset.country =
+        item.country;
+
+      card.setAttribute(
+        "aria-label",
+        `${item.capital}. Capital de ${item.country}.`
+      );
+
+      /*
+        Pointer interaction supports mouse and touch.
+      */
+      card.addEventListener(
+        "pointerdown",
+        startCardPointer
+      );
+
+      /*
+        Keyboard/tap fallback.
+      */
+      card.addEventListener(
+        "click",
+        () => {
+
+          /*
+            If a pointer drag was just completed,
+            do not interpret the click as another selection.
+          */
+          if (card.dataset.skipClick === "true") {
+
+            card.dataset.skipClick =
+              "false";
+
+            return;
+          }
+
+          selectCard(card);
+        }
+      );
+
+      return card;
+    }
+
+
+    /* ==========================================================
+       INITIALIZE ACTIVITY
+       ========================================================== */
+
+    function devInit() {
+
+      simState.matched.clear();
+
+      simState.cards = [];
+
+      simState.selectedCard = null;
+
+      simState.activeDrag = null;
+
+      removeGhost();
+
+      $("capitalCards").innerHTML = "";
+
+      $("reviewPanel")
+        .classList.add("hidden");
+
+      $("reviewTableBody")
+        .innerHTML = "";
+
+      document
+        .querySelectorAll(".country-zone")
+        .forEach(zone => {
+
+          zone.classList.remove(
+            "matched",
+            "hovered"
+          );
+
+          zone.innerHTML = `
+            <span class="country-name">
+              ${zone.dataset.country}
+            </span>
+
+            <span class="country-drop-label">
+              Coloca aquí
+            </span>
+          `;
+
+          zone.disabled = false;
+        });
+
+
+      /*
+        Randomized initial order.
+      */
+      const randomized =
+        shuffleArray(CAPITAL_DATA);
+
+
+      randomized.forEach(item => {
+
+        const card =
+          createCapitalCard(item);
+
+        simState.cards.push(card);
+
+        $("capitalCards")
+          .appendChild(card);
+      });
+
+
+      updateProgress();
+
+      showFeedback(
+        "Selecciona una capital para comenzar."
+      );
+    }
+
+
+    /* ==========================================================
+       SELECT CARD
+       ========================================================== */
+
+    function selectCard(card) {
+
+      if (
+        !card ||
+        card.disabled ||
+        simState.matched.has(
+          card.dataset.country
+        )
+      ) {
         return;
       }
 
-      const targetCountry = countryElement.dataset.country;
+      /*
+        Deselect previous card.
+      */
+      if (
+        simState.selectedCard &&
+        simState.selectedCard !== card
+      ) {
+        simState.selectedCard
+          .classList.remove("selected");
+      }
 
-      if (selected.country === targetCountry) {
+      simState.selectedCard =
+        card;
 
-        handleCorrectPlacement(
-          countryElement,
-          selected
+      card.classList.add(
+        "selected"
+      );
+
+      showFeedback(
+        `Capital seleccionada: ${card.dataset.capital}. Ahora toca o suelta la tarjeta sobre el país correcto.`
+      );
+    }
+
+
+    /* ==========================================================
+       POINTER DRAG START
+       ========================================================== */
+
+    function startCardPointer(event) {
+
+      const card =
+        event.currentTarget;
+
+      if (
+        card.disabled ||
+        simState.matched.has(
+          card.dataset.country
+        )
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      selectCard(card);
+
+      const rect =
+        card.getBoundingClientRect();
+
+      simState.activeDrag = {
+        card,
+        startX: event.clientX,
+        startY: event.clientY,
+        startRect: rect,
+        dragging: false
+      };
+
+      window.addEventListener(
+        "pointermove",
+        updateDrag,
+        { passive: false }
+      );
+
+      window.addEventListener(
+        "pointerup",
+        finishDrag,
+        { once: true }
+      );
+
+      window.addEventListener(
+        "pointercancel",
+        cancelDrag,
+        { once: true }
+      );
+    }
+
+
+    /* ==========================================================
+       BEGIN DRAG
+       ========================================================== */
+
+    function beginDrag(event) {
+
+      const drag =
+        simState.activeDrag;
+
+      if (!drag || drag.dragging) {
+        return;
+      }
+
+      drag.dragging = true;
+
+      drag.card.classList.add(
+        "dragging"
+      );
+
+      const ghost =
+        document.createElement("div");
+
+      ghost.className =
+        "drag-ghost";
+
+      ghost.textContent =
+        drag.card.dataset.capital;
+
+      document.body.appendChild(
+        ghost
+      );
+
+      simState.ghost =
+        ghost;
+
+      positionGhost(
+        event.clientX,
+        event.clientY
+      );
+    }
+
+
+    /* ==========================================================
+       POSITION GHOST
+       ========================================================== */
+
+    function positionGhost(
+      x,
+      y
+    ) {
+
+      if (!simState.ghost) {
+        return;
+      }
+
+      simState.ghost.style.left =
+        `${x}px`;
+
+      simState.ghost.style.top =
+        `${y}px`;
+    }
+
+
+    /* ==========================================================
+       DRAG MOVE
+       ========================================================== */
+
+    function updateDrag(event) {
+
+      const drag =
+        simState.activeDrag;
+
+      if (!drag) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const dx =
+        event.clientX - drag.startX;
+
+      const dy =
+        event.clientY - drag.startY;
+
+      const distance =
+        Math.sqrt(
+          dx * dx +
+          dy * dy
+        );
+
+      if (
+        distance >= 8 &&
+        !drag.dragging
+      ) {
+        beginDrag(event);
+      }
+
+      if (!drag.dragging) {
+        return;
+      }
+
+      positionGhost(
+        event.clientX,
+        event.clientY
+      );
+
+      updateHoveredZone(
+        event.clientX,
+        event.clientY
+      );
+    }
+
+
+    /* ==========================================================
+       HOVERED ZONE
+       ========================================================== */
+
+    function updateHoveredZone(
+      x,
+      y
+    ) {
+
+      document
+        .querySelectorAll(".country-zone")
+        .forEach(zone => {
+
+          zone.classList.remove(
+            "hovered"
+          );
+
+          if (
+            zone.disabled ||
+            simState.matched.has(
+              zone.dataset.country
+            )
+          ) {
+            return;
+          }
+
+          const rect =
+            zone.getBoundingClientRect();
+
+          const inside =
+            x >= rect.left &&
+            x <= rect.right &&
+            y >= rect.top &&
+            y <= rect.bottom;
+
+          if (inside) {
+
+            zone.classList.add(
+              "hovered"
+            );
+          }
+        });
+    }
+
+
+    /* ==========================================================
+       FINISH DRAG
+       ========================================================== */
+
+    function finishDrag(event) {
+
+      const drag =
+        simState.activeDrag;
+
+      cleanupPointerListeners();
+
+      if (!drag) {
+        return;
+      }
+
+      /*
+        A real drag happened.
+        Prevent the generated click from
+        immediately selecting the card again.
+      */
+      if (drag.dragging) {
+
+        drag.card.dataset.skipClick =
+          "true";
+      }
+
+      const zone =
+        findZoneAtPoint(
+          event.clientX,
+          event.clientY
+        );
+
+      const capital =
+        drag.card.dataset.capital;
+
+      removeGhost();
+
+      drag.card.classList.remove(
+        "dragging"
+      );
+
+      document
+        .querySelectorAll(".country-zone")
+        .forEach(zoneItem =>
+          zoneItem.classList.remove(
+            "hovered"
+          )
+        );
+
+      simState.activeDrag = null;
+
+      if (!zone) {
+
+        if (drag.dragging) {
+
+          showReturnFeedback(
+            drag.card,
+            "No exactamente. Otra vez."
+          );
+
+        } else {
+
+          selectCard(
+            drag.card
+          );
+        }
+
+        return;
+      }
+
+      attemptPlacement(
+        drag.card,
+        zone
+      );
+    }
+
+
+    /* ==========================================================
+       POINTER CANCEL
+       ========================================================== */
+
+    function cancelDrag() {
+
+      const drag =
+        simState.activeDrag;
+
+      cleanupPointerListeners();
+
+      removeGhost();
+
+      if (drag) {
+
+        drag.card.classList.remove(
+          "dragging"
+        );
+
+        showFeedback(
+          "La tarjeta volvió a su posición. Inténtalo de nuevo."
+        );
+      }
+
+      document
+        .querySelectorAll(".country-zone")
+        .forEach(zone =>
+          zone.classList.remove(
+            "hovered"
+          )
+        );
+
+      simState.activeDrag = null;
+    }
+
+
+    function cleanupPointerListeners() {
+
+      window.removeEventListener(
+        "pointermove",
+        updateDrag
+      );
+
+      window.removeEventListener(
+        "pointerup",
+        finishDrag
+      );
+
+      window.removeEventListener(
+        "pointercancel",
+        cancelDrag
+      );
+    }
+
+
+    /* ==========================================================
+       FIND ZONE
+       ========================================================== */
+
+    function findZoneAtPoint(
+      x,
+      y
+    ) {
+
+      const zones =
+        [...document.querySelectorAll(
+          ".country-zone"
+        )];
+
+      return zones.find(zone => {
+
+        if (
+          zone.disabled ||
+          simState.matched.has(
+            zone.dataset.country
+          )
+        ) {
+          return false;
+        }
+
+        const rect =
+          zone.getBoundingClientRect();
+
+        return (
+          x >= rect.left &&
+          x <= rect.right &&
+          y >= rect.top &&
+          y <= rect.bottom
+        );
+      }) || null;
+    }
+
+
+    /* ==========================================================
+       ZONE CLICK
+       ========================================================== */
+
+    function handleZoneClick(event) {
+
+      const zone =
+        event.currentTarget;
+
+      if (
+        zone.disabled ||
+        simState.matched.has(
+          zone.dataset.country
+        )
+      ) {
+        return;
+      }
+
+      if (!simState.selectedCard) {
+
+        showFeedback(
+          "Primero selecciona una capital."
+        );
+
+        return;
+      }
+
+      attemptPlacement(
+        simState.selectedCard,
+        zone
+      );
+    }
+
+
+    /* ==========================================================
+       ATTEMPT PLACEMENT
+       ========================================================== */
+
+    function attemptPlacement(
+      card,
+      zone
+    ) {
+
+      if (
+        !card ||
+        card.disabled ||
+        !zone ||
+        zone.disabled
+      ) {
+        return;
+      }
+
+      const capital =
+        card.dataset.capital;
+
+      const targetCountry =
+        card.dataset.country;
+
+      const selectedCountry =
+        zone.dataset.country;
+
+      const answer =
+        getAnswerForCapital(
+          capital
+        );
+
+      if (!answer) {
+        return;
+      }
+
+      if (
+        selectedCountry === targetCountry
+      ) {
+
+        handleCorrect(
+          card,
+          zone,
+          answer
         );
 
       } else {
 
-        handleIncorrectPlacement(
-          countryElement
+        handleIncorrect(
+          card
         );
       }
     }
 
 
-    function handleCorrectPlacement(countryElement, selected) {
+    /* ==========================================================
+       CORRECT PLACEMENT
+       ========================================================== */
 
-      state.matched.add(selected.capital);
+    function handleCorrect(
+      card,
+      zone,
+      answer
+    ) {
 
-      countryElement.classList.add("correct");
-
-      const hint = countryElement.querySelector(".drop-hint");
-
-      if (hint) {
-        hint.style.display = "none";
-      }
-
-      const placed = document.createElement("div");
-
-      placed.className = "placed-card";
-      placed.textContent = selected.capital;
-
-      placed.setAttribute(
-        "aria-label",
-        `${selected.capital} - ${selected.country}`
+      simState.matched.add(
+        answer.country
       );
 
-      countryElement.appendChild(placed);
-
-      const originalCard = [...capitalCards.children].find(
-        card => card.dataset.capital === selected.capital
+      /*
+        Remove selection state.
+      */
+      card.classList.remove(
+        "selected",
+        "shake",
+        "dragging"
       );
 
-      if (originalCard) {
-        originalCard.classList.add("matched");
-        originalCard.draggable = false;
-        originalCard.setAttribute("aria-disabled", "true");
+      /*
+        Mark the zone as matched.
+      */
+      zone.classList.add(
+        "matched"
+      );
+
+      zone.disabled = true;
+
+      /*
+        Preserve country label and
+        attach the correct capital.
+      */
+      zone.innerHTML = `
+        <span class="country-name">
+          ${answer.country}
+        </span>
+
+        <span
+          class="country-drop-label"
+          style="color:var(--success);"
+        >
+          ✓ ${answer.capital}
+        </span>
+      `;
+
+
+      /*
+        Remove the original card from
+        the capital-card panel.
+        This makes it inactive because
+        it is now permanently attached
+        to its correct country.
+      */
+      card.disabled = true;
+
+      card.remove();
+
+
+      /*
+        Clear selected state.
+      */
+      if (
+        simState.selectedCard === card
+      ) {
+        simState.selectedCard =
+          null;
       }
+
 
       showFeedback(
-        selected.feedback,
-        true
+        answer.feedback,
+        "good"
       );
 
       updateProgress();
 
-      if (state.matched.size === capitalData.length) {
-        setTimeout(showReview, 700);
+
+      /*
+        Completion check.
+      */
+      if (
+        simState.matched.size === 10
+      ) {
+
+        setTimeout(
+          showReview,
+          450
+        );
       }
     }
 
 
-    function handleIncorrectPlacement(countryElement) {
+    /* ==========================================================
+       INCORRECT PLACEMENT
+       ========================================================== */
 
-      countryElement.classList.remove("incorrect");
+    function handleIncorrect(card) {
 
-      /*
-        Force browser to restart the animation.
-      */
-      void countryElement.offsetWidth;
+      if (!card) {
+        return;
+      }
 
-      countryElement.classList.add("incorrect");
+      card.classList.remove(
+        "selected"
+      );
+
+      card.classList.add(
+        "shake"
+      );
+
+      if (
+        simState.selectedCard === card
+      ) {
+        simState.selectedCard =
+          null;
+      }
 
       showFeedback(
         "No exactamente. Otra vez.",
-        false
+        "try"
       );
 
       /*
-        The dragged card has not been removed from the capital panel,
-        so it automatically remains in its original position.
+        The card itself stays in the
+        capital-card area, while the
+        drag ghost disappears from the
+        incorrect country. This is the
+        visual return to its original
+        position.
       */
-      state.draggedCapital = null;
-    }
-
-
-    function showFeedback(message, correct) {
-      feedback.textContent = message;
-
-      feedback.classList.remove(
-        "correct",
-        "incorrect"
-      );
-
-      feedback.classList.add(
-        "show",
-        correct ? "correct" : "incorrect"
+      setTimeout(
+        () => {
+          card.classList.remove(
+            "shake"
+          );
+        },
+        350
       );
     }
 
 
-    function clearFeedback() {
-      feedback.textContent = "";
+    /* ==========================================================
+       EXPLICIT RETURN FEEDBACK
+       ========================================================== */
 
-      feedback.classList.remove(
-        "show",
-        "correct",
-        "incorrect"
+    function showReturnFeedback(
+      card,
+      message
+    ) {
+
+      handleIncorrect(card);
+
+      showFeedback(
+        message,
+        "try"
       );
     }
 
 
-    function clearCountryPlacements() {
-      document.querySelectorAll(".country").forEach((country) => {
+    /* ==========================================================
+       REMOVE GHOST
+       ========================================================== */
 
-        country.classList.remove(
-          "correct",
-          "incorrect",
-          "drag-over"
-        );
+    function removeGhost() {
 
-        const placed = country.querySelector(".placed-card");
+      if (simState.ghost) {
 
-        if (placed) {
-          placed.remove();
-        }
+        simState.ghost.remove();
 
-        const hint = country.querySelector(".drop-hint");
-
-        if (hint) {
-          hint.style.display = "";
-        }
-      });
+        simState.ghost =
+          null;
+      }
     }
 
 
-    function updateProgress() {
-      const count = state.matched.size;
-
-      progressText.textContent =
-        `${count} de ${capitalData.length}`;
-
-      progressFill.style.width =
-        `${(count / capitalData.length) * 100}%`;
-    }
-
+    /* ==========================================================
+       REVIEW
+       ========================================================== */
 
     function showReview() {
 
-      const reviewBody =
-        document.getElementById("reviewTableBody");
+      const body =
+        $("reviewTableBody");
 
-      reviewBody.innerHTML = "";
+      body.innerHTML = "";
 
-      capitalData.forEach((item) => {
+      CAPITAL_DATA.forEach(
+        answer => {
 
-        const row = document.createElement("tr");
+          const row =
+            document.createElement("tr");
 
-        const countryCell = document.createElement("td");
-        const capitalCell = document.createElement("td");
+          const countryCell =
+            document.createElement("td");
 
-        countryCell.textContent = item.country;
-        capitalCell.textContent = item.capital;
+          const capitalCell =
+            document.createElement("td");
 
-        row.appendChild(countryCell);
-        row.appendChild(capitalCell);
+          const resultCell =
+            document.createElement("td");
 
-        reviewBody.appendChild(row);
-      });
+          countryCell.textContent =
+            answer.country;
 
-      showScreen(reviewScreen);
+          capitalCell.textContent =
+            answer.capital;
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
+          resultCell.textContent =
+            "✓ Correcto";
 
+          row.appendChild(
+            countryCell
+          );
 
-    function resetGame() {
-      state.started = false;
-      state.matched.clear();
-      state.draggedCapital = null;
+          row.appendChild(
+            capitalCell
+          );
 
-      clearFeedback();
-      clearCountryPlacements();
+          row.appendChild(
+            resultCell
+          );
 
-      progressText.textContent = "0 de 10";
-      progressFill.style.width = "0%";
-
-      capitalCards.innerHTML = "";
-
-      showScreen(homeScreen);
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-
-
-    /*
-      ------------------------------------------------------------
-      Touch / pointer support
-      ------------------------------------------------------------
-      The primary interaction is standard drag-and-drop.
-      For touch screens, a simple tap-to-select + tap-to-place
-      fallback is provided.
-    */
-
-    let touchSelectedCard = null;
-
-
-    function handlePointerDown(event) {
-
-      if (event.pointerType !== "touch") {
-        return;
-      }
-
-      const card = event.currentTarget;
-
-      if (card.classList.contains("matched")) {
-        return;
-      }
-
-      if (touchSelectedCard === card) {
-
-        card.style.outline = "";
-
-        touchSelectedCard = null;
-
-      } else {
-
-        if (touchSelectedCard) {
-          touchSelectedCard.style.outline = "";
+          body.appendChild(row);
         }
-
-        touchSelectedCard = card;
-
-        card.style.outline = `3px solid var(--accent)`;
-
-        showFeedback(
-          `Seleccionada: ${card.dataset.capital}. Toca un país para colocarla.`,
-          true
-        );
-      }
-    }
+      );
 
 
-    function setupTouchDrop() {
+      $("reviewPanel")
+        .classList.remove("hidden");
 
-      document.querySelectorAll(".country").forEach((country) => {
-
-        country.addEventListener("pointerdown", (event) => {
-
-          if (event.pointerType !== "touch") {
-            return;
-          }
-
-          if (!touchSelectedCard) {
-            return;
-          }
-
-          if (country.classList.contains("correct")) {
-            return;
-          }
-
-          const capital =
-            touchSelectedCard.dataset.capital;
-
-          handleDrop(country, capital);
-
-          if (state.matched.has(capital)) {
-            touchSelectedCard.style.outline = "";
-            touchSelectedCard = null;
-          }
+      $("reviewPanel")
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "start"
         });
 
-      });
-    }
-
-
-    /*
-      ------------------------------------------------------------
-      Theme
-      ------------------------------------------------------------
-    */
-
-    function toggleTheme() {
-
-      const html = document.documentElement;
-
-      const current =
-        html.getAttribute("data-theme");
-
-      const next =
-        current === "dark"
-          ? "light"
-          : "dark";
-
-      html.setAttribute(
-        "data-theme",
-        next
-      );
-
-      localStorage.setItem(
-        "span-theme",
-        next
+      showFeedback(
+        "¡Muy bien! Has relacionado correctamente las capitales con sus países.",
+        "good"
       );
     }
 
 
-    function loadTheme() {
+    /* ==========================================================
+       RESET
+       ========================================================== */
 
-      const saved =
-        localStorage.getItem("span-theme");
+    function devReset() {
 
-      if (saved === "light" || saved === "dark") {
-        document.documentElement.setAttribute(
-          "data-theme",
-          saved
-        );
-      }
+      cleanupPointerListeners();
+
+      removeGhost();
+
+      simState.matched.clear();
+
+      simState.cards = [];
+
+      simState.selectedCard =
+        null;
+
+      simState.activeDrag =
+        null;
+
+      $("capitalCards").innerHTML = "";
+
+      $("reviewTableBody").innerHTML = "";
+
+      $("reviewPanel")
+        .classList.add("hidden");
+
+      document
+        .querySelectorAll(".country-zone")
+        .forEach(zone => {
+
+          zone.classList.remove(
+            "matched",
+            "hovered"
+          );
+
+          zone.disabled = false;
+
+          zone.innerHTML = `
+            <span class="country-name">
+              ${zone.dataset.country}
+            </span>
+
+            <span class="country-drop-label">
+              Coloca aquí
+            </span>
+          `;
+        });
+
+      devInit();
+
+      showScreen("home");
     }
 
 
-    /*
-      ------------------------------------------------------------
-      Help modal
-      ------------------------------------------------------------
-    */
+    /* ==========================================================
+       EVENT BINDINGS
+       ========================================================== */
 
-    function openHelp() {
-      helpModal.classList.add("show");
-    }
+    $("startBtn")
+      .addEventListener(
+        "click",
+        () => {
 
+          showScreen("sim");
 
-    function closeHelp() {
-      helpModal.classList.remove("show");
-    }
-
-
-    /*
-      ------------------------------------------------------------
-      Event listeners
-      ------------------------------------------------------------
-    */
-
-    startBtn.addEventListener(
-      "click",
-      startGame
-    );
-
-    resetBtn.addEventListener(
-      "click",
-      resetGame
-    );
-
-    playAgainBtn.addEventListener(
-      "click",
-      startGame
-    );
-
-    themeBtn.addEventListener(
-      "click",
-      toggleTheme
-    );
-
-    helpBtn.addEventListener(
-      "click",
-      openHelp
-    );
-
-    closeHelpBtn.addEventListener(
-      "click",
-      closeHelp
-    );
-
-    helpModal.addEventListener(
-      "click",
-      (event) => {
-
-        if (event.target === helpModal) {
-          closeHelp();
+          devInit();
         }
+      );
 
+
+    $("resetBtn")
+      .addEventListener(
+        "click",
+        devReset
+      );
+
+
+    $("exitBtn")
+      .addEventListener(
+        "click",
+        () => {
+
+          cleanupPointerListeners();
+
+          removeGhost();
+
+          showScreen("home");
+        }
+      );
+
+
+    $("reviewRestartBtn")
+      .addEventListener(
+        "click",
+        () => {
+
+          devInit();
+
+          showScreen("sim");
+
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+        }
+      );
+
+
+    $("reviewHomeBtn")
+      .addEventListener(
+        "click",
+        () => {
+
+          cleanupPointerListeners();
+
+          removeGhost();
+
+          showScreen("home");
+        }
+      );
+
+
+    /*
+      Every country is also a clickable/tappable
+      drop target.
+    */
+    document
+      .querySelectorAll(".country-zone")
+      .forEach(zone => {
+
+        zone.addEventListener(
+          "click",
+          handleZoneClick
+        );
+
+        /*
+          Keyboard support:
+          Enter/Space on a country after
+          selecting a capital.
+        */
+        zone.addEventListener(
+          "keydown",
+          event => {
+
+            if (
+              event.key === "Enter" ||
+              event.key === " "
+            ) {
+
+              event.preventDefault();
+
+              handleZoneClick({
+                currentTarget: zone
+              });
+            }
+          }
+        );
+      });
+
+
+    /* ==========================================================
+       RULES MODAL
+       ========================================================== */
+
+    function openRules() {
+
+      $("rulesModal")
+        .classList.add("show");
+
+      $("rulesModal")
+        .setAttribute(
+          "aria-hidden",
+          "false"
+        );
+    }
+
+
+    function closeRules() {
+
+      $("rulesModal")
+        .classList.remove("show");
+
+      $("rulesModal")
+        .setAttribute(
+          "aria-hidden",
+          "true"
+        );
+    }
+
+
+    $("helpBtn")
+      .addEventListener(
+        "click",
+        openRules
+      );
+
+
+    $("homeRulesBtn")
+      .addEventListener(
+        "click",
+        openRules
+      );
+
+
+    $("closeRulesBtn")
+      .addEventListener(
+        "click",
+        closeRules
+      );
+
+
+    $("rulesModal")
+      .addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target ===
+            $("rulesModal")
+          ) {
+            closeRules();
+          }
+        }
+      );
+
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Escape"
+        ) {
+          closeRules();
+        }
       }
     );
 
 
-    /*
-      ------------------------------------------------------------
-      Initialisation
-      ------------------------------------------------------------
-    */
+    /* ==========================================================
+       THEME
+       ========================================================== */
 
-    loadTheme();
-    setupDropZones();
-    setupTouchDrop();
+    $("themeBtn")
+      .addEventListener(
+        "click",
+        () => {
+
+          const isLight =
+            document.documentElement
+              .dataset.theme === "light";
+
+          document.documentElement
+            .dataset.theme =
+              isLight
+                ? "dark"
+                : "light";
+
+          $("themeBtn").textContent =
+            isLight
+              ? "☀ Claro"
+              : "◐ Oscuro";
+        }
+      );
+
+
+    /* ==========================================================
+       INITIAL STATE
+       ========================================================== */
+
+    devInit();
 
   </script>
 
