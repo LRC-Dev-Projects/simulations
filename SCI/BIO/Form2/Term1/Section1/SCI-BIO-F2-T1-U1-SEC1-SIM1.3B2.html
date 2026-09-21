@@ -1109,10 +1109,10 @@
         function computeAbsorptionRate(foldValue, thicknessValue) {
             const foldT = foldValue / 100;
             const thickT = thicknessValue / 100;
-            const surfaceAreaMultiplier = 1 + foldT * 4;
-            const thicknessMultiplier = 0.25 + thickT * 0.75;
-            const rate = surfaceAreaMultiplier * thicknessMultiplier;
-            return Math.round(rate * 25);
+            const surfaceQuality = 0.35 + 0.65 * foldT;
+            const thicknessQuality = 0.35 + 0.65 * thickT;
+            const rate = surfaceQuality * thicknessQuality * 100;
+            return Math.round(rate);
         }
 
         /* --- PARTICLE SYSTEM --- */
