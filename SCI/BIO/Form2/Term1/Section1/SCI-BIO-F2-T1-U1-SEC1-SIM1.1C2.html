@@ -626,25 +626,53 @@
         .beam-bar::before { left: 5%; }
         .beam-bar::after { right: 5%; }
 
-        .fulcrum {
-            width: 0;
-            height: 0;
-            border-left: 36px solid transparent;
-            border-right: 36px solid transparent;
-            border-bottom: 48px solid #475569;
-            margin: -2px auto 0;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        .pivot-joint {
+            position: absolute;
+            left: 50%;
+            bottom: -13px;
+            transform: translateX(-50%);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #e2e8f0, #64748b 70%);
+            border: 3px solid #334155;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            z-index: 2;
         }
 
-        .fulcrum::after {
+        .pivot-joint::after {
             content: "";
-            display: block;
-            width: 72px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1e293b;
+        }
+
+        .fulcrum {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 64px;
+            flex: none;
+        }
+
+        .fulcrum-triangle {
+            width: 84px;
+            height: 56px;
+            background: linear-gradient(to bottom, #64748b, #475569);
+            clip-path: polygon(50% 0%, 0 100%, 100% 100%);
+        }
+
+        .fulcrum-base {
+            width: 84px;
             height: 8px;
             background: linear-gradient(to bottom, #334155, #1e293b);
             border-radius: 0 0 6px 6px;
-            margin-top: 48px;
-            margin-left: -36px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
         }
 
         /* Blocks */
@@ -812,7 +840,7 @@
 
         /* Responsive */
         @media (max-width: 600px) {
-            .seesaw-visual { height: 220px; }
+            .seesaw-visual { height: auto; }
             .pans-row { height: 200px; }
             .block { padding: 6px 3px; }
             .block-text { font-size: 0.55rem; }
@@ -899,10 +927,13 @@
                                     <div class="pan pan-left" id="panLeft"></div>
                                     <div class="pan pan-right" id="panRight"></div>
                                 </div>
-                                <div class="beam-bar"></div>
+                                <div class="beam-bar"><div class="pivot-joint"></div></div>
+                            </div>
+                            <div class="fulcrum">
+                                <div class="fulcrum-triangle"></div>
+                                <div class="fulcrum-base"></div>
                             </div>
                         </div>
-                        <div class="fulcrum"></div>
                     </div>
 
                     <div class="sim-controls">
