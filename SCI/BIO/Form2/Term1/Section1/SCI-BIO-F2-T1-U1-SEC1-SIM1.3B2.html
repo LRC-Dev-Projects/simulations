@@ -456,14 +456,14 @@
         .sim-inner {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             width: 100%;
         }
 
         .sim-top-row {
             display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 16px;
+            grid-template-columns: 1fr 280px;
+            gap: 14px;
             align-items: start;
         }
 
@@ -486,26 +486,26 @@
         .sim-controls {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .sim-under-canvas {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 14px;
         }
 
         .slider-group {
             background: var(--surface-2);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 14px;
         }
 
         .slider-group label {
             display: block;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-size: 0.95rem;
             color: var(--text);
         }
@@ -513,6 +513,44 @@
         .slider-group input[type="range"] {
             width: 100%;
             accent-color: var(--accent);
+            height: 22px;
+            cursor: pointer;
+            background: transparent;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .slider-group input[type="range"]::-webkit-slider-runnable-track {
+            height: 12px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--accent) 45%, var(--surface));
+        }
+
+        .slider-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            margin-top: -5px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3px solid var(--surface);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .slider-group input[type="range"]::-moz-range-track {
+            height: 12px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--accent) 45%, var(--surface));
+        }
+
+        .slider-group input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3px solid var(--surface);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
         }
 
         .slider-labels {
@@ -527,11 +565,11 @@
             background: var(--surface-2);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 14px;
         }
 
         .rate-display h3 {
-            margin: 0 0 10px;
+            margin: 0 0 8px;
             font-size: 0.95rem;
             color: var(--text);
         }
@@ -555,11 +593,11 @@
             background: var(--surface-2);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 14px;
         }
 
         .graph-container h3 {
-            margin: 0 0 10px;
+            margin: 0 0 8px;
             font-size: 0.95rem;
             color: var(--text);
         }
@@ -574,7 +612,7 @@
             background: var(--surface-2);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 14px;
             font-size: 0.9rem;
             line-height: 1.6;
             color: var(--text-soft);
@@ -593,7 +631,7 @@
         .legend {
             display: flex;
             gap: 16px;
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 0.8rem;
             color: var(--muted);
         }
