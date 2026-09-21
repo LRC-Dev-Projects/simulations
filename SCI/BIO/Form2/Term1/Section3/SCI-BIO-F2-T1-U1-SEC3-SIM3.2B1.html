@@ -602,40 +602,78 @@
                             <text x="60" y="122" fill="var(--muted)" font-size="14" text-anchor="middle" font-weight="700">AIR</text>
                             <line x1="60" y1="130" x2="92" y2="130" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
 
-                            <!-- Flask A (inhaled air) -->
-                            <rect id="flaskABody" x="120" y="60" width="100" height="160" rx="10" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
-                            <rect id="flaskALiquid" x="124" y="110" width="92" height="106" rx="6" fill="rgba(200, 230, 255, 0.55)" stroke="none">
-                                <title>Flask A liquid — clear limewater</title>
-                            </rect>
-                            <text x="170" y="90" fill="var(--text-soft)" font-size="13" text-anchor="middle" font-weight="700">Flask A</text>
-                            <text x="170" y="258" fill="var(--muted)" font-size="12" text-anchor="middle">Inhaled air</text>
+                            <!-- Flask A (inhaled air) — squat conical flask -->
+                            <g>
+                                <!-- Base shadow -->
+                                <ellipse cx="170" cy="216" rx="56" ry="5" fill="rgba(0,0,0,0.22)"/>
+                                <!-- Glass body — squat conical (Erlenmeyer) -->
+                                <path d="M 158 62 L 158 92 Q 158 102, 128 118 L 114 204 Q 113 208, 122 208 L 218 208 Q 227 208, 226 204 L 212 118 Q 182 102, 182 92 L 182 62 Z"
+                                      fill="color-mix(in srgb, var(--surface) 78%, transparent)" stroke="var(--border)" stroke-width="2"/>
+                                <!-- Glass rim -->
+                                <ellipse cx="170" cy="62" rx="12" ry="3" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+                                <!-- Glass highlight along the conical side -->
+                                <path d="M 128 126 Q 122 165, 117 196" fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="5" stroke-linecap="round"/>
+                                <!-- Liquid (nested cone, meniscus dip) -->
+                                <path id="flaskALiquid" d="M 126 140 Q 170 147, 214 140 L 222 200 Q 224 206, 218 206 L 122 206 Q 116 206, 118 200 L 126 140 Z" fill="rgba(200, 230, 255, 0.55)" stroke="none">
+                                    <title>Flask A liquid — clear limewater</title>
+                                </path>
+                                <!-- Surface sheen -->
+                                <path d="M 128 138 Q 170 146, 212 138" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+                            </g>
+                            <text x="170" y="240" fill="var(--text-soft)" font-size="13" text-anchor="middle" font-weight="700">Flask A</text>
+                            <text x="170" y="257" fill="var(--muted)" font-size="12" text-anchor="middle">Inhaled air</text>
 
                             <!-- Bubbles container A -->
                             <g id="bubblesA"></g>
 
-                            <!-- Flask B (exhaled air) -->
-                            <rect id="flaskBBody" x="480" y="60" width="100" height="160" rx="10" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
-                            <rect id="flaskBLiquid" x="484" y="110" width="92" height="106" rx="6" fill="rgba(200, 230, 255, 0.55)" stroke="none">
-                                <title>Flask B liquid — clear limewater</title>
-                            </rect>
-                            <text x="530" y="90" fill="var(--text-soft)" font-size="13" text-anchor="middle" font-weight="700">Flask B</text>
-                            <text x="530" y="258" fill="var(--muted)" font-size="12" text-anchor="middle">Exhaled air</text>
+                            <!-- Flask B (exhaled air) — squat conical flask -->
+                            <g>
+                                <!-- Base shadow -->
+                                <ellipse cx="530" cy="216" rx="56" ry="5" fill="rgba(0,0,0,0.22)"/>
+                                <!-- Glass body — squat conical (Erlenmeyer) -->
+                                <path d="M 518 62 L 518 92 Q 518 102, 488 118 L 474 204 Q 473 208, 482 208 L 578 208 Q 587 208, 586 204 L 572 118 Q 542 102, 542 92 L 542 62 Z"
+                                      fill="color-mix(in srgb, var(--surface) 78%, transparent)" stroke="var(--border)" stroke-width="2"/>
+                                <!-- Glass rim -->
+                                <ellipse cx="530" cy="62" rx="12" ry="3" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+                                <!-- Glass highlight along the conical side -->
+                                <path d="M 488 126 Q 482 165, 477 196" fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="5" stroke-linecap="round"/>
+                                <!-- Liquid (nested cone, meniscus dip) -->
+                                <path id="flaskBLiquid" d="M 486 140 Q 530 147, 574 140 L 582 200 Q 584 206, 578 206 L 482 206 Q 476 206, 478 200 L 486 140 Z" fill="rgba(200, 230, 255, 0.55)" stroke="none">
+                                    <title>Flask B liquid — clear limewater</title>
+                                </path>
+                                <!-- Surface sheen -->
+                                <path d="M 488 138 Q 530 146, 572 138" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+                            </g>
+                            <text x="530" y="240" fill="var(--text-soft)" font-size="13" text-anchor="middle" font-weight="700">Flask B</text>
+                            <text x="530" y="257" fill="var(--muted)" font-size="12" text-anchor="middle">Exhaled air</text>
 
                             <!-- Bubbles container B -->
                             <g id="bubblesB"></g>
 
-                            <!-- Tube from room to Flask A bottom -->
-                            <path d="M 95 130 Q 108 130, 108 170 L 108 220 Q 108 235, 120 235 L 120 195 Q 120 185, 130 185" fill="none" stroke="var(--muted)" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Rubber stoppers -->
+                            <rect x="158" y="38" width="24" height="28" rx="5" fill="#8a6b4a" stroke="#6b5136" stroke-width="1.5"/>
+                            <rect x="163" y="42" width="5" height="20" rx="2" fill="rgba(0,0,0,0.2)"/>
+                            <rect x="518" y="38" width="24" height="28" rx="5" fill="#8a6b4a" stroke="#6b5136" stroke-width="1.5"/>
+                            <rect x="523" y="42" width="5" height="20" rx="2" fill="rgba(0,0,0,0.2)"/>
 
-                            <!-- Tube from Flask A top to mouthpiece -->
-                            <path d="M 170 60 L 170 30 Q 170 20, 180 20 L 300 20" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Tube from room into Flask A — dips into the liquid -->
+                            <path d="M 95 130 Q 108 130, 108 170 L 108 194 Q 108 206, 170 206" fill="none" stroke="var(--muted)" stroke-width="3.5" stroke-linecap="round"/>
 
-                            <!-- Tube from mouthpiece to Flask B top -->
-                            <path d="M 400 20 L 530 20 Q 530 20, 530 30 L 530 60" fill="none" stroke="var(--accent-2)" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Tube from Flask A stopper to mouthpiece -->
+                            <path d="M 170 38 L 170 30 Q 170 20, 180 20 L 300 20" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round"/>
 
-                            <!-- Tube from Flask B bottom to mouthpiece (exhale path) -->
-                            <path d="M 580 195 Q 580 185, 590 185 L 600 185 Q 612 185, 612 170 L 612 130 Q 612 120, 600 120" fill="none" stroke="var(--muted)" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
-                            <path d="M 600 120 Q 590 120, 580 120 L 400 120" fill="none" stroke="var(--muted)" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+                            <!-- Tube from mouthpiece into Flask B — dips into the liquid -->
+                            <path d="M 400 20 L 526 20 Q 526 20, 526 32 L 526 206" fill="none" stroke="var(--accent-2)" stroke-width="3.5" stroke-linecap="round"/>
+
+                            <!-- Vent tube from Flask B stopper (exhaled air exits) -->
+                            <path d="M 536 56 L 536 30 Q 536 24, 546 24 L 636 24" fill="none" stroke="var(--muted)" stroke-width="3.5" stroke-linecap="round" opacity="0.7" marker-end="url(#arrowMuted)"/>
+                            <text x="652" y="28" fill="var(--muted)" font-size="11" text-anchor="start" font-weight="700">AIR OUT</text>
+
+                            <!-- Flow-direction cues -->
+                            <line x1="98" y1="174" x2="98" y2="202" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
+                            <text x="94" y="170" fill="var(--muted)" font-size="11" text-anchor="end" font-weight="700">Inhale</text>
+                            <line x1="404" y1="26" x2="434" y2="26" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)" opacity="0.7"/>
+                            <text x="442" y="31" fill="var(--muted)" font-size="11" text-anchor="start" font-weight="700">Exhale</text>
 
                             <!-- Mouthpiece -->
                             <rect x="300" y="4" width="100" height="32" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
@@ -662,7 +700,7 @@
 
                             <!-- Arrow markers -->
                             <defs>
-                                <marker id="arrowMuted" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--muted)"/></marker>
+                                <marker id="arrowMuted" markerWidth="13" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L12,3.5 L0,7 Z" fill="var(--muted)"/></marker>
                             </defs>
                         </svg>
                         </div>
@@ -845,7 +883,7 @@
             if (!group) return;
             const isA = groupId === "bubblesB";
             const baseX = isA ? 530 : 170;
-            const baseY = 175;
+            const baseY = 196;
 
             for (let i = 0; i < count; i++) {
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
