@@ -1499,11 +1499,24 @@
         var simState = {};
         var previouslyImbalanced = false;
         var hasRebalanced = false;
+        var firstStatusRender = true;
+
+        function pickStartingTypes(types, count) {
+            var pool = types.slice();
+            var selected = [];
+            for (var i = 0; i < count; i++) {
+                var idx = Math.floor(Math.random() * pool.length);
+                selected.push(pool[idx]);
+                pool.splice(idx, 1);
+            }
+            return selected;
+        }
 
         function buildStartingState() {
+            var count = 2 + Math.floor(Math.random() * 4);
             return {
-                foodBlocks: [FOOD_TYPES[0], FOOD_TYPES[1]],
-                activityBlocks: [ACTIVITY_TYPES[0], ACTIVITY_TYPES[1]]
+                foodBlocks: pickStartingTypes(FOOD_TYPES, count),
+                activityBlocks: pickStartingTypes(ACTIVITY_TYPES, count)
             };
         }
 
@@ -1629,7 +1642,6 @@
             var statusBox = document.getElementById("statusBox");
             if (!statusBox) return;
             var totalBlocks = foodCount + activityCount;
-            var justRebalanced = false;
 
             statusBox.classList.remove("status-balanced", "status-surplus", "status-deficit");
 
@@ -1643,7 +1655,6 @@
                     statusBox.textContent = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
                     playSound("correct");
                     hasRebalanced = true;
-                    justRebalanced = true;
                 } else {
                     statusBox.textContent = "The scale is perfectly balanced! Energy intake matches energy output.";
                 }
@@ -1662,9 +1673,11 @@
             var playAgainWrap = document.getElementById("playAgainWrap");
             if (playAgainWrap) {
                 playAgainWrap.classList.toggle("hidden", !(hasRebalanced && totalBlocks > 0 && diff === 0));
-                if (justRebalanced) {
-                    playAgainWrap.scrollIntoView({ behavior: "smooth", block: "end" });
-                }
+            }
+            if (firstStatusRender) {
+                firstStatusRender = false;
+            } else {
+                statusBox.scrollIntoView({ behavior: "smooth", block: "end" });
             }
         }
 
