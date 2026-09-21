@@ -902,7 +902,7 @@
 
                     <div class="sim-header">
                         <h2 class="sim-title">The Energy Balance Scale</h2>
-                        <p class="sim-description">Click the buttons below to add food or activity blocks. Watch how the scale responds and try to maintain a healthy energy balance!</p>
+                        <p class="sim-description">The scale starts balanced with food and activity blocks. Click the buttons to add more or remove blocks, watch how the scale responds, and try to maintain a healthy energy balance!</p>
                     </div>
 
                     <div class="count-row">
@@ -940,12 +940,12 @@
                         <div class="control-group">
                             <span class="control-group-label">🍽️ Food</span>
                             <button class="sim-btn sim-btn-remove" id="removeFoodBtn" disabled aria-label="Remove food block">− Remove</button>
-                            <button class="sim-btn sim-btn-add-food" id="addFoodBtn" aria-label="Add food block">+ Add Food</button>
+                            <button class="sim-btn sim-btn-add-food" id="addFoodBtn" aria-label="Add more food block">+ Add More Food</button>
                         </div>
                         <div class="control-group">
                             <span class="control-group-label">🏃 Activity</span>
                             <button class="sim-btn sim-btn-remove" id="removeActivityBtn" disabled aria-label="Remove activity block">− Remove</button>
-                            <button class="sim-btn sim-btn-add-activity" id="addActivityBtn" aria-label="Add activity block">+ Add Activity</button>
+                            <button class="sim-btn sim-btn-add-activity" id="addActivityBtn" aria-label="Increase activity block">+ Increase Activity</button>
                         </div>
                     </div>
 
@@ -1034,8 +1034,9 @@
                 "Explore how diet affects health, growth, and physical activity. Add food blocks and activity blocks to the seesaw scale and observe how energy intake and output must balance for a healthy body.",
             instructions: [
                 "Click Start to begin the simulation.",
-                "Use the '+ Add Food' button to add food blocks to the Energy Intake side.",
-                "Use the '+ Add Activity' button to add activity blocks to the Energy Output side.",
+                "The scale starts perfectly balanced with food blocks on one side and activity blocks on the other.",
+                "Use the '+ Add More Food' button to add more food blocks to the Energy Intake side.",
+                "Use the '+ Increase Activity' button to add more activity blocks to the Energy Output side.",
                 "Watch how the scale tips when intake and output do not match.",
                 "Try to restore balance by adding or removing blocks from each side.",
                 "A health warning appears when you have too much food without enough activity.",
@@ -1497,13 +1498,19 @@
 
         var simState = {};
         var previouslyImbalanced = false;
+        var hasRebalanced = false;
+
+        function buildStartingState() {
+            return {
+                foodBlocks: [FOOD_TYPES[0], FOOD_TYPES[1]],
+                activityBlocks: [ACTIVITY_TYPES[0], ACTIVITY_TYPES[1]]
+            };
+        }
 
         function devInit() {
-            simState = {
-                foodBlocks: [],
-                activityBlocks: []
-            };
+            simState = buildStartingState();
             previouslyImbalanced = false;
+            hasRebalanced = false;
 
             document.getElementById("addFoodBtn").onclick = addFood;
             document.getElementById("removeFoodBtn").onclick = removeFood;
@@ -1515,11 +1522,9 @@
         }
 
         function devReset() {
-            simState = {
-                foodBlocks: [],
-                activityBlocks: []
-            };
+            simState = buildStartingState();
             previouslyImbalanced = false;
+            hasRebalanced = false;
             updateSeesaw();
         }
 
@@ -1624,6 +1629,7 @@
             var statusBox = document.getElementById("statusBox");
             if (!statusBox) return;
             var totalBlocks = foodCount + activityCount;
+            var justRebalanced = false;
 
             statusBox.classList.remove("status-balanced", "status-surplus", "status-deficit");
 
@@ -1636,6 +1642,8 @@
                 if (previouslyImbalanced) {
                     statusBox.textContent = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
                     playSound("correct");
+                    hasRebalanced = true;
+                    justRebalanced = true;
                 } else {
                     statusBox.textContent = "The scale is perfectly balanced! Energy intake matches energy output.";
                 }
@@ -1653,8 +1661,8 @@
 
             var playAgainWrap = document.getElementById("playAgainWrap");
             if (playAgainWrap) {
-                playAgainWrap.classList.toggle("hidden", !(totalBlocks > 0 && diff === 0));
-                if (totalBlocks > 0 && diff === 0) {
+                playAgainWrap.classList.toggle("hidden", !(hasRebalanced && totalBlocks > 0 && diff === 0));
+                if (justRebalanced) {
                     playAgainWrap.scrollIntoView({ behavior: "smooth", block: "end" });
                 }
             }
