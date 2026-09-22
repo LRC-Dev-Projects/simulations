@@ -960,7 +960,7 @@
                     </div>
 
                     <div class="status-box status-balanced" id="statusBox">
-                        Add food or activity blocks to explore how energy balance works!
+                        <span id="statusText">Add food or activity blocks to explore how energy balance works!</span>
                         <div class="sr-only" role="status" aria-live="polite" id="liveRegion"></div>
                     </div>
 
@@ -1691,13 +1691,14 @@
                 message = "<strong>Exhaustion Warning:</strong> Energy deficit! You have " + absDiff + " more activity block" + (absDiff !== 1 ? "s" : "") + " than food blocks. The body needs more fuel.";
             }
 
-            if (messageIsHTML) {
-                statusBox.innerHTML = message;
-            } else {
-                statusBox.textContent = message;
+            var statusText = document.getElementById("statusText");
+            if (statusText) {
+                if (messageIsHTML) {
+                    statusText.innerHTML = message;
+                } else {
+                    statusText.textContent = message;
+                }
             }
-            var liveRegion = document.getElementById("liveRegion");
-            if (liveRegion) statusBox.appendChild(liveRegion);
 
             var playAgainWrap = document.getElementById("playAgainWrap");
             if (playAgainWrap) {
