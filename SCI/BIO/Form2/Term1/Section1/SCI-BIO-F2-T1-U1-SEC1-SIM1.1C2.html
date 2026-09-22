@@ -791,6 +791,18 @@
         }
 
         /* Status Box */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         .status-box {
             padding: 16px 20px;
             border-radius: 14px;
@@ -898,9 +910,7 @@
         <main class="screen" id="simScreen">
             <div class="sim-layout">
                 <section class="sim-card" id="simContainer">
-                    <div class="sr-only" role="status" aria-live="polite" id="liveRegion"></div>
-
-                    <div class="sim-header">
+                    <div class="sim-header" id="simHeader">
                         <h2 class="sim-title">The Energy Balance Scale</h2>
                         <p class="sim-description">The scale starts balanced with food and activity blocks. Click the buttons to add more or remove blocks, watch how the scale responds, and try to maintain a healthy energy balance!</p>
                     </div>
@@ -951,6 +961,7 @@
 
                     <div class="status-box status-balanced" id="statusBox">
                         Add food or activity blocks to explore how energy balance works!
+                        <div class="sr-only" role="status" aria-live="polite" id="liveRegion"></div>
                     </div>
 
                     <div class="play-again-wrap hidden" id="playAgainWrap">
@@ -1332,6 +1343,11 @@
             dom.startBtn.addEventListener("click", () => {
                 showScreen("sim");
                 devInit();
+                var header = document.getElementById("simHeader");
+                if (header) {
+                    var top = header.getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo({ top: top, behavior: "auto" });
+                }
                 openInstructionsModal();
             });
             dom.openInstructionsBtn.addEventListener("click", openInstructionsModal);
@@ -1645,30 +1661,43 @@
 
             statusBox.classList.remove("status-balanced", "status-surplus", "status-deficit");
 
+            var message = "";
+            var messageIsHTML = false;
+
             if (totalBlocks === 0) {
                 statusBox.classList.add("status-balanced");
-                statusBox.textContent = "Add food or activity blocks to explore how energy balance works!";
+                message = "Add food or activity blocks to explore how energy balance works!";
                 previouslyImbalanced = false;
             } else if (diff === 0) {
                 statusBox.classList.add("status-balanced");
                 if (previouslyImbalanced) {
-                    statusBox.textContent = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
+                    message = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
                     playSound("correct");
                     hasRebalanced = true;
                 } else {
-                    statusBox.textContent = "The scale is perfectly balanced! Energy intake matches energy output.";
+                    message = "The scale is perfectly balanced! Energy intake matches energy output.";
                 }
                 previouslyImbalanced = false;
             } else if (diff > 0) {
                 previouslyImbalanced = true;
                 statusBox.classList.add("status-surplus");
-                statusBox.innerHTML = "<strong>Health Warning:</strong> Energy surplus! You have " + diff + " more food block" + (diff !== 1 ? "s" : "") + " than activity blocks. The body stores this excess energy.";
+                messageIsHTML = true;
+                message = "<strong>Health Warning:</strong> Energy surplus! You have " + diff + " more food block" + (diff !== 1 ? "s" : "") + " than activity blocks. The body stores this excess energy.";
             } else {
                 previouslyImbalanced = true;
                 statusBox.classList.add("status-deficit");
                 var absDiff = Math.abs(diff);
-                statusBox.innerHTML = "<strong>Exhaustion Warning:</strong> Energy deficit! You have " + absDiff + " more activity block" + (absDiff !== 1 ? "s" : "") + " than food blocks. The body needs more fuel.";
+                messageIsHTML = true;
+                message = "<strong>Exhaustion Warning:</strong> Energy deficit! You have " + absDiff + " more activity block" + (absDiff !== 1 ? "s" : "") + " than food blocks. The body needs more fuel.";
             }
+
+            if (messageIsHTML) {
+                statusBox.innerHTML = message;
+            } else {
+                statusBox.textContent = message;
+            }
+            var liveRegion = document.getElementById("liveRegion");
+            if (liveRegion) statusBox.appendChild(liveRegion);
 
             var playAgainWrap = document.getElementById("playAgainWrap");
             if (playAgainWrap) {
