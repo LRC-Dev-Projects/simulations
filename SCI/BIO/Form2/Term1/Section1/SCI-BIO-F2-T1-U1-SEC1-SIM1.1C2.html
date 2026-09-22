@@ -844,6 +844,39 @@
             padding: 12px 28px;
             font-size: 1rem;
             box-shadow: var(--shadow);
+            animation: play-again-pulse 2.4s ease-in-out infinite;
+        }
+
+        @keyframes play-again-pulse {
+            0%,
+            100% {
+                box-shadow: var(--shadow);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 6px 24px color-mix(in srgb, var(--accent) 60%, transparent);
+                transform: scale(1.05);
+            }
+        }
+
+        .confetti-piece {
+            position: fixed;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            animation: confetti-burst 1.6s ease-out var(--delay) forwards;
+        }
+
+        @keyframes confetti-burst {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx), var(--dy)) rotate(var(--spin));
+            }
         }
 
         /* Gear button: scroll back up to the topbar settings */
@@ -1419,6 +1452,33 @@
             document.addEventListener("keydown", handleKeyShortcuts);
         }
 
+        function spawnConfetti() {
+            var btn = document.getElementById("playAgainBtn");
+            if (!btn) return;
+            var rect = btn.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            var originX = rect.left + rect.width / 2;
+            var originY = rect.top + rect.height / 2;
+            var colors = ["#f59e0b", "#8b5cf6", "#10b981", "#ef4444", "#3b82f6", "#ec4899", "#14b8a6"];
+            for (var i = 0; i < 26; i++) {
+                var piece = document.createElement("div");
+                piece.className = "confetti-piece";
+                piece.style.left = originX + "px";
+                piece.style.top = originY + "px";
+                piece.style.backgroundColor = colors[i % colors.length];
+                piece.style.width = (6 + Math.random() * 6) + "px";
+                piece.style.height = (8 + Math.random() * 8) + "px";
+                piece.style.setProperty("--dx", (Math.random() * 260 - 130) + "px");
+                piece.style.setProperty("--dy", -(60 + Math.random() * 180) + "px");
+                piece.style.setProperty("--spin", (Math.random() * 720 - 360) + "deg");
+                piece.style.setProperty("--delay", (Math.random() * 0.15) + "s");
+                document.body.appendChild(piece);
+                (function (el) {
+                    setTimeout(function () { el.remove(); }, 2000);
+                })(piece);
+            }
+        }
+
         function getSimHeaderTop() {
             var header = document.getElementById("simHeader");
             if (!header) return 0;
@@ -1735,6 +1795,7 @@
 
             var message = "";
             var messageIsHTML = false;
+            var celebrate = false;
 
             if (totalBlocks === 0) {
                 statusBox.classList.add("status-balanced");
@@ -1746,6 +1807,7 @@
                     message = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
                     playSound("correct");
                     hasRebalanced = true;
+                    celebrate = true;
                 } else {
                     message = "The scale is perfectly balanced! Energy intake matches energy output.";
                 }
@@ -1775,11 +1837,15 @@
             var playAgainWrap = document.getElementById("playAgainWrap");
             if (playAgainWrap) {
                 playAgainWrap.classList.toggle("hidden", !(hasRebalanced && totalBlocks > 0 && diff === 0));
+                if (celebrate) {
+                    setTimeout(spawnConfetti, 400);
+                }
             }
             if (firstStatusRender) {
                 firstStatusRender = false;
             } else {
-                statusBox.scrollIntoView({ behavior: "smooth", block: "end" });
+                var scrollTarget = playAgainWrap && !playAgainWrap.classList.contains("hidden") ? playAgainWrap : statusBox;
+                scrollTarget.scrollIntoView({ behavior: "smooth", block: "end" });
             }
         }
 
