@@ -338,6 +338,7 @@
         }
 
         .sim-card {
+            position: relative;
             width: min(100%, 960px);
             padding: clamp(18px, 3vw, 28px);
             background: var(--surface);
@@ -845,6 +846,34 @@
             box-shadow: var(--shadow);
         }
 
+        /* Gear button: scroll back up to the topbar settings */
+        .settings-gear-btn {
+            position: absolute;
+            top: clamp(18px, 3vw, 28px);
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            font-size: 1.15rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+            z-index: 5;
+        }
+
+        .settings-gear-btn:hover {
+            background: color-mix(in srgb, var(--surface-2) 85%, var(--accent) 15%);
+        }
+
+        .settings-gear-btn.settings-gear-down {
+            background: color-mix(in srgb, var(--accent) 16%, var(--surface-2));
+        }
+
         .play-again-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
@@ -910,6 +939,8 @@
         <main class="screen" id="simScreen">
             <div class="sim-layout">
                 <section class="sim-card" id="simContainer">
+                    <button class="settings-gear-btn" id="openSettingsBtn" type="button" aria-label="Scroll to settings in the top bar" title="Settings">⚙️</button>
+
                     <div class="sim-header" id="simHeader">
                         <h2 class="sim-title">The Energy Balance Scale</h2>
                         <p class="sim-description">The scale starts balanced with food and activity blocks. Click the buttons to add more or remove blocks, watch how the scale responds, and try to maintain a healthy energy balance!</p>
@@ -1291,6 +1322,7 @@
             helpBtn: document.getElementById("helpBtn"),
             themeToggleBtn: document.getElementById("themeToggleBtn"),
             fullscreenBtn: document.getElementById("fullscreenBtn"),
+            openSettingsBtn: document.getElementById("openSettingsBtn"),
             resetBtn: document.getElementById("resetBtn"),
             instructionsModal: document.getElementById("instructionsModal"),
             instructionsBody: document.getElementById("instructionsBody"),
@@ -1365,6 +1397,10 @@
             });
 
             dom.themeToggleBtn.addEventListener("click", toggleTheme);
+            dom.openSettingsBtn.addEventListener("click", handleSettingsClick);
+            window.addEventListener("scroll", updateSettingsButton);
+            window.addEventListener("resize", updateSettingsButton);
+            updateSettingsButton();
             dom.fullscreenBtn.addEventListener("click", toggleFullscreen);
             dom.resetBtn.addEventListener("click", openResetConfirmModal);
             dom.closeResetConfirmBtn.addEventListener("click", closeResetConfirmModal);
@@ -1381,6 +1417,42 @@
             });
             document.addEventListener("fullscreenchange", updateFullscreenButton);
             document.addEventListener("keydown", handleKeyShortcuts);
+        }
+
+        function getSimHeaderTop() {
+            var header = document.getElementById("simHeader");
+            if (!header) return 0;
+            return header.getBoundingClientRect().top + window.scrollY;
+        }
+
+        function getTopbarBottom() {
+            var bar = document.querySelector(".topbar");
+            if (!bar) return 0;
+            return bar.getBoundingClientRect().bottom + window.scrollY;
+        }
+
+        function updateSettingsButton() {
+            var btn = dom.openSettingsBtn;
+            if (!btn) return;
+            var isAbove = window.scrollY < getTopbarBottom();
+            btn.classList.toggle("settings-gear-down", isAbove);
+            if (isAbove) {
+                btn.innerHTML = "⬇️";
+                btn.setAttribute("aria-label", "Scroll back down to the simulation");
+                btn.title = "Back to the simulation";
+            } else {
+                btn.innerHTML = "⚙️";
+                btn.setAttribute("aria-label", "Scroll to settings in the top bar");
+                btn.title = "Settings";
+            }
+        }
+
+        function handleSettingsClick() {
+            if (dom.openSettingsBtn.classList.contains("settings-gear-down")) {
+                window.scrollTo({ top: getSimHeaderTop(), behavior: "smooth" });
+            } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
         }
 
         function renderInstructions() {
