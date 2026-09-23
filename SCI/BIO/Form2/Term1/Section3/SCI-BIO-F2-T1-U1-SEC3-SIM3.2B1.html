@@ -316,6 +316,25 @@
         .alert-box.show { display: block; }
 
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+        .sim-tooltip {
+            position: fixed;
+            z-index: 2000;
+            max-width: 260px;
+            padding: 7px 11px;
+            border-radius: 8px;
+            background: #1e1e24;
+            color: #f4f4f5;
+            font-size: 12px;
+            line-height: 1.4;
+            font-weight: 600;
+            pointer-events: none;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            transform: translateY(3px);
+            transition: opacity 0.12s ease, transform 0.12s ease;
+        }
+        .sim-tooltip.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 
@@ -620,6 +639,7 @@
                             </g>
                             <text x="170" y="240" fill="var(--text-soft)" font-size="13" text-anchor="middle" font-weight="700">Flask A</text>
                             <text x="170" y="257" fill="var(--muted)" font-size="12" text-anchor="middle">Inhaled air</text>
+                            <text id="flaskAStatus" x="170" y="272" fill="var(--muted)" font-size="11" text-anchor="middle" font-style="italic">Liquid: clear limewater</text>
 
                             <!-- Bubbles container A -->
                             <g id="bubblesA"></g>
@@ -642,6 +662,7 @@
                             </g>
                             <text x="530" y="240" fill="var(--text-soft)" font-size="13" text-anchor="middle" font-weight="700">Flask B</text>
                             <text x="530" y="257" fill="var(--muted)" font-size="12" text-anchor="middle">Exhaled air</text>
+                            <text id="flaskBStatus" x="530" y="272" fill="var(--muted)" font-size="11" text-anchor="middle" font-style="italic">Liquid: clear limewater</text>
 
                             <!-- Bubbles container B -->
                             <g id="bubblesB"></g>
@@ -746,6 +767,49 @@
             /* Show the scroll prompt only when the Check My Understanding
                button is below the viewport (user is scrolled above it). */
             window.addEventListener("scroll", updateScrollPrompt, { passive: true });
+
+            /* Custom tooltips so liquid descriptions are always visible */
+            attachTooltip(document.getElementById("flaskALiquid"));
+            attachTooltip(document.getElementById("flaskBLiquid"));
+        }
+
+        /* --- Custom tooltip for SVG elements (native <title> is unreliable) --- */
+        let tooltipEl = null;
+        function tooltipTextFor(el) {
+            const t = el.querySelector("title");
+            return t ? t.textContent.trim() : "";
+        }
+        function showTooltip(el, evt) {
+            const text = tooltipTextFor(el);
+            if (!text) return;
+            if (!tooltipEl) {
+                tooltipEl = document.createElement("div");
+                tooltipEl.className = "sim-tooltip";
+                document.body.appendChild(tooltipEl);
+            }
+            tooltipEl.textContent = text;
+            tooltipEl.classList.add("show");
+            positionTooltip(evt);
+        }
+        function positionTooltip(evt) {
+            if (!tooltipEl) return;
+            const pad = 14;
+            let x = evt.clientX + pad;
+            let y = evt.clientY + pad;
+            const rect = tooltipEl.getBoundingClientRect();
+            if (x + rect.width > window.innerWidth - 8) x = evt.clientX - rect.width - pad;
+            if (y + rect.height > window.innerHeight - 8) y = evt.clientY - rect.height - pad;
+            tooltipEl.style.left = x + "px";
+            tooltipEl.style.top = y + "px";
+        }
+        function hideTooltip() {
+            if (tooltipEl) tooltipEl.classList.remove("show");
+        }
+        function attachTooltip(el) {
+            if (!el) return;
+            el.addEventListener("pointerenter", (evt) => showTooltip(el, evt));
+            el.addEventListener("pointermove", positionTooltip);
+            el.addEventListener("pointerleave", hideTooltip);
         }
 
         function updateScrollPrompt() {
@@ -864,13 +928,20 @@
             }
             liquid.setAttribute("fill", color + opacity + ")");
 
-            /* Update the title tooltip */
+            /* Update the title tooltip and the visible status caption */
+            const statusText = exhaleCount >= 3
+                ? "Liquid: milky white (CO\u2082 detected)"
+                : exhaleCount >= 1
+                    ? "Liquid: becoming cloudy"
+                    : "Liquid: clear limewater";
             const titles = liquid.querySelectorAll("title");
             titles.forEach(t => {
                 t.textContent = exhaleCount >= 3
                     ? "Flask B liquid — milky white (CO\u2082 detected)"
                     : "Flask B liquid — becoming cloudy";
             });
+            const status = document.getElementById("flaskBStatus");
+            if (status) status.textContent = statusText;
         }
 
         /* --- Spawn bubble circles inside a flask group --- */
