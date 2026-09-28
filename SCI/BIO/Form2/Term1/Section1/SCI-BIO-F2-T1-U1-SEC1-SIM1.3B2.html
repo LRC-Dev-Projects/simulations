@@ -1326,16 +1326,27 @@
 
             // Arrow showing absorption direction
             if (rate > 0) {
-                const arrowX = canvasW * 0.48 + wallThickness / 2 + 8;
-                ctx.strokeStyle = '#b45309';
-                ctx.lineWidth = 3;
+                const arrowX = canvasW * 0.48 + wallThickness / 2 + 12;
+                const arrowLen = 30;
+                const headW = 9;
+                const alpha = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(performance.now() / 500));
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.strokeStyle = '#15803d';
+                ctx.fillStyle = '#15803d';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'butt';
                 ctx.beginPath();
                 ctx.moveTo(arrowX, canvasH * 0.5);
-                ctx.lineTo(arrowX + 18, canvasH * 0.5);
-                ctx.moveTo(arrowX + 14, canvasH * 0.5 - 5);
-                ctx.lineTo(arrowX + 18, canvasH * 0.5);
-                ctx.lineTo(arrowX + 14, canvasH * 0.5 + 5);
+                ctx.lineTo(arrowX + arrowLen - headW, canvasH * 0.5);
                 ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(arrowX + arrowLen - headW, canvasH * 0.5 - headW);
+                ctx.lineTo(arrowX + arrowLen, canvasH * 0.5);
+                ctx.lineTo(arrowX + arrowLen - headW, canvasH * 0.5 + headW);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
                 ctx.lineWidth = 1;
             }
         }
