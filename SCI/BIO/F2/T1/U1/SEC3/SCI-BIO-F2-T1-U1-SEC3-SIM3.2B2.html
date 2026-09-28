@@ -2107,7 +2107,7 @@
                 var firstTry = simState.qFirstTry[i] === true;
                 var cls, resultText;
                 if (correct && firstTry) { cls = "correct-mark"; resultText = "Correct (1st try)"; }
-                else if (correct) { cls = "retry-mark"; resultText = "Incorrect on 1st attempt \u2014 corrected"; }
+                else if (correct) { cls = "retry-mark"; resultText = "Initially Incorrect \u2014 Corrected on Retry"; }
                 else { cls = "incorrect-mark"; resultText = "Incorrect \u2014 try again"; }
                 rowsHtml += "<tr><td>" + (i + 1) + "</td><td>" + escapeHtml(q.question.slice(0, 60)) + (q.question.length > 60 ? "\u2026" : "") + "</td><td class=\"result-mark " + cls + "\">" + resultText + "</td></tr>";
             });
