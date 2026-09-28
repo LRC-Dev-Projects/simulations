@@ -1085,6 +1085,10 @@
 
         function updateFullscreenButton() {
             dom.fullscreenBtn.innerHTML = document.fullscreenElement ? FS_EXIT_HTML : FS_ENTER_HTML;
+            const backToTopBtn = document.getElementById("backToTopBtn");
+            if (backToTopBtn) {
+                backToTopBtn.classList.toggle("hidden", !!document.fullscreenElement);
+            }
         }
 
         function handleKeyShortcuts(event) {
