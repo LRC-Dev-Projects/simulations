@@ -657,6 +657,30 @@
             }
         }
 
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 14px;
+            border-radius: 2px;
+            z-index: 99;
+            pointer-events: none;
+            animation: confetti-rise 1.6s ease-out forwards;
+        }
+
+        @keyframes confetti-rise {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--cw), var(--ch)) rotate(-540deg);
+                opacity: 0;
+            }
+        }
+
     </style>
 </head>
 
@@ -1438,7 +1462,31 @@
 
             // Show the "Play Again" button only when optimal absorption is reached
             if (playAgainFeedbackBtn) {
+                const wasShown = playAgainFeedbackBtn.classList.contains('hidden') === false;
                 playAgainFeedbackBtn.classList.toggle('hidden', !isOptimal);
+                if (isOptimal && !wasShown) {
+                    launchConfetti(playAgainFeedbackBtn);
+                }
+            }
+        }
+
+        /* --- CONFETTI --- */
+        function launchConfetti(anchorEl) {
+            const anchorRect = anchorEl.getBoundingClientRect();
+            const originX = anchorRect.left + anchorRect.width / 2;
+            const originY = anchorRect.top;
+            const colors = ['#34d399', '#7dd3fc', '#fbbf24', '#fb923c', '#f472b6', '#a78bfa', '#fca5a5'];
+            for (let i = 0; i < 40; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = originX + 'px';
+                piece.style.top = originY + 'px';
+                piece.style.background = colors[i % colors.length];
+                piece.style.setProperty('--cw', (Math.random() * 240 - 120) + 'px');
+                piece.style.setProperty('--ch', -(Math.random() * 200 + 100) + 'px');
+                piece.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 1700);
             }
         }
 
