@@ -1253,8 +1253,8 @@
 
             // Bloodstream background — shaped to follow the wall's outer edge
             const bloodPass = ctx.createLinearGradient(0, 0, canvasW, 0);
-            bloodPass.addColorStop(0, '#fbd9e3');
-            bloodPass.addColorStop(1, '#f2c6d3');
+            bloodPass.addColorStop(0, '#4d0d26');
+            bloodPass.addColorStop(1, '#32081a');
             ctx.fillStyle = bloodPass;
             ctx.beginPath();
             for (let y = 0; y <= canvasH; y += 2) {
@@ -1266,7 +1266,7 @@
             ctx.fill();
 
             // Bloodstream vessels
-            ctx.strokeStyle = 'rgba(140, 20, 60, 0.55)';
+            ctx.strokeStyle = 'rgba(255, 140, 170, 0.6)';
             ctx.lineWidth = 3;
             for (let i = 0; i < 4; i++) {
                 const vy = canvasH * (0.15 + i * 0.22);
@@ -1320,7 +1320,7 @@
             ctx.fillText('Intestine Lumen', canvasW * 0.18, 22);
 
             // Bloodstream label
-            ctx.fillStyle = '#6b1030';
+            ctx.fillStyle = '#ffd9e4';
             ctx.fillText('Bloodstream', canvasW * 0.79, 22);
 
             // Nutrients label
@@ -1328,7 +1328,7 @@
             ctx.fillStyle = '#7a4d20';
             ctx.fillText('Nutrients', canvasW * 0.18, canvasH - 12);
 
-            ctx.fillStyle = 'rgba(120, 15, 55, 0.75)';
+            ctx.fillStyle = 'rgba(255, 190, 205, 0.95)';
             ctx.fillText('Blood vessels', canvasW * 0.82, canvasH - 12);
 
             // Particles
@@ -1356,8 +1356,8 @@
                 const alpha = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(performance.now() / 500));
                 ctx.save();
                 ctx.globalAlpha = alpha;
-                ctx.strokeStyle = '#15803d';
-                ctx.fillStyle = '#15803d';
+                ctx.strokeStyle = '#34d399';
+                ctx.fillStyle = '#34d399';
                 ctx.lineWidth = 4;
                 ctx.lineCap = 'butt';
                 ctx.beginPath();
