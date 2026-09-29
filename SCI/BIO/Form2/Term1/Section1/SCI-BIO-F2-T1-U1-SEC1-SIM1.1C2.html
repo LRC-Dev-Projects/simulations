@@ -907,6 +907,13 @@
             background: color-mix(in srgb, var(--accent) 16%, var(--surface-2));
         }
 
+        .settings-gear-btn.settings-gear-float {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 20;
+        }
+
         .play-again-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
@@ -1505,6 +1512,7 @@
                 btn.setAttribute("aria-label", "Scroll to settings in the top bar");
                 btn.title = "Settings";
             }
+            btn.classList.toggle("settings-gear-float", window.scrollY > getSimHeaderTop() + 4);
         }
 
         function handleSettingsClick() {
