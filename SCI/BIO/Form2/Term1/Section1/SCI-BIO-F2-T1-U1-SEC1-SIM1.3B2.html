@@ -1304,14 +1304,22 @@
             ctx.stroke();
             ctx.lineWidth = 1;
 
-            // Draw villi tips on the lumen side (small bumps)
+            // Draw villi tips on the lumen side (finger-like projections)
             if (foldValue > 5) {
                 const p = computeVilliParams(foldValue);
                 ctx.fillStyle = '#f5a0b0';
                 for (let y = 5; y < canvasH; y += Math.floor(canvasH / p.numVilli)) {
                     const wx = getWallX(y, canvasW, canvasH, foldValue);
+                    const fingerR = 3 + p.t * 3;
+                    const fingerX0 = wx - (8 + p.t * 12);
+                    const fingerX1 = wx - fingerR;
                     ctx.beginPath();
-                    ctx.arc(wx - 3, y, 3 + p.t * 3, 0, Math.PI * 2);
+                    ctx.moveTo(fingerX0, y - fingerR);
+                    ctx.lineTo(fingerX1, y - fingerR);
+                    ctx.arc(fingerX1, y, fingerR, -Math.PI / 2, Math.PI / 2);
+                    ctx.lineTo(fingerX0, y + fingerR);
+                    ctx.arc(fingerX0, y, fingerR, Math.PI / 2, Math.PI * 1.5);
+                    ctx.closePath();
                     ctx.fill();
                 }
             }
