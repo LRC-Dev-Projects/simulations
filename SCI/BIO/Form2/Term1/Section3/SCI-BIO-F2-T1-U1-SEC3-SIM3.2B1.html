@@ -1027,6 +1027,14 @@
             });
         }
 
+        function scrollToPlayAgain() {
+            /* After a correct answer, bring the Play Again button into view
+               when the assessment modal is dismissed. */
+            if (!assessmentAnswered) return;
+            const target = document.getElementById("playAgainBtn") || document.getElementById("checkBtnWrap");
+            if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
         function openAssessment() {
             if (assessmentAnswered) return;
             const modal = document.getElementById("assessmentModal");
@@ -1071,7 +1079,7 @@
                     submitBtn.classList.add("hidden");
                     closeBtn2.classList.add("hidden");
                     doneBtn.classList.remove("hidden");
-                    doneBtn.onclick = () => { modal.classList.remove("show"); };
+                    doneBtn.onclick = () => { modal.classList.remove("show"); scrollToPlayAgain(); };
                     /* Swap Check My Understanding → Play Again */
                     const checkWrap = document.getElementById("checkBtnWrap");
                     if (checkWrap) {
@@ -1105,8 +1113,10 @@
                 }
             };
 
-            closeBtn.onclick = () => { modal.classList.remove("show"); };
-            modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("show"); });
+            closeBtn.onclick = () => { modal.classList.remove("show"); scrollToPlayAgain(); };
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) { modal.classList.remove("show"); scrollToPlayAgain(); }
+            });
 
             modal.classList.add("show");
             playSound("click");
