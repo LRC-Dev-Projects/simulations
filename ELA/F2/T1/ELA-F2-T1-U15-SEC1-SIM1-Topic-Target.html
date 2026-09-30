@@ -623,7 +623,8 @@
             height: 100%;
         }
         #zoneCentre .zone-body { justify-content: center; }
-        #zoneRing1 .zone-body { justify-content: flex-start; padding-top: 14%; }
+        #zoneRing1 .zone-body { justify-content: flex-start; padding-top: 2px; }
+        #zoneRing1Icon { display: none; }
         #zoneRing2 .zone-body { justify-content: flex-end; align-items: flex-end; padding-right: 12%; padding-bottom: 8%; }
         #zoneRing3 .zone-body { justify-content: flex-end; align-items: flex-start; padding-left: 14%; padding-bottom: 4%; }
         /* Zone labels must never intercept drags or clicks — they sit inside
@@ -652,37 +653,39 @@
         .zone-float {
             position: absolute;
             display: none;
-            max-width: 46%;
+            width: max-content;
+            max-width: 50%;
+            min-width: 0;
             pointer-events: none;
             box-sizing: border-box;
-            background: color-mix(in srgb, var(--bg) 97%, var(--surface));
-            border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+            background: color-mix(in srgb, var(--bg) 90%, var(--surface));
+            border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
             border-left-width: 6px;
             border-radius: 10px;
-            padding: 10px 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            padding: 11px 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
             text-align: left;
         }
         .zone-float.show { display: block; }
         .zone-float .float-tag {
             display: block;
-            font-size: 0.66rem;
+            font-size: 0.7rem;
             font-weight: 800;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
         .zone-float .float-text {
             display: block;
-            font-size: 0.94rem;
-            line-height: 1.45;
-            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.5;
+            font-weight: 700;
             color: var(--text);
             overflow-wrap: anywhere;
         }
-        #floatRing1 { left: 50%; top: 22%; transform: translate(-50%, -50%); }
-        #floatRing2 { left: 74%; top: 76%; transform: translate(-50%, -50%); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
-        #floatRing3 { left: 26%; top: 76%; transform: translate(-50%, -50%); border-color: color-mix(in srgb, #e0b45c 45%, transparent); }
+        #floatRing1 { left: 50%; top: 18%; transform: translate(-50%, -50%); }
+        #floatRing2 { left: 74%; top: 84%; transform: translate(-50%, -50%); border-color: color-mix(in srgb, var(--accent) 45%, transparent); max-width: 46%; }
+        #floatRing3 { left: 26%; top: 84%; transform: translate(-50%, -50%); border-color: color-mix(in srgb, #e0b45c 45%, transparent); max-width: 46%; }
         #floatRing1 .float-tag { color: #e0b45c; }
         #floatRing2 .float-tag { color: var(--accent); }
         #floatRing3 .float-tag { color: #e0b45c; }
@@ -1142,11 +1145,16 @@
                 font-size: 0.76rem;
             }
             .zone-float {
-                max-width: 46%;
-                padding: 6px 10px;
+                max-width: 52%;
+                padding: 8px 12px;
             }
             .zone-float .float-text {
-                font-size: 0.86rem;
+                font-size: 0.92rem;
+                line-height: 1.45;
+            }
+            .zone-float .float-tag {
+                font-size: 0.64rem;
+                margin-bottom: 2px;
             }
         }
         /* Short/minimised windows: compact the board so the whole target
@@ -1201,8 +1209,60 @@
             .game-topbar {
                 margin-bottom: 8px;
             }
+            .deck-wrap {
+                padding: 8px;
+            }
+            .deck-label {
+                margin-bottom: 6px;
+            }
+            .deck {
+                grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+                gap: 8px;
+            }
             .sentence-card {
-                padding: 10px 12px 10px 46px;
+                padding: 8px 10px 8px 42px;
+                font-size: 0.82rem;
+            }
+            .sentence-card::before {
+                left: 9px;
+                width: 22px;
+                height: 22px;
+            }
+            .task-area {
+                padding: 8px 10px;
+                font-size: 0.78rem;
+                line-height: 1.4;
+                min-height: 0;
+            }
+            .task-file {
+                font-size: 0.72rem;
+                margin-top: 6px;
+                padding-top: 6px;
+            }
+            .task-file ul {
+                margin: 4px 0 0;
+                padding-left: 16px;
+            }
+            .feedback-area {
+                padding: 8px 10px;
+                font-size: 0.82rem;
+            }
+            .game-action-btn {
+                padding: 6px 12px;
+                min-height: 38px;
+                font-size: 0.8rem;
+            }
+            .zone-float {
+                max-width: 52%;
+                padding: 8px 12px;
+            }
+            .zone-float .float-text {
+                font-size: 0.92rem;
+                line-height: 1.45;
+            }
+            .zone-float .float-tag {
+                font-size: 0.64rem;
+                margin-bottom: 2px;
             }
         }
 
