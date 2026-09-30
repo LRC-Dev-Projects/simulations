@@ -351,7 +351,6 @@
                     </p>
                     <div class="hero-actions">
                         <button class="primary-btn" id="startBtn">Start</button>
-                        <button class="secondary-btn hidden" id="openInstructionsBtn">Read Instructions</button>
                     </div>
                 </section>
             </div>
@@ -660,13 +659,13 @@
                             <path d="M 400 20 L 526 20 Q 526 20, 526 32 L 526 203" fill="none" stroke="var(--accent-2)" stroke-width="3.5" stroke-linecap="round"/>
 
                             <!-- Vent tube from Flask B stopper (exhaled air exits) -->
-                            <path d="M 533 56 L 533 30 Q 533 24, 546 24 L 636 24" fill="none" stroke="var(--muted)" stroke-width="3.5" stroke-linecap="round" opacity="0.7" marker-end="url(#arrowMuted)"/>
+                            <path d="M 533 56 L 533 30 Q 533 24, 546 24 L 636 24" fill="none" stroke="var(--muted)" stroke-width="3.5" stroke-linecap="butt" marker-end="url(#arrowMuted)"/>
                             <text x="652" y="28" fill="var(--muted)" font-size="11" text-anchor="start" font-weight="700">AIR OUT</text>
 
                             <!-- Flow-direction cues -->
                             <line x1="98" y1="174" x2="98" y2="202" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
                             <text x="94" y="170" fill="var(--muted)" font-size="11" text-anchor="end" font-weight="700">Inhale</text>
-                            <line x1="404" y1="26" x2="434" y2="26" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)" opacity="0.7"/>
+                            <line x1="404" y1="26" x2="434" y2="26" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
                             <text x="442" y="31" fill="var(--muted)" font-size="11" text-anchor="start" font-weight="700">Exhale</text>
 
                             <!-- Mouthpiece -->
@@ -694,7 +693,7 @@
 
                             <!-- Arrow markers -->
                             <defs>
-                                <marker id="arrowMuted" markerWidth="13" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L12,3.5 L0,7 Z" fill="var(--muted)"/></marker>
+                                <marker id="arrowMuted" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="var(--muted)"/></marker>
                             </defs>
                         </svg>
                         </div>
