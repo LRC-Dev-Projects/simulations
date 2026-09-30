@@ -316,25 +316,6 @@
         .alert-box.show { display: block; }
 
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-
-        .sim-tooltip {
-            position: fixed;
-            z-index: 2000;
-            max-width: 260px;
-            padding: 7px 11px;
-            border-radius: 8px;
-            background: #1e1e24;
-            color: #f4f4f5;
-            font-size: 12px;
-            line-height: 1.4;
-            font-weight: 600;
-            pointer-events: none;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-            opacity: 0;
-            transform: translateY(3px);
-            transition: opacity 0.12s ease, transform 0.12s ease;
-        }
-        .sim-tooltip.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 
@@ -631,9 +612,7 @@
                                 <!-- Glass highlight along the conical side -->
                                 <path d="M 153 92 L 124 188" fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="5" stroke-linecap="round"/>
                                 <!-- Liquid (nested cone, parallel walls, meniscus dip) -->
-                                <path id="flaskALiquid" d="M 143.6 128 Q 170 134, 196.4 128 L 223.4 198 Q 225 205, 217 205 L 123 205 Q 115 205, 116.6 198 L 143.6 128 Z" fill="rgba(200, 230, 255, 0.55)" stroke="none">
-                                    <title>Flask A liquid — clear limewater</title>
-                                </path>
+                                <path id="flaskALiquid" d="M 143.6 128 Q 170 134, 196.4 128 L 223.4 198 Q 225 205, 217 205 L 123 205 Q 115 205, 116.6 198 L 143.6 128 Z" fill="rgba(200, 230, 255, 0.55)" stroke="none"/>
                                 <!-- Surface sheen -->
                                 <path d="M 146 126 Q 170 133, 194 126" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
                             </g>
@@ -654,9 +633,7 @@
                                 <!-- Glass highlight along the conical side -->
                                 <path d="M 513 92 L 484 188" fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="5" stroke-linecap="round"/>
                                 <!-- Liquid (nested cone, parallel walls, meniscus dip) -->
-                                <path id="flaskBLiquid" d="M 503.6 128 Q 530 134, 556.4 128 L 583.4 198 Q 585 205, 577 205 L 483 205 Q 475 205, 476.6 198 L 503.6 128 Z" fill="rgba(200, 230, 255, 0.55)" stroke="none">
-                                    <title>Flask B liquid — clear limewater</title>
-                                </path>
+                                <path id="flaskBLiquid" d="M 503.6 128 Q 530 134, 556.4 128 L 583.4 198 Q 585 205, 577 205 L 483 205 Q 475 205, 476.6 198 L 503.6 128 Z" fill="rgba(200, 230, 255, 0.55)" stroke="none"/>
                                 <!-- Surface sheen -->
                                 <path d="M 506 126 Q 530 133, 554 126" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
                             </g>
@@ -767,49 +744,6 @@
             /* Show the scroll prompt only when the Check My Understanding
                button is below the viewport (user is scrolled above it). */
             window.addEventListener("scroll", updateScrollPrompt, { passive: true });
-
-            /* Custom tooltips so liquid descriptions are always visible */
-            attachTooltip(document.getElementById("flaskALiquid"));
-            attachTooltip(document.getElementById("flaskBLiquid"));
-        }
-
-        /* --- Custom tooltip for SVG elements (native <title> is unreliable) --- */
-        let tooltipEl = null;
-        function tooltipTextFor(el) {
-            const t = el.querySelector("title");
-            return t ? t.textContent.trim() : "";
-        }
-        function showTooltip(el, evt) {
-            const text = tooltipTextFor(el);
-            if (!text) return;
-            if (!tooltipEl) {
-                tooltipEl = document.createElement("div");
-                tooltipEl.className = "sim-tooltip";
-                document.body.appendChild(tooltipEl);
-            }
-            tooltipEl.textContent = text;
-            tooltipEl.classList.add("show");
-            positionTooltip(evt);
-        }
-        function positionTooltip(evt) {
-            if (!tooltipEl) return;
-            const pad = 14;
-            let x = evt.clientX + pad;
-            let y = evt.clientY + pad;
-            const rect = tooltipEl.getBoundingClientRect();
-            if (x + rect.width > window.innerWidth - 8) x = evt.clientX - rect.width - pad;
-            if (y + rect.height > window.innerHeight - 8) y = evt.clientY - rect.height - pad;
-            tooltipEl.style.left = x + "px";
-            tooltipEl.style.top = y + "px";
-        }
-        function hideTooltip() {
-            if (tooltipEl) tooltipEl.classList.remove("show");
-        }
-        function attachTooltip(el) {
-            if (!el) return;
-            el.addEventListener("pointerenter", (evt) => showTooltip(el, evt));
-            el.addEventListener("pointermove", positionTooltip);
-            el.addEventListener("pointerleave", hideTooltip);
         }
 
         function updateScrollPrompt() {
@@ -928,18 +862,12 @@
             }
             liquid.setAttribute("fill", color + opacity + ")");
 
-            /* Update the title tooltip and the visible status caption */
+            /* Update the visible status caption */
             const statusText = exhaleCount >= 3
                 ? "Liquid: milky white (CO\u2082 detected)"
                 : exhaleCount >= 1
                     ? "Liquid: becoming cloudy"
                     : "Liquid: clear limewater";
-            const titles = liquid.querySelectorAll("title");
-            titles.forEach(t => {
-                t.textContent = exhaleCount >= 3
-                    ? "Flask B liquid — milky white (CO\u2082 detected)"
-                    : "Flask B liquid — becoming cloudy";
-            });
             const status = document.getElementById("flaskBStatus");
             if (status) status.textContent = statusText;
         }
