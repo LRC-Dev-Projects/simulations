@@ -498,7 +498,6 @@
             simScreen: document.getElementById("simScreen"),
             simContainer: document.getElementById("simContainer"),
             startBtn: document.getElementById("startBtn"),
-            openInstructionsBtn: document.getElementById("openInstructionsBtn"),
             audioBtn: document.getElementById("audioBtn"),
             helpBtn: document.getElementById("helpBtn"),
             themeToggleBtn: document.getElementById("themeToggleBtn"),
@@ -523,7 +522,6 @@
         function bindEvents() {
             if (dom.audioBtn) dom.audioBtn.addEventListener("click", toggleAudio);
             dom.startBtn.addEventListener("click", () => { showScreen("sim"); devInit(); openInstructionsModal(); });
-            dom.openInstructionsBtn.addEventListener("click", openInstructionsModal);
             dom.helpBtn.addEventListener("click", () => { dom.helpBtn.classList.remove("pulse-help"); storageSet(SIM_CONFIG.simId + "-help-seen", "true"); openInstructionsModal(); });
             dom.closeInstructionsBtn.addEventListener("click", closeInstructionsModal);
             dom.gotItBtn.addEventListener("click", closeInstructionsModal);
