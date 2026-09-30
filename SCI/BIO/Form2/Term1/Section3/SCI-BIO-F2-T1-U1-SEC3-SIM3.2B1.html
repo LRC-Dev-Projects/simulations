@@ -268,6 +268,21 @@
         }
         .bubble-anim { animation: bubbleUp 0.8s ease-out forwards; }
 
+        #inhaleArrow, #inhaleLabel, #exhaleArrow, #exhaleLabel {
+            transition: stroke 0.15s ease, fill 0.15s ease;
+        }
+        #inhaleLabel, #exhaleLabel {
+            paint-order: stroke fill;
+            stroke-linejoin: round;
+        }
+        .inhale-cue-on { stroke: #ffd166; fill: #ffd166; }
+        .exhale-cue-on { stroke: #38bdf8; fill: #38bdf8; }
+        #inhaleLabel.inhale-cue-on, #exhaleLabel.exhale-cue-on {
+            stroke: rgba(10, 14, 30, 0.5);
+            stroke-width: 4;
+            font-weight: 900;
+        }
+
         /* Lungs expand/contract — animate the ellipses, not the group
            (the group has an SVG translate that CSS transform would override) */
         @keyframes inhaleLung { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
@@ -661,10 +676,10 @@
                             <text x="652" y="28" fill="var(--muted)" font-size="11" text-anchor="start" font-weight="700">AIR OUT</text>
 
                             <!-- Flow-direction cues -->
-                            <line x1="98" y1="174" x2="98" y2="202" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
-                            <text x="94" y="170" fill="var(--muted)" font-size="11" text-anchor="end" font-weight="700">Inhale</text>
-                            <line x1="404" y1="26" x2="434" y2="26" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
-                            <text x="442" y="31" fill="var(--muted)" font-size="11" text-anchor="start" font-weight="700">Exhale</text>
+                            <line id="inhaleArrow" x1="98" y1="174" x2="98" y2="202" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
+                            <text id="inhaleLabel" x="94" y="170" fill="var(--muted)" font-size="11" text-anchor="end" font-weight="700">Inhale</text>
+                            <line id="exhaleArrow" x1="404" y1="26" x2="434" y2="26" stroke="var(--muted)" stroke-width="2" marker-end="url(#arrowMuted)"/>
+                            <text id="exhaleLabel" x="442" y="31" fill="var(--muted)" font-size="11" text-anchor="start" font-weight="700">Exhale</text>
 
                             <!-- Mouthpiece -->
                             <rect x="300" y="4" width="100" height="32" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
@@ -692,6 +707,8 @@
                             <!-- Arrow markers -->
                             <defs>
                                 <marker id="arrowMuted" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="var(--muted)"/></marker>
+                                <marker id="arrowFlashInhale" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="#ffd166"/></marker>
+                                <marker id="arrowFlashExhale" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="#38bdf8"/></marker>
                             </defs>
                         </svg>
                         </div>
@@ -764,6 +781,33 @@
             if (exhaleBtn) exhaleBtn.disabled = disabled;
         }
 
+        /* --- Flash the flow-direction cue (arrowhead, shaft and label together) --- */
+        function flashFlowCue(arrowId, labelId, mode) {
+            const cls = mode === "inhale" ? "inhale-cue-on" : "exhale-cue-on";
+            const clear = () => {
+                [arrowId, labelId].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.remove(cls);
+                });
+            };
+            clear();
+            [arrowId, labelId].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add(cls);
+            });
+
+            /* Swap the arrowhead marker so the head lights up too */
+            const arrow = document.getElementById(arrowId);
+            if (arrow) {
+                const bright = mode === "inhale" ? "url(#arrowFlashInhale)" : "url(#arrowFlashExhale)";
+                arrow.setAttribute("marker-end", bright);
+                setTimeout(() => {
+                    arrow.setAttribute("marker-end", "url(#arrowMuted)");
+                    clear();
+                }, 950);
+            }
+        }
+
         /* --- Inhale action --- */
         function doInhale() {
             if (isAnimating) return;
@@ -772,6 +816,7 @@
             inhaleCount++;
             document.getElementById("inhaleCountDisplay").textContent = inhaleCount;
             playSound("click");
+            flashFlowCue("inhaleArrow", "inhaleLabel", "inhale");
 
             /* Animate lungs expanding — target the ellipses, not the translated group */
             ["leftLung", "rightLung"].forEach(id => {
@@ -800,6 +845,7 @@
             exhaleCount++;
             document.getElementById("exhaleCountDisplay").textContent = exhaleCount;
             playSound("click");
+            flashFlowCue("exhaleArrow", "exhaleLabel", "exhale");
 
             /* Animate lungs contracting — target the ellipses, not the translated group */
             ["leftLung", "rightLung"].forEach(id => {
