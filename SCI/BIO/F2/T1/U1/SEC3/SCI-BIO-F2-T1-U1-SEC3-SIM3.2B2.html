@@ -1550,23 +1550,36 @@
             var cy = size / 2;
             var r = size / 2 - 30;
 
-            var total = 100;
+            var total = vals.n2 + vals.o2 + vals.co2;
+            if (!(total > 0)) return;
             var slices = [
                 { val: vals.n2, color: GAS.n2.color, pattern: "diagonal", label: "N\u2082", pct: vals.n2 },
                 { val: vals.o2, color: GAS.o2.color, pattern: "dots", label: "O\u2082", pct: vals.o2 },
                 { val: vals.co2, color: GAS.co2.color, pattern: "crosshatch", label: "CO\u2082", pct: vals.co2 }
             ];
 
+            /* Normalise to the real total so the pie always closes: the gases do not
+               sum to a flat 100%, and an unallocated open wedge read as an empty,
+               "not rendered" slice. Any real but tiny value (e.g. 0.04% CO2) is drawn
+               as a guaranteed-visible minimum wedge centred on its true mid-angle. */
+            var minSweep = 0.07;
             var startAngle = -Math.PI / 2;
             slices.forEach(function (slice) {
                 var sweep = (slice.val / total) * Math.PI * 2;
                 var endAngle = startAngle + sweep;
                 var midAngle = startAngle + sweep / 2;
 
-                if (sweep >= 0.003) {
+                var drawStart = startAngle;
+                var drawEnd = endAngle;
+                if (sweep > 0 && sweep < minSweep) {
+                    drawStart = startAngle + sweep / 2 - minSweep / 2;
+                    drawEnd = drawStart + minSweep;
+                }
+
+                if (sweep > 0) {
                     ctx.beginPath();
                     ctx.moveTo(cx, cy);
-                    ctx.arc(cx, cy, r, startAngle, endAngle);
+                    ctx.arc(cx, cy, r, drawStart, drawEnd);
                     ctx.closePath();
                     ctx.fillStyle = slice.color;
                     ctx.fill();
@@ -1574,24 +1587,7 @@
                     ctx.lineWidth = 2;
                     ctx.stroke();
 
-                    drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
-                } else if (sweep > 0) {
-                    /* Tiny but real slices (e.g. 0.04% CO2 in inhaled air) must not vanish.
-                       Guarantee them a visible sliver centred on their true mid-angle. */
-                    var minSweep = 0.02;
-                    var sliverStart = startAngle + sweep / 2 - minSweep / 2;
-                    var sliverEnd = sliverStart + minSweep;
-                    ctx.beginPath();
-                    ctx.moveTo(cx, cy);
-                    ctx.arc(cx, cy, r, sliverStart, sliverEnd);
-                    ctx.closePath();
-                    ctx.fillStyle = slice.color;
-                    ctx.fill();
-                    ctx.strokeStyle = "#1d2340";
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    drawPattern(ctx, cx, cy, r, sliverStart, sliverEnd, slice.pattern);
+                    drawPattern(ctx, cx, cy, r, drawStart, drawEnd, slice.pattern);
                 }
 
                 drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
@@ -1611,23 +1607,32 @@
             var cy = size / 2;
             var r = size / 2 - 30;
 
-            var total = 100;
+            var total = vals.n2 + vals.o2 + vals.co2;
+            if (!(total > 0)) return;
             var slices = [
                 { val: vals.n2, color: GAS.n2.color, pattern: "diagonal", label: "N\u2082", pct: vals.n2 },
                 { val: vals.o2, color: GAS.o2.color, pattern: "dots", label: "O\u2082", pct: vals.o2 },
                 { val: vals.co2, color: GAS.co2.color, pattern: "crosshatch", label: "CO\u2082", pct: vals.co2 }
             ];
 
+            var minSweep = 0.07;
             var startAngle = -Math.PI / 2;
             slices.forEach(function (slice) {
                 var sweep = (slice.val / total) * Math.PI * 2;
                 var endAngle = startAngle + sweep;
                 var midAngle = startAngle + sweep / 2;
 
-                if (sweep >= 0.003) {
+                var drawStart = startAngle;
+                var drawEnd = endAngle;
+                if (sweep > 0 && sweep < minSweep) {
+                    drawStart = startAngle + sweep / 2 - minSweep / 2;
+                    drawEnd = drawStart + minSweep;
+                }
+
+                if (sweep > 0) {
                     ctx.beginPath();
                     ctx.moveTo(cx, cy);
-                    ctx.arc(cx, cy, r, startAngle, endAngle);
+                    ctx.arc(cx, cy, r, drawStart, drawEnd);
                     ctx.closePath();
                     ctx.fillStyle = slice.color;
                     ctx.fill();
@@ -1635,24 +1640,7 @@
                     ctx.lineWidth = 2.5;
                     ctx.stroke();
 
-                    drawPattern(ctx, cx, cy, r, startAngle, endAngle, slice.pattern);
-                } else if (sweep > 0) {
-                    /* Tiny but real slices (e.g. 0.04% CO2 in inhaled air) must not vanish.
-                       Draw them as a guaranteed-visible sliver centred on their true mid-angle. */
-                    var minSweep = 0.02;
-                    var sliverStart = startAngle + sweep / 2 - minSweep / 2;
-                    var sliverEnd = sliverStart + minSweep;
-                    ctx.beginPath();
-                    ctx.moveTo(cx, cy);
-                    ctx.arc(cx, cy, r, sliverStart, sliverEnd);
-                    ctx.closePath();
-                    ctx.fillStyle = slice.color;
-                    ctx.fill();
-                    ctx.strokeStyle = "#1d2340";
-                    ctx.lineWidth = 2.5;
-                    ctx.stroke();
-
-                    drawPattern(ctx, cx, cy, r, sliverStart, sliverEnd, slice.pattern);
+                    drawPattern(ctx, cx, cy, r, drawStart, drawEnd, slice.pattern);
                 }
 
                 drawPieSliceLabel(ctx, slice, cx, cy, r, midAngle, sweep, size);
