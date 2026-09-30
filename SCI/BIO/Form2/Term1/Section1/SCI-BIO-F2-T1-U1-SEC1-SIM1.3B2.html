@@ -1363,27 +1363,19 @@
             // Arrow showing absorption direction
             if (rate > 0) {
                 const arrowX = canvasW * 0.48 + wallThickness / 2 + 12;
-                const arrowLen = 30;
-                const headW = 9;
                 const alpha = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(performance.now() / 500));
                 ctx.save();
                 ctx.globalAlpha = alpha;
-                ctx.strokeStyle = '#34d399';
                 ctx.fillStyle = '#34d399';
-                ctx.lineWidth = 4;
-                ctx.lineCap = 'butt';
-                ctx.beginPath();
-                ctx.moveTo(arrowX, canvasH * 0.5);
-                ctx.lineTo(arrowX + arrowLen - headW, canvasH * 0.5);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(arrowX + arrowLen - headW, canvasH * 0.5 - headW);
-                ctx.lineTo(arrowX + arrowLen, canvasH * 0.5);
-                ctx.lineTo(arrowX + arrowLen - headW, canvasH * 0.5 + headW);
-                ctx.closePath();
-                ctx.fill();
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+                ctx.shadowBlur = 12;
+                ctx.font = '30px "Segoe UI Symbol", "Arial Unicode MS", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('\u2794', arrowX, canvasH * 0.5);
+                ctx.shadowColor = 'rgba(0, 0, 0, 0)';
+                ctx.shadowBlur = 0;
                 ctx.restore();
-                ctx.lineWidth = 1;
             }
         }
 
