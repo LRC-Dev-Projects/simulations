@@ -566,12 +566,12 @@
 
         .tap-btn {
             width: 260px;
-            height: 100px;
+            height: 72px;
             border-radius: 22px;
             border: 4px solid color-mix(in srgb, var(--accent) 50%, var(--border));
             background: color-mix(in srgb, var(--accent) 14%, var(--surface));
             color: var(--text);
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 800;
             cursor: pointer;
             user-select: none;
@@ -787,12 +787,7 @@
             margin-top: 20px;
         }
 
-        .spacebar-hint {
-            font-size: 0.82rem;
-            color: var(--muted);
-            text-align: center;
-            margin-top: -8px;
-        }
+        
 
         .graph-container {
             width: 100%;
@@ -864,7 +859,16 @@
             background: var(--accent);
         }
 
-    </style>
+    
+        /* Pre-start: the graph, tap counter and TAP button stay
+           hidden until the 60 s timer is actually started, so the config
+           screen shows only the BPM selector, the timer and the start button. */
+        .pulse-stage.pre-start .graph-container,
+        .pulse-stage.pre-start .tap-count-display,
+        .pulse-stage.pre-start .tap-btn {
+            display: none;
+        }
+</style>
 </head>
 
 <body>
@@ -1484,7 +1488,7 @@
                         <option value="120">120 bpm</option>
                     </select>
                 </div>
-                <div class="pulse-stage">
+                <div class="pulse-stage pre-start">
                     <div class="graph-container" id="graphContainer">
                         <svg id="pulseGraph" viewBox="0 0 600 120" preserveAspectRatio="none"></svg>
                         <div class="graph-legend">
@@ -1502,7 +1506,6 @@
                         TAP
                         <span class="tap-hint">or press Space</span>
                     </button>
-                    <div class="spacebar-hint">Spacebar shortcut active while timer runs</div>
                     <div class="sim-start-row">
                         <button class="primary-btn" id="simStartBtn">Start 60 s Timer</button>
                     </div>
@@ -1526,6 +1529,10 @@
             simState.tapTimes = [];
             simState.phase = "running";
 
+            const stage = document.querySelector(".pulse-stage");
+            if (stage) stage.classList.remove("pre-start");
+
+            document.querySelector(".pulse-config").classList.add("hidden");
             document.getElementById("simStartBtn").classList.add("hidden");
             document.getElementById("bpmSelect").disabled = true;
             document.getElementById("tapBtn").disabled = false;
