@@ -103,7 +103,39 @@
         .hero-actions { margin-top: 26px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
 
         .sim-layout { flex: 1; display: grid; place-items: center; padding: 8px; }
-        .sim-card { width: min(100%, 960px); padding: clamp(18px, 3vw, 28px); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); }
+        .sim-card-wrap { position: relative; width: min(100%, 960px); }
+        .sim-card { position: relative; width: 100%; padding: clamp(18px, 3vw, 28px); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); }
+
+        /* Gear button: sits in the sim card's top-right, sticks to the viewport right once scrolled past */
+        .sim-gear {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 20;
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border-radius: 999px;
+            background: var(--surface-2);
+            color: var(--text-soft);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .sim-gear:hover { background: var(--surface); color: var(--text); }
+        .sim-gear svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        /* Icon swap: gear by default, down arrow once the topbar is reachable */
+        .sim-gear .icon-down { display: none; }
+        .sim-gear.is-top .icon-gear { display: none; }
+        .sim-gear.is-top .icon-down { display: block; }
+        /* Stickied state while the sim card top is scrolled out of view */
+        .sim-gear.is-stuck {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+        }
+        .sim-gear.is-hidden { display: none; }
 
         .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(6, 10, 20, 0.64); z-index: 60; }
         .modal.show { display: flex; }
@@ -389,8 +421,14 @@
 
         <main class="screen" id="simScreen">
             <div class="sim-layout">
-                <section class="sim-card" id="simContainer">
-                </section>
+                <div class="sim-card-wrap">
+                    <button class="sim-gear" id="simGearBtn" type="button" aria-label="Scroll to settings bar" title="Scroll to settings bar">
+                        <svg class="icon-gear" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <svg class="icon-down" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M19 12l-7 7-7-7"></path></svg>
+                    </button>
+                    <section class="sim-card" id="simContainer">
+                    </section>
+                </div>
             </div>
         </main>
 
@@ -528,6 +566,7 @@
             homeScreen: document.getElementById("homeScreen"),
             simScreen: document.getElementById("simScreen"),
             simContainer: document.getElementById("simContainer"),
+            simGearBtn: document.getElementById("simGearBtn"),
             startBtn: document.getElementById("startBtn"),
             audioBtn: document.getElementById("audioBtn"),
             helpBtn: document.getElementById("helpBtn"),
@@ -552,7 +591,8 @@
 
         function bindEvents() {
             if (dom.audioBtn) dom.audioBtn.addEventListener("click", toggleAudio);
-            dom.startBtn.addEventListener("click", () => { showScreen("sim"); devInit(); openInstructionsModal(); });
+            dom.startBtn.addEventListener("click", () => { showScreen("sim"); devInit(); scrollToSimCard(); openInstructionsModal(); });
+            if (dom.simGearBtn) dom.simGearBtn.addEventListener("click", toggleSimGearScroll);
             dom.helpBtn.addEventListener("click", () => { dom.helpBtn.classList.remove("pulse-help"); storageSet(SIM_CONFIG.simId + "-help-seen", "true"); openInstructionsModal(); });
             dom.closeInstructionsBtn.addEventListener("click", closeInstructionsModal);
             dom.gotItBtn.addEventListener("click", closeInstructionsModal);
@@ -573,7 +613,7 @@
         function closeInstructionsModal() { dom.instructionsModal.classList.remove("show"); }
         function openResetConfirmModal() { dom.resetConfirmModal.classList.add("show"); }
         function closeResetConfirmModal() { dom.resetConfirmModal.classList.remove("show"); }
-        function showScreen(screenName) { state.currentScreen = screenName; dom.homeScreen.classList.toggle("active", screenName === "home"); dom.simScreen.classList.toggle("active", screenName === "sim"); window.scrollTo({ top: 0, left: 0, behavior: "auto" }); }
+        function showScreen(screenName) { state.currentScreen = screenName; dom.homeScreen.classList.toggle("active", screenName === "home"); dom.simScreen.classList.toggle("active", screenName === "sim"); window.scrollTo({ top: 0, left: 0, behavior: "auto" }); updateSimGear(); }
         function toggleTheme() { state.theme = state.theme === "dark" ? "light" : "dark"; dom.html.setAttribute("data-theme", state.theme); updateThemeToggleLabel(); storageSet(SIM_CONFIG.simId + "-theme", state.theme); }
         function loadTheme() { const saved = storageGet(SIM_CONFIG.simId + "-theme"); if (saved === "light" || saved === "dark") { state.theme = saved; } else { const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches; state.theme = prefersLight ? "light" : "dark"; } dom.html.setAttribute("data-theme", state.theme); updateThemeToggleLabel(); }
         function updateThemeToggleLabel() { const switchToLight = state.theme === "dark"; dom.themeToggleBtn.textContent = switchToLight ? "\u2600\uFE0F Light Mode" : "\uD83C\uDF19 Dark Mode"; dom.themeToggleBtn.setAttribute("aria-label", switchToLight ? "Switch to light mode" : "Switch to dark mode"); }
@@ -780,6 +820,10 @@
             /* Show the scroll prompt only when the Check My Understanding
                button is below the viewport (user is scrolled above it). */
             window.addEventListener("scroll", updateScrollPrompt, { passive: true });
+
+            /* Keep the gear button's sticky state and icon in sync with the scroll position */
+            window.addEventListener("scroll", updateSimGear, { passive: true });
+            window.addEventListener("resize", updateSimGear, { passive: true });
 
             /* Set the opening prompt for the breathing cycle */
             updateBreathHint();
@@ -1071,6 +1115,79 @@
                     if (alertEl) alertEl.classList.remove("show");
                 });
             });
+        }
+
+        /* --- Sim card gear button --- */
+        /* Scrolls up to the settings bar while docked in the card corner, and back
+           down to the sim card once the user has scrolled up above the card. */
+        function scrollToSimCard() {
+            const card = document.getElementById("simContainer");
+            if (!card) return;
+            card.scrollIntoView({ behavior: "smooth", block: "start" });
+            updateSimGear();
+        }
+
+        function scrollToTopBar() {
+            window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+            updateSimGear();
+        }
+
+        /* True when the settings bar's controls are within the viewport */
+        function isTopBarVisible() {
+            const controls = document.querySelector(".controls");
+            if (!controls) return false;
+            const rect = controls.getBoundingClientRect();
+            if (rect.bottom <= 0 || rect.top >= window.innerHeight) return false;
+
+            /* Confirm at least one control button is actually on screen */
+            const buttons = controls.querySelectorAll ? controls.querySelectorAll("button") : [];
+            if (!buttons.length) return true;
+            for (let i = 0; i < buttons.length; i++) {
+                const b = buttons[i].getBoundingClientRect();
+                if (b.bottom > 0 && b.top < window.innerHeight) return true;
+            }
+            return false;
+        }
+
+        /* Sticky reference: the sim title heading inside the card */
+        function getSimTitle() {
+            return document.querySelector("#simContainer .sim-title");
+        }
+
+        /* True once the sim title has scrolled up past the viewport top */
+        function isScrolledPastSimTitle() {
+            const title = getSimTitle();
+            if (!title || !title.getBoundingClientRect) return false;
+            return title.getBoundingClientRect().top <= 0;
+        }
+
+        /* Down arrow replaces the gear while the bar's control buttons are on screen */
+        function isGearShowingDown() {
+            return isTopBarVisible();
+        }
+
+        function toggleSimGearScroll() {
+            /* Match the icon the user can see: a down arrow returns to the sim card */
+            if (isGearShowingDown()) scrollToSimCard();
+            else scrollToTopBar();
+        }
+
+        /* Gear docked in the card corner; down arrow while scrolled up with the bar in view */
+        function updateSimGear() {
+            const gear = dom.simGearBtn;
+            if (!gear) return;
+            const onSimScreen = state.currentScreen === "sim";
+            gear.classList.toggle("is-hidden", !onSimScreen);
+            if (!onSimScreen) return;
+
+            const showDown = isGearShowingDown();
+            gear.classList.toggle("is-stuck", isScrolledPastSimTitle());
+            gear.classList.toggle("is-top", showDown);
+
+            /* Keep the accessible name in step with the current action */
+            const label = showDown ? "Scroll back to the simulation" : "Scroll to settings bar";
+            gear.setAttribute("aria-label", label);
+            gear.setAttribute("title", label);
         }
 
         function scrollToPlayAgain() {
