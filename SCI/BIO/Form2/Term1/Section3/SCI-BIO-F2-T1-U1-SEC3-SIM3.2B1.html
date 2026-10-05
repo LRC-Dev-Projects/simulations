@@ -353,6 +353,15 @@
         .lung-inhale { animation: inhaleLung 1.2s ease-in-out forwards; }
         .lung-exhale { animation: exhaleLung 1.2s ease-in-out forwards; }
 
+        /* Lung fill state — air tint plus caption reflect full vs empty */
+        #leftLungAir, #rightLungAir {
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+        }
+        .lungs-full #leftLungAir, .lungs-full #rightLungAir { opacity: 0.45; }
+        #lungStatus { fill: var(--muted); transition: fill 0.35s ease; }
+        .lungs-full #lungStatus { fill: var(--cue-inhale); }
+
         /* Assessment modal extras */
         .assessment-options { display: grid; gap: 10px; margin-top: 14px; }
         .assessment-opt {
@@ -757,16 +766,19 @@
                             <text x="350" y="24" fill="var(--text)" font-size="13" text-anchor="middle" font-weight="700">Mouthpiece</text>
 
                             <!-- Lung model -->
-                            <g id="lungModel" transform="translate(350, 310)">
+                            <g id="lungModel" class="lungs-empty" transform="translate(350, 310)">
                                 <!-- Trachea -->
                                 <rect x="-6" y="-60" width="12" height="30" rx="4" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
                                 <!-- Left lung -->
                                 <ellipse id="leftLung" cx="-38" cy="0" rx="36" ry="46" fill="color-mix(in srgb, var(--accent) 12%, var(--surface))" stroke="var(--accent)" stroke-width="2"/>
                                 <!-- Right lung -->
                                 <ellipse id="rightLung" cx="38" cy="0" rx="36" ry="46" fill="color-mix(in srgb, var(--accent) 12%, var(--surface))" stroke="var(--accent)" stroke-width="2"/>
+                                <!-- Air held in the lungs: fills in when the lungs are full -->
+                                <ellipse id="leftLungAir" cx="-38" cy="0" rx="31" ry="41" fill="var(--accent)" opacity="0"/>
+                                <ellipse id="rightLungAir" cx="38" cy="0" rx="31" ry="41" fill="var(--accent)" opacity="0"/>
                                 <!-- Diaphragm line -->
                                 <path d="M -74 52 Q 0 70, 74 52" fill="none" stroke="var(--accent-2)" stroke-width="2" stroke-dasharray="5 3"/>
-                                <text x="0" y="82" fill="var(--muted)" font-size="12" text-anchor="middle">Lungs</text>
+                                <text id="lungStatus" x="0" y="82" fill="var(--muted)" font-size="12" text-anchor="middle" font-weight="700">Lungs: empty</text>
                             </g>
 
                             <!-- Connection: mouthpiece down to lungs -->
@@ -836,8 +848,9 @@
             window.addEventListener("scroll", updateSimGear, { passive: true });
             window.addEventListener("resize", updateSimGear, { passive: true });
 
-            /* Set the opening prompt for the breathing cycle */
+            /* Set the opening prompt and lung state for the breathing cycle */
             updateBreathHint();
+            updateLungFill();
         }
 
         function updateScrollPrompt() {
@@ -860,6 +873,17 @@
             if (inhaleBtn) inhaleBtn.disabled = disabled;
             if (exhaleBtn) exhaleBtn.disabled = disabled;
             updateBreathHint();
+        }
+
+        /* --- Reflect the lung fill state on the apparatus itself --- */
+        function updateLungFill() {
+            const model = document.getElementById("lungModel");
+            if (model) {
+                model.classList.toggle("lungs-full", lungsFilled);
+                model.classList.toggle("lungs-empty", !lungsFilled);
+            }
+            const status = document.getElementById("lungStatus");
+            if (status) status.textContent = lungsFilled ? "Lungs: full of air" : "Lungs: empty";
         }
 
         /* --- Prompt for the next step of the breathing cycle --- */
@@ -929,6 +953,7 @@
             isAnimating = true;
             lungsFilled = true;
             setButtonsDisabled(true);
+            updateLungFill();
             inhaleCount++;
             document.getElementById("inhaleCountDisplay").textContent = inhaleCount;
             playSound("click");
@@ -972,6 +997,7 @@
             isAnimating = true;
             lungsFilled = false;
             setButtonsDisabled(true);
+            updateLungFill();
             exhaleCount++;
             document.getElementById("exhaleCountDisplay").textContent = exhaleCount;
             playSound("click");
