@@ -212,6 +212,22 @@
         .breath-count { text-align: center; color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
         .breath-count strong { color: var(--text-soft); }
 
+        .breath-hint {
+            text-align: center;
+            color: var(--warning);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            min-height: 1.2em;
+        }
+
+        @keyframes hintNudge {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .hint-nudge { animation: hintNudge 0.35s ease; }
+
         .event-log {
             padding: 14px 16px;
             border-radius: var(--radius-md);
@@ -579,12 +595,15 @@
         let exhaleCount = 0;
         let isAnimating = false;
         let assessmentAnswered = false;
+        /* The lungs must be filled before they can be emptied: an exhale needs a preceding inhale */
+        let lungsFilled = false;
 
         function devInit() {
             inhaleCount = 0;
             exhaleCount = 0;
             isAnimating = false;
             assessmentAnswered = false;
+            lungsFilled = false;
             buildApparatus();
         }
 
@@ -593,6 +612,7 @@
             exhaleCount = 0;
             isAnimating = false;
             assessmentAnswered = false;
+            lungsFilled = false;
             dom.simContainer.innerHTML = "";
         }
 
@@ -720,6 +740,8 @@
                         &#11015;&#65039; Scroll down to answer the assessment question!
                     </div>
 
+                    <div class="breath-hint" id="breathHint" role="status" aria-live="polite">Start by clicking Inhale to fill your lungs.</div>
+
                     <div class="breath-controls">
                         <button class="breath-btn inhale-btn" id="inhaleBtn" type="button" aria-label="Inhale — draw room air through Flask A">
                             &#11014;&#65039; Inhale
@@ -758,6 +780,9 @@
             /* Show the scroll prompt only when the Check My Understanding
                button is below the viewport (user is scrolled above it). */
             window.addEventListener("scroll", updateScrollPrompt, { passive: true });
+
+            /* Set the opening prompt for the breathing cycle */
+            updateBreathHint();
         }
 
         function updateScrollPrompt() {
@@ -779,6 +804,41 @@
             const exhaleBtn = document.getElementById("exhaleBtn");
             if (inhaleBtn) inhaleBtn.disabled = disabled;
             if (exhaleBtn) exhaleBtn.disabled = disabled;
+            updateBreathHint();
+        }
+
+        /* --- Prompt for the next step of the breathing cycle --- */
+        function updateBreathHint() {
+            const hint = document.getElementById("breathHint");
+            if (!hint) return;
+            if (lungsFilled) {
+                hint.textContent = "Lungs are full. Now click Exhale to push that air through Flask B.";
+            } else if (inhaleCount > 0) {
+                hint.textContent = "Repeat the cycle: Inhale, then Exhale, so both flasks are tested fairly.";
+            } else {
+                hint.textContent = "Start by clicking Inhale to fill your lungs.";
+            }
+        }
+
+        /* --- Draw attention to the hint when an out-of-order exhale is blocked --- */
+        function flashBreathHint() {
+            const hint = document.getElementById("breathHint");
+            if (!hint) return;
+            hint.classList.remove("hint-nudge");
+            void hint.offsetWidth;
+            hint.classList.add("hint-nudge");
+            setTimeout(() => hint.classList.remove("hint-nudge"), 700);
+            /* Bring the hint into view if the user is scrolled away from it */
+            scrollHintIntoView(hint);
+        }
+
+        /* Scroll the hint into view only when it is off-screen */
+        function scrollHintIntoView(hint) {
+            if (!hint || !hint.scrollIntoView) return;
+            const rect = hint.getBoundingClientRect();
+            const margin = 60;
+            const offscreen = rect.bottom < margin || rect.top > window.innerHeight - margin;
+            if (offscreen) hint.scrollIntoView({ behavior: "smooth", block: "center" });
         }
 
         /* --- Flash the flow-direction cue (arrowhead, shaft and label together) --- */
@@ -812,6 +872,7 @@
         function doInhale() {
             if (isAnimating) return;
             isAnimating = true;
+            lungsFilled = true;
             setButtonsDisabled(true);
             inhaleCount++;
             document.getElementById("inhaleCountDisplay").textContent = inhaleCount;
@@ -840,7 +901,21 @@
         /* --- Exhale action --- */
         function doExhale() {
             if (isAnimating) return;
+
+            /* Guard: the lungs must be filled first, so Flask B cannot be bubbled repeatedly on its own */
+            if (!lungsFilled) {
+                playSound("wrong");
+                announce("You need to inhale first. Click Inhale to fill your lungs before exhaling.");
+                addLog("blocked", "Cannot exhale yet: lungs are empty. Inhale first to fill them.");
+                updateBreathHint();
+                flashBreathHint();
+                const inhaleBtn = document.getElementById("inhaleBtn");
+                if (inhaleBtn && inhaleBtn.focus) inhaleBtn.focus({ preventScroll: true });
+                return;
+            }
+
             isAnimating = true;
+            lungsFilled = false;
             setButtonsDisabled(true);
             exhaleCount++;
             document.getElementById("exhaleCountDisplay").textContent = exhaleCount;
@@ -943,7 +1018,7 @@
             if (!log) return;
             const entry = document.createElement("div");
             entry.className = "log-entry " + type;
-            const label = type === "inhale" ? "Inhale" : "Exhale";
+            const label = type === "inhale" ? "Inhale" : type === "blocked" ? "Blocked" : "Exhale";
             entry.innerHTML = '<span class="log-label">' + escapeHtml(label) + ':</span> ' + escapeHtml(text);
             log.appendChild(entry);
             log.scrollTop = log.scrollHeight;
