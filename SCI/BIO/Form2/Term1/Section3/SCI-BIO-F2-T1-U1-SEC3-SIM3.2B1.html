@@ -24,6 +24,9 @@
             --success: #34d399;
             --warning: #fbbf24;
             --danger: #fb7185;
+            /* Flash colours: light pastels so they read on the dark surface */
+            --cue-inhale: #6ee7b7;
+            --cue-exhale: #fcd34d;
             --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
             --radius-xl: 24px;
             --radius-lg: 18px;
@@ -46,6 +49,9 @@
             --success: #059669;
             --warning: #d97706;
             --danger: #e11d48;
+            /* Flash colours: deeper tones so they read on the light surface */
+            --cue-inhale: #059669;
+            --cue-exhale: #b45309;
             --shadow: 0 18px 40px rgba(46, 64, 112, 0.14);
             --focus: 0 0 0 3px rgba(14, 165, 233, 0.22);
         }
@@ -323,13 +329,18 @@
             paint-order: stroke fill;
             stroke-linejoin: round;
         }
-        .inhale-cue-on { stroke: #ffd166; fill: #ffd166; }
-        .exhale-cue-on { stroke: #38bdf8; fill: #38bdf8; }
+        /* Shaft and arrowhead switch colour only — geometry is untouched */
+        .inhale-cue-on { stroke: var(--cue-inhale); fill: var(--cue-inhale); }
+        .exhale-cue-on { stroke: var(--cue-exhale); fill: var(--cue-exhale); }
+        /* Flashed labels stay in the high-contrast text colour with a pastel halo behind,
+           so the word remains legible instead of turning into low-contrast pastel text */
         #inhaleLabel.inhale-cue-on, #exhaleLabel.exhale-cue-on {
-            stroke: rgba(10, 14, 30, 0.5);
-            stroke-width: 4;
+            fill: var(--text);
+            stroke-width: 5;
             font-weight: 900;
         }
+        #inhaleLabel.inhale-cue-on { stroke: var(--cue-inhale); }
+        #exhaleLabel.exhale-cue-on { stroke: var(--cue-exhale); }
 
         /* Lungs expand/contract — animate the ellipses, not the group
            (the group has an SVG translate that CSS transform would override) */
@@ -767,8 +778,8 @@
                             <!-- Arrow markers -->
                             <defs>
                                 <marker id="arrowMuted" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="var(--muted)"/></marker>
-                                <marker id="arrowFlashInhale" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="#ffd166"/></marker>
-                                <marker id="arrowFlashExhale" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="#38bdf8"/></marker>
+                                <marker id="arrowFlashInhale" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="var(--cue-inhale)"/></marker>
+                                <marker id="arrowFlashExhale" markerWidth="15" markerHeight="8" refX="12" refY="3.5" orient="auto"><path d="M0,0 L14,3.5 L0,7 Z" fill="var(--cue-exhale)"/></marker>
                             </defs>
                         </svg>
                         </div>
