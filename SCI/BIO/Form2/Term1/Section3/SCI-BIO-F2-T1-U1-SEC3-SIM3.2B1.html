@@ -24,9 +24,15 @@
             --success: #34d399;
             --warning: #fbbf24;
             --danger: #fb7185;
-            /* Flash colours: light pastels so they read on the dark surface */
-            --cue-inhale: #6ee7b7;
-            --cue-exhale: #fcd34d;
+            /* Flash colours: mid-tones that read on the dark surface while staying
+               clearly darker than the near-white label text behind them */
+            --cue-inhale: #34d399;
+            --cue-exhale: #f59e0b;
+            /* Label halos are mid-tones in dark mode so white text keeps its contrast */
+            --cue-inhale-halo: #059669;
+            --cue-exhale-halo: #b45309;
+            /* Breathing hint: distinct from the green/amber cue colours */
+            --hint-color: #fcd34d;
             --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
             --radius-xl: 24px;
             --radius-lg: 18px;
@@ -50,8 +56,13 @@
             --warning: #d97706;
             --danger: #e11d48;
             /* Flash colours: deeper tones so they read on the light surface */
-            --cue-inhale: #059669;
-            --cue-exhale: #b45309;
+            --cue-inhale: #047857;
+            --cue-exhale: #92400e;
+            /* Label halos are lighter in light mode so dark text keeps its contrast */
+            --cue-inhale-halo: #a7f3d0;
+            --cue-exhale-halo: #fde68a;
+            /* Breathing hint: distinct from the green/amber cue colours */
+            --hint-color: #92400e;
             --shadow: 0 18px 40px rgba(46, 64, 112, 0.14);
             --focus: 0 0 0 3px rgba(14, 165, 233, 0.22);
         }
@@ -252,7 +263,7 @@
 
         .breath-hint {
             text-align: center;
-            color: var(--warning);
+            color: var(--hint-color);
             font-size: 0.9rem;
             font-weight: 700;
             margin-bottom: 10px;
@@ -286,8 +297,8 @@
         .log-entry { padding: 3px 0; border-bottom: 1px solid var(--border); }
         .log-entry:last-child { border-bottom: none; }
         .log-entry .log-label { font-weight: 700; color: var(--text); }
-        .log-entry.inhale .log-label { color: var(--success); }
-        .log-entry.exhale .log-label { color: var(--warning); }
+        .log-entry.inhale .log-label { color: var(--cue-inhale); }
+        .log-entry.exhale .log-label { color: var(--cue-exhale); }
 
         .check-btn {
             margin-top: 18px;
@@ -339,8 +350,8 @@
             stroke-width: 5;
             font-weight: 900;
         }
-        #inhaleLabel.inhale-cue-on { stroke: var(--cue-inhale); }
-        #exhaleLabel.exhale-cue-on { stroke: var(--cue-exhale); }
+        #inhaleLabel.inhale-cue-on { stroke: var(--cue-inhale-halo); }
+        #exhaleLabel.exhale-cue-on { stroke: var(--cue-exhale-halo); }
 
         /* Lungs expand/contract — animate the ellipses, not the group
            (the group has an SVG translate that CSS transform would override) */
