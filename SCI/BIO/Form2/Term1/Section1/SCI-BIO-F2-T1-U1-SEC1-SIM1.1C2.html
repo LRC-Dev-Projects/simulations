@@ -477,6 +477,19 @@
             margin-bottom: 20px;
         }
 
+        .round-pill {
+            display: inline-block;
+            margin: 10px 0 0;
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+            border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+            color: var(--text-soft);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
         .sim-title {
             margin: 0 0 8px;
             font-size: clamp(1.4rem, 2.5vw, 1.8rem);
@@ -984,6 +997,7 @@
                     <div class="sim-header" id="simHeader">
                         <h2 class="sim-title">The Energy Balance Scale</h2>
                         <p class="sim-description">The scale starts balanced with food and activity blocks. Click the buttons to add more or remove blocks, watch how the scale responds, and try to maintain a healthy energy balance!</p>
+                        <div class="round-pill" id="roundPill">Round 1 of 3</div>
                     </div>
 
                     <div class="count-row">
@@ -1656,6 +1670,8 @@
         var previouslyImbalanced = false;
         var hasRebalanced = false;
         var firstStatusRender = true;
+        var TOTAL_ROUNDS = 3;
+        var currentRound = 1;
 
         function pickStartingTypes(types, count) {
             var pool = types.slice();
@@ -1681,12 +1697,14 @@
             simState = buildStartingState();
             previouslyImbalanced = false;
             hasRebalanced = false;
+            currentRound = 1;
+            updateRoundLabel();
 
             document.getElementById("addFoodBtn").onclick = addFood;
             document.getElementById("removeFoodBtn").onclick = removeFood;
             document.getElementById("addActivityBtn").onclick = addActivity;
             document.getElementById("removeActivityBtn").onclick = removeActivity;
-            document.getElementById("playAgainBtn").onclick = openResetConfirmModal;
+            document.getElementById("playAgainBtn").onclick = nextRound;
 
             updateSeesaw();
         }
@@ -1695,7 +1713,30 @@
             simState = buildStartingState();
             previouslyImbalanced = false;
             hasRebalanced = false;
+            currentRound = 1;
+            updateRoundLabel();
             updateSeesaw();
+        }
+
+        function updateRoundLabel() {
+            var pill = document.getElementById("roundPill");
+            if (pill) pill.textContent = "Round " + currentRound + " of " + TOTAL_ROUNDS;
+        }
+
+        function nextRound() {
+            if (currentRound < TOTAL_ROUNDS) {
+                currentRound++;
+                simState = buildStartingState();
+                previouslyImbalanced = false;
+                hasRebalanced = false;
+                updateRoundLabel();
+                playSound("click");
+                updateSeesaw();
+            } else {
+                document.body.classList.remove("sim-mode");
+                showScreen("home");
+                closeResetConfirmModal();
+            }
         }
 
         function pickNextType(types, usedTypes, lastType) {
@@ -1842,6 +1883,8 @@
                     playSound("correct");
                     hasRebalanced = true;
                     celebrate = true;
+                    var playBtn = document.getElementById("playAgainBtn");
+                    if (playBtn) playBtn.textContent = currentRound >= TOTAL_ROUNDS ? "Finish" : "Next Round";
                 } else {
                     message = "The scale is perfectly balanced! Energy intake matches energy output.";
                 }
