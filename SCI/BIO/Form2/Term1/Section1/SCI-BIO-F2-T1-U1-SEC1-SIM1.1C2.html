@@ -1473,7 +1473,7 @@
             document.addEventListener("keydown", handleKeyShortcuts);
         }
 
-        function spawnConfetti() {
+        function spawnConfetti(big) {
             var btn = document.getElementById("playAgainBtn");
             if (!btn) return;
             var rect = btn.getBoundingClientRect();
@@ -1481,21 +1481,24 @@
             var originX = rect.left + rect.width / 2;
             var originY = rect.top + rect.height / 2;
             var colors = ["#f59e0b", "#8b5cf6", "#10b981", "#ef4444", "#3b82f6", "#ec4899", "#14b8a6"];
-            for (var i = 0; i < 26; i++) {
+            var count = big ? 60 : 26;
+            var dur = big ? 2.2 : 1.6;
+            for (var i = 0; i < count; i++) {
                 var piece = document.createElement("div");
                 piece.className = "confetti-piece";
                 piece.style.left = originX + "px";
                 piece.style.top = originY + "px";
                 piece.style.backgroundColor = colors[i % colors.length];
-                piece.style.width = (6 + Math.random() * 6) + "px";
-                piece.style.height = (8 + Math.random() * 8) + "px";
-                piece.style.setProperty("--dx", (Math.random() * 260 - 130) + "px");
-                piece.style.setProperty("--dy", -(60 + Math.random() * 180) + "px");
-                piece.style.setProperty("--spin", (Math.random() * 720 - 360) + "deg");
-                piece.style.setProperty("--delay", (Math.random() * 0.15) + "s");
+                piece.style.width = (6 + Math.random() * (big ? 10 : 6)) + "px";
+                piece.style.height = (8 + Math.random() * (big ? 12 : 8)) + "px";
+                piece.style.setProperty("--dx", (Math.random() * (big ? 720 : 260) - (big ? 360 : 130)) + "px");
+                piece.style.setProperty("--dy", -((big ? 120 : 60) + Math.random() * (big ? 300 : 180)) + "px");
+                piece.style.setProperty("--spin", (Math.random() * (big ? 1440 : 720) - (big ? 720 : 360)) + "deg");
+                piece.style.setProperty("--delay", (Math.random() * (big ? 0.3 : 0.15)) + "s");
+                piece.style.animationDuration = dur + "s";
                 document.body.appendChild(piece);
                 (function (el) {
-                    setTimeout(function () { el.remove(); }, 2000);
+                    setTimeout(function () { el.remove(); }, dur * 1000 + 600);
                 })(piece);
             }
         }
@@ -1931,7 +1934,9 @@
             if (playAgainWrap) {
                 playAgainWrap.classList.toggle("hidden", !(hasRebalanced && totalBlocks > 0 && diff === 0));
                 if (celebrate) {
-                    setTimeout(spawnConfetti, 400);
+                    setTimeout(function () {
+                        spawnConfetti(currentRound >= TOTAL_ROUNDS);
+                    }, 400);
                 }
             }
             if (firstStatusRender) {
