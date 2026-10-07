@@ -1672,7 +1672,8 @@
             var count = 2 + Math.floor(Math.random() * 4);
             return {
                 foodBlocks: pickStartingTypes(FOOD_TYPES, count),
-                activityBlocks: pickStartingTypes(ACTIVITY_TYPES, count)
+                activityBlocks: pickStartingTypes(ACTIVITY_TYPES, count),
+                pendingSuggestion: null
             };
         }
 
@@ -1721,10 +1722,26 @@
             return options[options.length - 1];
         }
 
+        function pickSuggestedType(types, usedTypes) {
+            var counts = {};
+            types.forEach(function (t) { counts[t.label] = 0; });
+            usedTypes.forEach(function (t) { counts[t.label] = (counts[t.label] || 0) + 1; });
+            var options = types.filter(function (t) { return counts[t.label] < 2; });
+            if (options.length === 0) return null;
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
         function addFood() {
             if (simState.foodBlocks.length >= MAX_BLOCKS) return;
-            var lastType = simState.foodBlocks.length > 0 ? simState.foodBlocks[simState.foodBlocks.length - 1] : null;
-            simState.foodBlocks.push(pickNextType(FOOD_TYPES, simState.foodBlocks, lastType));
+            var nextType;
+            if (simState.pendingSuggestion && simState.pendingSuggestion.side === "food") {
+                nextType = simState.pendingSuggestion.type;
+            } else {
+                var lastType = simState.foodBlocks.length > 0 ? simState.foodBlocks[simState.foodBlocks.length - 1] : null;
+                nextType = pickNextType(FOOD_TYPES, simState.foodBlocks, lastType);
+            }
+            simState.pendingSuggestion = null;
+            simState.foodBlocks.push(nextType);
             playSound("click");
             updateSeesaw();
         }
@@ -1738,8 +1755,15 @@
 
         function addActivity() {
             if (simState.activityBlocks.length >= MAX_BLOCKS) return;
-            var lastType = simState.activityBlocks.length > 0 ? simState.activityBlocks[simState.activityBlocks.length - 1] : null;
-            simState.activityBlocks.push(pickNextType(ACTIVITY_TYPES, simState.activityBlocks, lastType));
+            var nextType;
+            if (simState.pendingSuggestion && simState.pendingSuggestion.side === "activity") {
+                nextType = simState.pendingSuggestion.type;
+            } else {
+                var lastType = simState.activityBlocks.length > 0 ? simState.activityBlocks[simState.activityBlocks.length - 1] : null;
+                nextType = pickNextType(ACTIVITY_TYPES, simState.activityBlocks, lastType);
+            }
+            simState.pendingSuggestion = null;
+            simState.activityBlocks.push(nextType);
             playSound("click");
             updateSeesaw();
         }
@@ -1808,9 +1832,11 @@
             if (totalBlocks === 0) {
                 statusBox.classList.add("status-balanced");
                 message = "Add food or activity blocks to explore how energy balance works!";
+                simState.pendingSuggestion = null;
                 previouslyImbalanced = false;
             } else if (diff === 0) {
                 statusBox.classList.add("status-balanced");
+                simState.pendingSuggestion = null;
                 if (previouslyImbalanced) {
                     message = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
                     playSound("correct");
@@ -1824,13 +1850,29 @@
                 previouslyImbalanced = true;
                 statusBox.classList.add("status-surplus");
                 messageIsHTML = true;
-                message = "<strong>Health Warning:</strong> Energy surplus! You have " + diff + " more food block" + (diff !== 1 ? "s" : "") + " than activity blocks. The body stores this excess energy.";
+                var surplusCore = "<strong>Health Warning:</strong> Energy surplus! You have " + diff + " more food block" + (diff !== 1 ? "s" : "") + " than activity blocks, so the body stores this excess energy.";
+                var actSuggestion = activityCount < MAX_BLOCKS ? pickSuggestedType(ACTIVITY_TYPES, simState.activityBlocks) : null;
+                if (actSuggestion) {
+                    simState.pendingSuggestion = { side: "activity", type: actSuggestion };
+                    message = surplusCore + " Try adding more activity, like " + actSuggestion.emoji + " <strong>" + actSuggestion.label + "</strong>, or remove a food block to restore balance.";
+                } else {
+                    simState.pendingSuggestion = null;
+                    message = surplusCore + " Try removing a food block to restore balance.";
+                }
             } else {
                 previouslyImbalanced = true;
                 statusBox.classList.add("status-deficit");
                 var absDiff = Math.abs(diff);
                 messageIsHTML = true;
-                message = "<strong>Exhaustion Warning:</strong> Energy deficit! You have " + absDiff + " more activity block" + (absDiff !== 1 ? "s" : "") + " than food blocks. The body needs more fuel.";
+                var deficitCore = "<strong>Exhaustion Warning:</strong> Energy deficit! You have " + absDiff + " more activity block" + (absDiff !== 1 ? "s" : "") + " than food blocks, so the body needs more fuel.";
+                var foodSuggestion = foodCount < MAX_BLOCKS ? pickSuggestedType(FOOD_TYPES, simState.foodBlocks) : null;
+                if (foodSuggestion) {
+                    simState.pendingSuggestion = { side: "food", type: foodSuggestion };
+                    message = deficitCore + " Try adding more food, like " + foodSuggestion.emoji + " <strong>" + foodSuggestion.label + "</strong>, or remove an activity block to restore balance.";
+                } else {
+                    simState.pendingSuggestion = null;
+                    message = deficitCore + " Try removing an activity block to restore balance.";
+                }
             }
 
             var statusText = document.getElementById("statusText");
@@ -1872,6 +1914,13 @@
             } else {
                 var absDiff = Math.abs(diff);
                 text = "The scale is tipped to the right, the Energy Output side. There are " + foodCount + " food blocks and " + activityCount + " activity blocks. This shows an energy deficit of " + absDiff + " block" + (absDiff !== 1 ? "s" : "") + ".";
+            }
+
+            if (simState.pendingSuggestion) {
+                var tipType = simState.pendingSuggestion.type;
+                text += simState.pendingSuggestion.side === "activity"
+                    ? " A good next step is adding more activity, like " + tipType.label + "."
+                    : " A good next step is adding more food, like " + tipType.label + ".";
             }
 
             region.textContent = text;
