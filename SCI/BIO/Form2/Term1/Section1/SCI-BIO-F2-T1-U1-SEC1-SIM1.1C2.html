@@ -1883,6 +1883,9 @@
                 simState.pendingSuggestion = null;
                 if (previouslyImbalanced) {
                     message = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
+                    if (currentRound >= TOTAL_ROUNDS) {
+                        message += " Remember: your body uses energy not only for daily activity but also for growth and repair, so a balanced intake supports both active days and healthy development.";
+                    }
                     playSound("correct");
                     hasRebalanced = true;
                     celebrate = true;
