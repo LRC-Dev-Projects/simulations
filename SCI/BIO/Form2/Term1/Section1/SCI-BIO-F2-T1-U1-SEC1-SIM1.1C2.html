@@ -943,6 +943,20 @@
             .control-group { flex-direction: column; gap: 6px; }
         }
 
+    @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .confetti-piece {
+                display: none;
+            }
+        }
+
     </style>
 </head>
 
@@ -1474,6 +1488,7 @@
         }
 
         function spawnConfetti(big) {
+            if (prefersReducedMotion()) return;
             var btn = document.getElementById("playAgainBtn");
             if (!btn) return;
             var rect = btn.getBoundingClientRect();
@@ -1515,6 +1530,10 @@
             return bar.getBoundingClientRect().bottom + window.scrollY;
         }
 
+        function prefersReducedMotion() {
+            return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        }
+
         function updateSettingsButton() {
             var btn = dom.openSettingsBtn;
             if (!btn) return;
@@ -1533,10 +1552,11 @@
         }
 
         function handleSettingsClick() {
+            var behavior = prefersReducedMotion() ? "auto" : "smooth";
             if (dom.openSettingsBtn.classList.contains("settings-gear-down")) {
-                window.scrollTo({ top: getSimHeaderTop(), behavior: "smooth" });
+                window.scrollTo({ top: getSimHeaderTop(), behavior: behavior });
             } else {
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                window.scrollTo({ top: 0, behavior: behavior });
             }
         }
 
@@ -1944,7 +1964,7 @@
                 firstStatusRender = false;
             } else {
                 var scrollTarget = playAgainWrap && !playAgainWrap.classList.contains("hidden") ? playAgainWrap : statusBox;
-                scrollTarget.scrollIntoView({ behavior: "smooth", block: "end" });
+                scrollTarget.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "end" });
             }
         }
 
