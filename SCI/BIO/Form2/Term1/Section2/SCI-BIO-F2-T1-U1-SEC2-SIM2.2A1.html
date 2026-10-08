@@ -1637,8 +1637,135 @@
             }
         }
 
+        /* Graph rendering.
+
+           The plot is a sliding 8-second window, so screen x(t) =
+           (padL + plotW) + (t - wEnd) * pxPerSec. Every child of the scene can
+           therefore be laid out once in fixed local coordinates X(t) =
+           (padL + plotW) + t * pxPerSec, and each frame only slides the whole
+           scene by -wEnd * pxPerSec with a single transform. The trace is split
+           into one <path> per second so the renderer can cull segments outside
+           the window, and segments are built lazily as the run progresses.
+
+           The previous implementation reassigned svg.innerHTML on every
+           animation frame -- an HTML parse plus node teardown -- and
+           re-formatted roughly 2000 point strings per frame. This does one
+           setAttribute per frame instead. */
+        const GRAPH = {
+            padL: 6,
+            plotW: 588,               // W(600) - padL(6) - padR(6)
+            padT: 10,
+            windowSecs: 8,
+            dt: 0.004,
+            pxPerSec: 73.5,           // plotW / windowSecs
+            yBase: 79.12,             // padT + (H - padB - padT) * 0.72
+        };
+        GRAPH.x0 = GRAPH.padL + GRAPH.plotW;   // 594: right edge of the window
+
+        let graphScene = null;
+
+        function svgEl(tag, attrs) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+            for (const key in attrs) el.setAttribute(key, attrs[key]);
+            return el;
+        }
+
+        /* Simulated ECG amplitude for a point t seconds into the run. beatInt is
+           the beat period in seconds and the waveform repeats every beat. */
+        function ekgAmp(t, beatInt) {
+            const k = Math.floor(t / beatInt);
+            const loc = t - k * beatInt;
+            if (loc <= 0 || loc > 0.3) return 0;
+            let a = 0;
+            if (loc >= 0.045 && loc < 0.085) a += Math.sin((loc - 0.045) / 0.04 * Math.PI) * 9;
+            if (loc >= 0.1 && loc < 0.115) a += Math.sin((loc - 0.1) / 0.015 * Math.PI) * -10;
+            if (loc >= 0.115 && loc < 0.132) a += Math.sin((loc - 0.115) / 0.017 * Math.PI) * 58;
+            if (loc >= 0.132 && loc < 0.15) a += Math.sin((loc - 0.132) / 0.018 * Math.PI) * 58;
+            if (loc >= 0.15 && loc < 0.168) a += Math.sin((loc - 0.15) / 0.018 * Math.PI) * -24;
+            if (loc >= 0.2 && loc < 0.285) a += Math.sin((loc - 0.2) / 0.085 * Math.PI) * 16;
+            return a;
+        }
+
+        /* (Re)build the static parts of the graph inside the current <svg>. The
+           layer is clipped to the plot rectangle so nothing bleeds into the
+           left/right padding of the viewBox, matching the original drawing. */
+        function buildGraphScene() {
+            const svg = document.getElementById("pulseGraph");
+            graphScene = null;
+            if (!svg) return null;
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+            const maxSecs = Math.max(simState.duration, 1);
+            const defs = svgEl("defs", {});
+            const clip = svgEl("clipPath", { id: "graphPlotClip" });
+            clip.appendChild(svgEl("rect", { x: GRAPH.padL, y: 0, width: GRAPH.plotW, height: 120 }));
+            defs.appendChild(clip);
+            svg.appendChild(defs);
+
+            const clipped = svgEl("g", { "clip-path": "url(#graphPlotClip)" });
+            const layer = svgEl("g", { class: "graph-scene" });
+            const grid = svgEl("g", { class: "grid-layer" });
+            const taps = svgEl("g", { class: "tap-layer" });
+            layer.appendChild(grid);
+            layer.appendChild(taps);
+            clipped.appendChild(layer);
+            svg.appendChild(clipped);
+
+            for (let s = 0; s <= maxSecs; s++) {
+                const gx = (GRAPH.x0 + s * GRAPH.pxPerSec).toFixed(1);
+                grid.appendChild(svgEl("line", {
+                    class: "grid-line",
+                    x1: gx, y1: GRAPH.padT,
+                    x2: gx, y2: GRAPH.yBase
+                }));
+            }
+
+            /* The "now" marker always sits at the right edge of the window
+               (x(wEnd) === padL + plotW) and the axis never moves, so both live
+               outside the translated layer. */
+            svg.appendChild(svgEl("line", {
+                class: "now-line",
+                x1: GRAPH.x0, y1: GRAPH.padT, x2: GRAPH.x0, y2: GRAPH.yBase
+            }));
+            svg.appendChild(svgEl("line", {
+                class: "axis-line",
+                x1: GRAPH.padL, y1: GRAPH.yBase, x2: GRAPH.x0, y2: GRAPH.yBase
+            }));
+
+            graphScene = {
+                svg: svg,
+                layer: layer,
+                taps: taps,
+                beatInt: 60 / simState.bpm,
+                pulseStart: simState.pulseStartTime,
+                maxSecs: maxSecs,
+                segmentCount: 0,
+                drawnTaps: 0
+            };
+            return graphScene;
+        }
+
+        /* Append one second of waveform to the scene as a single <path>. */
+        function appendGraphSegment(s) {
+            const pts = [];
+            const steps = Math.round(1 / GRAPH.dt);
+            for (let k = 0; k <= steps; k++) {
+                const t = s + k * GRAPH.dt;
+                const px = GRAPH.x0 + t * GRAPH.pxPerSec;
+                const py = GRAPH.yBase - ekgAmp(t, graphScene.beatInt);
+                pts.push(px.toFixed(1) + "," + py.toFixed(1));
+            }
+            graphScene.layer.appendChild(svgEl("path", {
+                class: "ekg-line",
+                fill: "none",
+                d: "M" + pts.join(" L")
+            }));
+            graphScene.segmentCount = s + 1;
+        }
+
         function startGraphLoop() {
             stopGraphLoop();
+            buildGraphScene();
             const loop = () => {
                 renderGraph();
                 simState.graphFrame = requestAnimationFrame(loop);
@@ -1656,63 +1783,38 @@
         function renderGraph() {
             const svg = document.getElementById("pulseGraph");
             if (!svg) return;
-            const W = 600, H = 120;
-            const padL = 6, padR = 6, padB = 14, padT = 10;
-            const plotW = W - padL - padR;
-            const plotH = H - padT - padB;
-            const windowSecs = 8;
-            const beatInt = 60000 / simState.bpm / 1000;
-            const yBase = padT + plotH * 0.72;
+            if (!graphScene || graphScene.svg !== svg ||
+                graphScene.beatInt !== 60 / simState.bpm ||
+                graphScene.pulseStart !== simState.pulseStartTime) {
+                if (!buildGraphScene()) return;
+            }
+            const scene = graphScene;
 
             const nowSecs = simState.phase === "running"
                 ? (performance.now() - simState.pulseStartTime) / 1000
                 : 0;
             const wEnd = Math.max(nowSecs, 0);
-            const wStart = wEnd - windowSecs;
-            const x = (t) => padL + ((t - wStart) / windowSecs) * plotW;
 
-            function ekgAmp(t) {
-                const k = Math.floor(t / beatInt);
-                const loc = t - k * beatInt;
-                if (loc <= 0 || loc > 0.3) return 0;
-                let a = 0;
-                if (loc >= 0.045 && loc < 0.085) a += Math.sin((loc - 0.045) / 0.04 * Math.PI) * 9;
-                if (loc >= 0.1 && loc < 0.115) a += Math.sin((loc - 0.1) / 0.015 * Math.PI) * -10;
-                if (loc >= 0.115 && loc < 0.132) a += Math.sin((loc - 0.115) / 0.017 * Math.PI) * 58;
-                if (loc >= 0.132 && loc < 0.15) a += Math.sin((loc - 0.132) / 0.018 * Math.PI) * 58;
-                if (loc >= 0.15 && loc < 0.168) a += Math.sin((loc - 0.15) / 0.018 * Math.PI) * -24;
-                if (loc >= 0.2 && loc < 0.285) a += Math.sin((loc - 0.2) / 0.085 * Math.PI) * 16;
-                return a;
+            /* Extend the trace lazily: one second of waveform at a time. */
+            const need = Math.max(0, Math.min(Math.floor(wEnd), scene.maxSecs));
+            for (let s = scene.segmentCount; s <= need; s++) appendGraphSegment(s);
+
+            /* Slide the scene so the window [wEnd - 8, wEnd] is in view. */
+            scene.layer.setAttribute("transform", "translate(" + (-wEnd * GRAPH.pxPerSec).toFixed(2) + ",0)");
+
+            /* Tap marks are appended once as they are recorded. */
+            while (scene.drawnTaps < simState.tapTimes.length) {
+                const ts = (simState.tapTimes[scene.drawnTaps] - simState.pulseStartTime) / 1000;
+                scene.drawnTaps++;
+                if (ts < 0) continue;
+                scene.taps.appendChild(svgEl("rect", {
+                    class: "tap-mark",
+                    x: (GRAPH.x0 + ts * GRAPH.pxPerSec - 1).toFixed(1),
+                    y: (GRAPH.yBase - 72).toFixed(1),
+                    width: "2",
+                    height: "72"
+                }));
             }
-
-            let d = [];
-            const dt = 0.004;
-            for (let t = Math.max(wStart, 0); t <= wEnd; t += dt) {
-                const amp = ekgAmp(t);
-                d.push(x(t).toFixed(1) + "," + (yBase - amp).toFixed(1));
-            }
-
-            let marks = "";
-            for (let s = Math.max(Math.ceil(wStart), 0); s <= wEnd; s++) {
-                marks += `<line class="grid-line" x1="${x(s).toFixed(1)}" y1="${padT}" x2="${x(s).toFixed(1)}" y2="${yBase}"/>`;
-            }
-
-            let taps = "";
-            simState.tapTimes.forEach((t) => {
-                const ts = (t - simState.pulseStartTime) / 1000;
-                if (ts >= wStart && ts <= wEnd) {
-                    taps += `<rect class="tap-mark" x="${(x(ts) - 1).toFixed(1)}" y="${(yBase - 72).toFixed(1)}" width="2" height="72"/>`;
-                }
-            });
-
-            const nowX = x(wEnd);
-            svg.innerHTML = `
-                <g>${marks}</g>
-                ${taps}
-                <path class="ekg-line" d="M${d.join(" L")}" fill="none"/>
-                <line class="now-line" x1="${nowX.toFixed(1)}" y1="${padT}" x2="${nowX.toFixed(1)}" y2="${yBase}"/>
-                <line class="axis-line" x1="${padL}" y1="${yBase}" x2="${padL + plotW}" y2="${yBase}"/>
-            `;
         }
 
         function endTimer() {
