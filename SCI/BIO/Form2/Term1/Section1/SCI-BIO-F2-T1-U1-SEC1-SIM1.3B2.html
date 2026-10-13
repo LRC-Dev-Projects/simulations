@@ -553,6 +553,18 @@
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
         }
 
+        .slider-status {
+            margin-top: 8px;
+            min-height: 1.1em;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .slider-status.optimal {
+            color: var(--success);
+        }
+
         .slider-labels {
             display: flex;
             justify-content: space-between;
@@ -746,6 +758,7 @@
                                         <span>Flat</span>
                                         <span>Highly Folded (Villi)</span>
                                     </div>
+                                    <div class="slider-status" id="shapeStatus"></div>
                                 </div>
                                 <div class="slider-group">
                                     <label for="thicknessSlider">Wall Thickness</label>
@@ -755,6 +768,7 @@
                                         <span>Thick</span>
                                         <span>One Cell Thick</span>
                                     </div>
+                                    <div class="slider-status" id="thicknessStatus"></div>
                                 </div>
                                 <div class="rate-display">
                                     <h3>Rate of Absorption</h3>
@@ -1137,7 +1151,7 @@
         let simCssW = 0, simCssH = 0;
         let graphCssW = 0, graphCssH = 0;
         let shapeSlider, thicknessSlider;
-        let rateValueEl, feedbackPanelEl, feedbackMsgEl, playAgainFeedbackBtn;
+        let rateValueEl, feedbackPanelEl, feedbackMsgEl, playAgainFeedbackBtn, shapeStatusEl, thicknessStatusEl;
         let particles = [];
         let absorbedCount = 0;
         let rateHistory = [];
@@ -1452,6 +1466,33 @@
         }
 
         /* --- FEEDBACK --- */
+        function updateSliderStatuses(foldValue, thicknessValue) {
+            if (shapeStatusEl) {
+                if (foldValue > 65) {
+                    shapeStatusEl.textContent = 'Optimal: Highly Folded (Villi) increases surface area';
+                    shapeStatusEl.classList.add('optimal');
+                } else if (foldValue < 25) {
+                    shapeStatusEl.textContent = 'Flat — small surface area, fewer nutrients absorbed';
+                    shapeStatusEl.classList.remove('optimal');
+                } else {
+                    shapeStatusEl.textContent = 'Partially folded — add more folds (villi) for more surface area';
+                    shapeStatusEl.classList.remove('optimal');
+                }
+            }
+            if (thicknessStatusEl) {
+                if (thicknessValue > 65) {
+                    thicknessStatusEl.textContent = 'Optimal: One Cell Thick — nutrients travel the shortest distance';
+                    thicknessStatusEl.classList.add('optimal');
+                } else if (thicknessValue < 25) {
+                    thicknessStatusEl.textContent = 'Thick — nutrients have a long journey into the blood';
+                    thicknessStatusEl.classList.remove('optimal');
+                } else {
+                    thicknessStatusEl.textContent = 'Partially thin — make the barrier one cell thick';
+                    thicknessStatusEl.classList.remove('optimal');
+                }
+            }
+        }
+
         function updateFeedback(foldValue, thicknessValue, rate) {
             const isFolded = foldValue > 65;
             const isThin = thicknessValue > 65;
@@ -1533,6 +1574,7 @@
 
             // Update feedback
             updateFeedback(foldValue, thicknessValue, rate);
+            updateSliderStatuses(foldValue, thicknessValue);
 
             // Graph sampling (every ~0.5 second)
             graphTimer += dt;
@@ -1558,6 +1600,8 @@
             feedbackPanelEl = document.getElementById('feedbackPanel');
             feedbackMsgEl = document.getElementById('feedbackMsg');
             playAgainFeedbackBtn = document.getElementById('playAgainFeedbackBtn');
+            shapeStatusEl = document.getElementById('shapeStatus');
+            thicknessStatusEl = document.getElementById('thicknessStatus');
             if (playAgainFeedbackBtn) {
                 playAgainFeedbackBtn.addEventListener('click', openResetConfirmModal);
             }
@@ -1620,6 +1664,8 @@
             if (feedbackMsgEl) feedbackMsgEl.innerHTML = 'Adjust the sliders to explore how wall structure affects nutrient absorption.';
             if (feedbackPanelEl) feedbackPanelEl.classList.remove('correct');
             if (playAgainFeedbackBtn) playAgainFeedbackBtn.classList.add('hidden');
+            if (shapeStatusEl) { shapeStatusEl.textContent = ''; shapeStatusEl.classList.remove('optimal'); }
+            if (thicknessStatusEl) { thicknessStatusEl.textContent = ''; thicknessStatusEl.classList.remove('optimal'); }
 
             if (simCtx && simCssW && simCssH) {
                 drawSim(simCssW, simCssH, 0, 0, 0);
