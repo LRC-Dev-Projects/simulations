@@ -1387,34 +1387,50 @@
             const h = graphCssH || c.height;
             ctx.clearRect(0, 0, w, h);
 
+            const padL = 34;
+            const plotW = w - padL;
+
             // Background
             ctx.fillStyle = 'rgba(15,18,34,0.8)';
             ctx.fillRect(0, 0, w, h);
 
-            // Grid lines
-            ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-            ctx.lineWidth = 1;
-            for (let i = 0; i < 5; i++) {
-                const gy = (h / 5) * i;
+            // Y-axis labels and grid lines (Rate shown as a percentage)
+            const tickMax = 100;
+            const tickCount = 5;
+            ctx.font = '10px Arial, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i <= tickCount; i++) {
+                const frac = i / tickCount;
+                const y = h - frac * (h - 10) - 5;
+                ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+                ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(0, gy);
-                ctx.lineTo(w, gy);
+                ctx.moveTo(padL, y);
+                ctx.lineTo(w, y);
                 ctx.stroke();
+                ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                ctx.fillText(Math.round(frac * tickMax) + '%', padL - 5, y);
             }
+
+            // Y-axis caption
+            ctx.textAlign = 'left';
+            ctx.fillStyle = 'rgba(255,255,255,0.35)';
+            ctx.fillText('Rate (%)', padL + 4, h - 4);
 
             if (rateHistory.length < 2) return;
 
-            const maxRate = Math.max(25, ...rateHistory);
+            const plotMax = 100;
             const maxAbsorbed = Math.max(1, ...absorbedHistory);
-            const stepX = w / (MAX_GRAPH_POINTS - 1);
+            const stepX = plotW / (MAX_GRAPH_POINTS - 1);
 
-            // Rate line
+            // Rate line (plotted on a fixed 0-100% scale so axis labels are truthful)
             ctx.beginPath();
             ctx.strokeStyle = '#7dd3fc';
             ctx.lineWidth = 2.5;
             for (let i = 0; i < rateHistory.length; i++) {
-                const x = (MAX_GRAPH_POINTS - rateHistory.length + i) * stepX;
-                const y = h - (rateHistory[i] / maxRate) * (h - 10) - 5;
+                const x = padL + (MAX_GRAPH_POINTS - rateHistory.length + i) * stepX;
+                const y = h - (rateHistory[i] / plotMax) * (h - 10) - 5;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
@@ -1426,7 +1442,7 @@
             ctx.strokeStyle = '#34d399';
             ctx.lineWidth = 2;
             for (let i = 0; i < absorbedHistory.length; i++) {
-                const x = (MAX_GRAPH_POINTS - absorbedHistory.length + i) * stepX;
+                const x = padL + (MAX_GRAPH_POINTS - absorbedHistory.length + i) * stepX;
                 const y = h - (absorbedHistory[i] / maxAbsorbed) * (h - 10) - 5;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
