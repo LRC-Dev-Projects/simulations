@@ -972,7 +972,8 @@
                 };
                 backToTopBtn.addEventListener("click", () => {
                     if (backToTopBtn.dataset.mode === "toSim") {
-                        simContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+                        const target = graphLegend || simContainer;
+                        target.scrollIntoView({ behavior: "smooth", block: "end" });
                     } else {
                         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
                     }
@@ -983,9 +984,18 @@
             }
             dom.startBtn.addEventListener("click", () => {
                 showScreen("sim");
-                dom.simContainer.scrollIntoView({ behavior: "smooth", block: "start" });
                 devInit();
                 openInstructionsModal();
+                // Wait for the sim screen layout to settle, then scroll to the
+                // same level as the "Scroll to Sim" button (legend at viewport bottom).
+                requestAnimationFrame(() => {
+                    const graphLegend = dom.simContainer ? dom.simContainer.querySelector(".legend") : null;
+                    const target = graphLegend || dom.simContainer;
+                    if (!target) return;
+                    const rect = target.getBoundingClientRect();
+                    const targetY = window.scrollY + rect.bottom - window.innerHeight;
+                    window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+                });
             });
             dom.openInstructionsBtn.addEventListener("click", openInstructionsModal);
             dom.helpBtn.addEventListener("click", () => {
