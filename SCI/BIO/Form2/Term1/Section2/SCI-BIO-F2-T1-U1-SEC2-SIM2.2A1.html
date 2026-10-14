@@ -523,8 +523,8 @@
             transition: none;
         }
 
-        .pulse-circle.beating {
-            animation: pulseBeat var(--beat-duration, 0.75s) ease-in-out infinite;
+        .pulse-circle.beat-pulse {
+            animation: pulseBeat var(--beat-duration, 0.45s) ease-out;
         }
 
         .pulse-circle.flash-green {
@@ -1466,15 +1466,15 @@
             phase: "config",    // config | running | results
             bpm: 80,
             duration: 60,
-            timerId: null,
-            pulseId: null,
             timeLeft: 60,
             tapCount: 0,
             totalBeats: 0,
             beatTimes: [],
             tapTimes: [],
             pulseStartTime: 0,
-            lastTapTime: 0,
+            nextBeat: 1,        // next beat index to emit (beat k is due at pulseStartTime + k * interval)
+            nextTone: 1,        // next beat index whose tone has been queued
+            audioBase: null,    // AudioContext time corresponding to pulseStartTime
             graphFrame: null,
         };
 
@@ -1535,6 +1535,9 @@
             simState.totalBeats = 0;
             simState.beatTimes = [];
             simState.tapTimes = [];
+            simState.nextBeat = 1;
+            simState.nextTone = 1;
+            simState.audioBase = null;
             simState.phase = "running";
 
             const stage = document.querySelector(".pulse-stage");
@@ -1546,37 +1549,104 @@
             document.getElementById("tapBtn").disabled = false;
 
             const circle = document.getElementById("pulseCircle");
-            const beatDuration = 60 / simState.bpm;
-            circle.style.setProperty("--beat-duration", beatDuration + "s");
-            circle.classList.add("beating");
+            if (circle) {
+                /* Flash duration is capped so it never runs past the next beat
+                   at fast tempos. */
+                const beatDuration = 60 / simState.bpm;
+                circle.style.setProperty("--beat-duration", Math.min(0.45, beatDuration * 0.85) + "s");
+            }
 
             simState.pulseStartTime = performance.now();
-            scheduleBeats();
-            simState.timerId = setInterval(timerTick, 1000);
+            /* Build/resume the audio context inside this click gesture so the
+               beat tones are permitted to play. */
+            if (audioEnabled) ensureAudioCtx();
             startGraphLoop();
 
             const graph = document.getElementById("graphContainer");
             if (graph) graph.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 
-        function scheduleBeats() {
+        /* ---- one clock for the whole run ------------------------------------
+           Beats, the pulse flash, the countdown and the end of the timer are all
+           derived from simState.pulseStartTime -- the same grid that handleTap
+           and computeTimingAccuracy grade against. Previously the beats came
+           from a setInterval and the pulse from a free-running CSS animation,
+           so the cue the student reacted to could sit on a different clock from
+           the beat they were graded on. Tones are queued ahead on the Web Audio
+           clock for the same reason. */
+
+        const BEAT_LOOKAHEAD = 0.1;   // seconds of tones queued ahead of the audio clock
+
+        function tickSim() {
+            const now = performance.now();
+            const elapsed = now - simState.pulseStartTime;
             const interval = 60000 / simState.bpm;
-            simState.pulseId = setInterval(() => {
+
+            /* Emit every beat whose scheduled time has arrived. */
+            while (simState.pulseStartTime + simState.nextBeat * interval <= now) {
+                simState.beatTimes.push(simState.pulseStartTime + simState.nextBeat * interval);
+                simState.nextBeat++;
                 simState.totalBeats++;
-                simState.beatTimes.push(performance.now());
-                playPulseTone();
-            }, interval);
+                flashPulse();
+            }
+
+            scheduleBeatTones(interval);
+
+            const timeLeft = Math.max(0, Math.ceil((simState.duration * 1000 - elapsed) / 1000));
+            if (timeLeft !== simState.timeLeft) {
+                simState.timeLeft = timeLeft;
+                updateTimerDisplay();
+            }
+
+            if (elapsed >= simState.duration * 1000) {
+                endTimer();
+                return false;
+            }
+            return true;
         }
 
-        function playPulseTone() {
+        /* Visual beat: restart the flash so it begins on the beat instead of
+           free-running on the CSS animation clock. */
+        function flashPulse() {
+            const circle = document.getElementById("pulseCircle");
+            if (!circle) return;
+            circle.classList.remove("beat-pulse");
+            void circle.offsetWidth;   // force reflow so the animation restarts
+            circle.classList.add("beat-pulse");
+        }
+
+        /* Queue the tones that fall inside the lookahead window. */
+        function scheduleBeatTones(interval) {
+            if (!audioEnabled) return;
+            const ctx = ensureAudioCtx();
+            if (!ctx || ctx.state !== "running") return;
+
+            if (simState.audioBase === null) {
+                /* First live context: pin the beat clock to the audio clock
+                   (the context may only become live part-way through a run). */
+                simState.audioBase = ctx.currentTime - (performance.now() - simState.pulseStartTime) / 1000;
+            }
+            /* Never queue a beat that has already been counted, e.g. after the
+               tab was hidden and several beats fired at once. */
+            if (simState.nextTone < simState.nextBeat) simState.nextTone = simState.nextBeat;
+
+            const period = interval / 1000;
+            for (let n = 0; n < 4; n++) {
+                if (simState.audioBase + simState.nextTone * period >= ctx.currentTime + BEAT_LOOKAHEAD) break;
+                playPulseTone(simState.audioBase + simState.nextTone * period);
+                simState.nextTone++;
+            }
+        }
+
+        function playPulseTone(when) {
             if (!audioEnabled) return;
             const v = volumeFor("click");
             if (v <= 0) return;
             const ctx = ensureAudioCtx();
             if (!ctx) return;
+            const t0 = Math.max(when, ctx.currentTime);
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
-            const t0 = ctx.currentTime;
             osc.type = "sine";
             osc.frequency.setValueAtTime(880, t0);
             gain.gain.setValueAtTime(0.18 * v, t0);
@@ -1584,14 +1654,6 @@
             osc.connect(gain).connect(ctx.destination);
             osc.start(t0);
             osc.stop(t0 + 0.12);
-        }
-
-        function timerTick() {
-            simState.timeLeft--;
-            updateTimerDisplay();
-            if (simState.timeLeft <= 0) {
-                endTimer();
-            }
         }
 
         function updateTimerDisplay() {
@@ -1659,6 +1721,7 @@
             dt: 0.004,
             pxPerSec: 73.5,           // plotW / windowSecs
             yBase: 79.12,             // padT + (H - padB - padT) * 0.72
+            beatShift: 0.132,         // s: moves the QRS centre onto the beat instant
         };
         GRAPH.x0 = GRAPH.padL + GRAPH.plotW;   // 594: right edge of the window
 
@@ -1752,7 +1815,7 @@
             for (let k = 0; k <= steps; k++) {
                 const t = s + k * GRAPH.dt;
                 const px = GRAPH.x0 + t * GRAPH.pxPerSec;
-                const py = GRAPH.yBase - ekgAmp(t, graphScene.beatInt);
+                const py = GRAPH.yBase - ekgAmp(t + GRAPH.beatShift, graphScene.beatInt);
                 pts.push(px.toFixed(1) + "," + py.toFixed(1));
             }
             graphScene.layer.appendChild(svgEl("path", {
@@ -1767,6 +1830,7 @@
             stopGraphLoop();
             buildGraphScene();
             const loop = () => {
+                if (!tickSim()) return;   // run ended; endTimer() already stopped the loop
                 renderGraph();
                 simState.graphFrame = requestAnimationFrame(loop);
             };
@@ -1818,15 +1882,11 @@
         }
 
         function endTimer() {
-            clearInterval(simState.timerId);
-            clearInterval(simState.pulseId);
-            simState.timerId = null;
-            simState.pulseId = null;
             stopGraphLoop();
             simState.phase = "results";
 
             const circle = document.getElementById("pulseCircle");
-            if (circle) circle.classList.remove("beating");
+            if (circle) circle.classList.remove("beat-pulse");
             const tapBtn = document.getElementById("tapBtn");
             if (tapBtn) tapBtn.disabled = true;
             const sel = document.getElementById("bpmSelect");
@@ -2154,10 +2214,6 @@
         }
 
         function devReset() {
-            clearInterval(simState.timerId);
-            clearInterval(simState.pulseId);
-            simState.timerId = null;
-            simState.pulseId = null;
             stopGraphLoop();
             simState.phase = "config";
             simState.tapCount = 0;
