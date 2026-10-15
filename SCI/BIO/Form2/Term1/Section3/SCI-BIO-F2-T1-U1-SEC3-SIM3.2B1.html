@@ -364,6 +364,20 @@
         .lung-inhale { animation: inhaleLung 1.2s ease-in-out forwards; }
         .lung-exhale { animation: exhaleLung 1.2s ease-in-out forwards; }
 
+        /* Reduce motion: drop looping/pulsing animations and shorten transitions,
+           but keep a brief state change so the cue is still perceivable. */
+        @media (prefers-reduced-motion: reduce) {
+            .pulse-help::after { animation: none; }
+            .scroll-prompt { animation: none; }
+            .hint-nudge { animation: none; }
+            .bubble-anim { animation-duration: 0.01s; }
+            .lung-inhale, .lung-exhale { animation-duration: 0.01s; }
+            #inhaleArrow, #inhaleLabel, #exhaleArrow, #exhaleLabel,
+            #leftLungAir, #rightLungAir, #lungStatus {
+                transition-duration: 0.01s;
+            }
+        }
+
         /* Lung fill state — air tint plus caption reflect full vs empty */
         #leftLungAir, #rightLungAir {
             transition: opacity 0.35s ease;
@@ -635,6 +649,12 @@
             dom.cancelResetBtn.addEventListener("click", closeResetConfirmModal);
             dom.confirmResetBtn.addEventListener("click", () => { devReset(); showScreen("home"); closeResetConfirmModal(); });
             dom.resetConfirmModal.addEventListener("click", (event) => { if (event.target === dom.resetConfirmModal) closeResetConfirmModal(); });
+
+            /* Registered once: buildApparatus() is re-run on every Start, so binding
+               these inside it would stack duplicate listeners on the window. */
+            window.addEventListener("scroll", updateScrollPrompt, { passive: true });
+            window.addEventListener("scroll", updateSimGear, { passive: true });
+            window.addEventListener("resize", updateSimGear, { passive: true });
             document.addEventListener("fullscreenchange", updateFullscreenButton);
             document.addEventListener("keydown", handleKeyShortcuts);
         }
@@ -652,7 +672,17 @@
         const FS_ENTER_HTML = '<svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg> Full Screen';
         const FS_EXIT_HTML = '<svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg> Exit Full Screen';
         function updateFullscreenButton() { dom.fullscreenBtn.innerHTML = document.fullscreenElement ? FS_EXIT_HTML : FS_ENTER_HTML; }
-        function handleKeyShortcuts(event) { if (event.key === "Escape") { closeInstructionsModal(); closeResetConfirmModal(); } }
+        function handleKeyShortcuts(event) {
+            if (event.key !== "Escape") return;
+            closeInstructionsModal();
+            closeResetConfirmModal();
+            /* Reuse the assessment close button so the "answered" path still runs */
+            const assessModal = document.getElementById("assessmentModal");
+            if (assessModal && assessModal.classList.contains("show")) {
+                const closeBtn = document.getElementById("closeAssessmentBtn");
+                if (closeBtn) closeBtn.click();
+            }
+        }
         function escapeHtml(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"); }
         function storageGet(key) { try { return sessionStorage.getItem(key); } catch (err) { return null; } }
         function storageSet(key, value) { try { sessionStorage.setItem(key, value); } catch (err) {} }
@@ -850,14 +880,6 @@
                     el.addEventListener("animationend", () => { el.classList.remove("lung-inhale", "lung-exhale"); });
                 }
             });
-
-            /* Show the scroll prompt only when the Check My Understanding
-               button is below the viewport (user is scrolled above it). */
-            window.addEventListener("scroll", updateScrollPrompt, { passive: true });
-
-            /* Keep the gear button's sticky state and icon in sync with the scroll position */
-            window.addEventListener("scroll", updateSimGear, { passive: true });
-            window.addEventListener("resize", updateSimGear, { passive: true });
 
             /* Set the opening prompt and lung state for the breathing cycle */
             updateBreathHint();
@@ -1274,6 +1296,7 @@
             return c;
         }
         function launchConfetti() {
+            if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
             const canvas = ensureConfettiCanvas();
             const ctx = canvas.getContext("2d");
             const btn = document.getElementById("playAgainBtn");
