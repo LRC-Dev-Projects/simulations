@@ -944,13 +944,22 @@
             scrollHintIntoView(hint);
         }
 
+        /* Honour the user's reduced-motion preference: keep functional scrolls but
+           make them instant instead of animated, and stop the decorative confetti. */
+        function prefersReducedMotion() {
+            return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+        }
+        function scrollBehavior() {
+            return prefersReducedMotion() ? "auto" : "smooth";
+        }
+
         /* Scroll the hint into view only when it is off-screen */
         function scrollHintIntoView(hint) {
             if (!hint || !hint.scrollIntoView) return;
             const rect = hint.getBoundingClientRect();
             const margin = 60;
             const offscreen = rect.bottom < margin || rect.top > window.innerHeight - margin;
-            if (offscreen) hint.scrollIntoView({ behavior: "smooth", block: "center" });
+            if (offscreen) hint.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
         }
 
         /* --- Flash the flow-direction cue (arrowhead, shaft and label together) --- */
@@ -1193,12 +1202,12 @@
         function scrollToSimCard() {
             const card = document.getElementById("simContainer");
             if (!card) return;
-            card.scrollIntoView({ behavior: "smooth", block: "start" });
+            card.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
             updateSimGear();
         }
 
         function scrollToTopBar() {
-            window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+            window.scrollTo({ top: 0, left: 0, behavior: scrollBehavior() });
             updateSimGear();
         }
 
@@ -1266,7 +1275,7 @@
             if (!assessmentAnswered) return;
             const target = document.getElementById("playAgainBtn") || document.getElementById("checkBtnWrap");
             if (!target) return;
-            target.scrollIntoView({ behavior: "smooth", block: "center" });
+            target.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
 
             /* Fire confetti once the button is on screen */
             if (typeof IntersectionObserver === "undefined") { launchConfetti(); return; }
@@ -1296,7 +1305,7 @@
             return c;
         }
         function launchConfetti() {
-            if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+            if (prefersReducedMotion()) return;
             const canvas = ensureConfettiCanvas();
             const ctx = canvas.getContext("2d");
             const btn = document.getElementById("playAgainBtn");
