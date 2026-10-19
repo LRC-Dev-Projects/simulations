@@ -408,6 +408,33 @@
             display: none !important;
         }
 
+        /* Invisible marker that keeps the Back to Top button's natural slot
+           measurable while the button itself is detached (position: fixed). */
+        .back-to-top-anchor {
+            width: 1px;
+            height: 1px;
+            align-self: center;
+            pointer-events: none;
+        }
+
+        /* Sticky state: a round, text-free up-arrow pinned to the bottom-right. */
+        #backToTopBtn.floating {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 80;
+            width: 52px;
+            height: 52px;
+            padding: 0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            line-height: 1;
+            box-shadow: var(--shadow);
+        }
+
         .button-row {
             margin-top: 18px;
             display: flex;
@@ -742,6 +769,7 @@
                          ============================================================ -->
                     <div class="sim-header">
                         <p style="margin:0;color:var(--text-soft);font-size:1rem;line-height:1.6;">Adjust the two sliders to explore different wall configurations.</p>
+                        <span class="back-to-top-anchor" id="backToTopAnchor" aria-hidden="true"></span>
                         <button type="button" class="control-btn" id="backToTopBtn">⬆ Back to Top</button>
                     </div>
                     <div class="sim-inner">
@@ -888,7 +916,9 @@
            ============================================================ */
         const state = {
             currentScreen: "home",
-            theme: "dark"
+            theme: "dark",
+            backToTopFloating: false,
+            backToTopReservedHeight: 0
         };
 
         const dom = {
@@ -955,31 +985,20 @@
 
         function bindEvents() {
             const backToTopBtn = document.getElementById("backToTopBtn");
-            const simContainer = dom.simContainer;
-            const graphLegend = simContainer ? simContainer.querySelector(".legend") : null;
-            if (backToTopBtn && simContainer) {
-                const updateBackToTopBtn = () => {
-                    const legendRect = graphLegend
-                        ? graphLegend.getBoundingClientRect()
-                        : simContainer.getBoundingClientRect();
-                    if (legendRect.top > window.innerHeight) {
-                        backToTopBtn.textContent = "⬇ Scroll to Sim";
-                        backToTopBtn.dataset.mode = "toSim";
-                    } else {
-                        backToTopBtn.textContent = "⬆ Back to Top";
-                        backToTopBtn.dataset.mode = "toTop";
-                    }
-                };
+            if (backToTopBtn) {
                 backToTopBtn.addEventListener("click", () => {
                     if (backToTopBtn.dataset.mode === "toSim") {
-                        const target = graphLegend || simContainer;
-                        target.scrollIntoView({ behavior: "smooth", block: "end" });
+                        const simContainer = dom.simContainer;
+                        const target = (simContainer && simContainer.querySelector(".legend")) || simContainer;
+                        if (target) target.scrollIntoView({ behavior: "smooth", block: "end" });
                     } else {
                         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
                     }
                 });
                 window.addEventListener("scroll", updateBackToTopBtn, { passive: true });
                 window.addEventListener("resize", updateBackToTopBtn);
+                document.addEventListener("scroll", updateBackToTopBtn, { passive: true, capture: true });
+                initBackToTopWatcher();
                 updateBackToTopBtn();
             }
             // Re-fit the canvases (and keep them crisp) whenever the viewport
@@ -1134,9 +1153,77 @@
 
         function updateFullscreenButton() {
             dom.fullscreenBtn.innerHTML = document.fullscreenElement ? FS_EXIT_HTML : FS_ENTER_HTML;
-            const backToTopBtn = document.getElementById("backToTopBtn");
-            if (backToTopBtn) {
-                backToTopBtn.classList.toggle("hidden", !!document.fullscreenElement);
+            updateBackToTopBtn();
+        }
+
+        // Keep the button synced to the header slot's position as it enters and
+        // leaves the viewport (covers cases scroll events might miss).
+        function initBackToTopWatcher() {
+            if (!("IntersectionObserver" in window)) return;
+            const observer = new IntersectionObserver(() => updateBackToTopBtn(), { threshold: 0 });
+            const anchor = document.getElementById("backToTopAnchor");
+            if (anchor) observer.observe(anchor);
+        }
+
+        // Back to Top button:
+        //  - sits inline in the sim header while its slot is on screen;
+        //  - detaches into a round, text-free up-arrow pinned bottom-right once
+        //    the slot scrolls above the viewport;
+        //  - returns to the header as soon as the slot is scrolled back into view.
+        // Hidden entirely while in fullscreen (not needed there).
+        function updateBackToTopBtn() {
+            const btn = document.getElementById("backToTopBtn");
+            if (!btn) return;
+
+            if (document.fullscreenElement) {
+                state.backToTopFloating = false;
+                btn.classList.remove("floating");
+                btn.classList.add("hidden");
+                return;
+            }
+
+            const anchor = document.getElementById("backToTopAnchor");
+            const anchorRect = (anchor || btn).getBoundingClientRect();
+
+            // While the button is still inline, remember its natural height and
+            // reserve it in the header slot so the card keeps its size when the
+            // button detaches into the floating arrow.
+            if (anchor && !btn.classList.contains("floating")) {
+                const naturalHeight = btn.offsetHeight;
+                if (naturalHeight && naturalHeight !== state.backToTopReservedHeight) {
+                    state.backToTopReservedHeight = naturalHeight;
+                    anchor.style.minHeight = naturalHeight + "px";
+                }
+            }
+
+            // Sticky only while the vertical centre of the button's original
+            // slot is scrolled above the viewport; stop once that centre is
+            // scrolled back to (or below) the top edge.
+            const anchorCenter = anchorRect.top + anchorRect.height / 2;
+            state.backToTopFloating = anchorCenter < 0;
+
+            if (state.backToTopFloating) {
+                btn.classList.add("floating");
+                btn.classList.remove("hidden");
+                btn.textContent = "⬆";
+                btn.dataset.mode = "toTop";
+                btn.setAttribute("aria-label", "Back to top");
+                return;
+            }
+
+            btn.classList.remove("floating");
+            btn.classList.remove("hidden");
+            const simContainer = dom.simContainer;
+            const graphLegend = simContainer ? simContainer.querySelector(".legend") : null;
+            const legendRect = graphLegend ? graphLegend.getBoundingClientRect() : null;
+            if (legendRect && legendRect.top > window.innerHeight) {
+                btn.textContent = "⬇ Scroll to Sim";
+                btn.dataset.mode = "toSim";
+                btn.setAttribute("aria-label", "Scroll to simulation");
+            } else {
+                btn.textContent = "⬆ Back to Top";
+                btn.dataset.mode = "toTop";
+                btn.setAttribute("aria-label", "Back to top");
             }
         }
 
