@@ -982,6 +982,31 @@
                 window.addEventListener("resize", updateBackToTopBtn);
                 updateBackToTopBtn();
             }
+            // Re-fit the canvases (and keep them crisp) whenever the viewport
+            // changes size, e.g. resizing the window, rotating a device, or
+            // entering/leaving fullscreen.
+            let resizeRafId = 0;
+            window.addEventListener("resize", () => {
+                if (resizeRafId) return;
+                resizeRafId = requestAnimationFrame(() => {
+                    resizeRafId = 0;
+                    if (simCanvas) {
+                        sizeCanvases();
+                        if (!simRunning && simCtx && simCssW && simCssH) {
+                            drawSim(simCssW, simCssH, 0, 0, 0);
+                        }
+                    }
+                });
+            });
+            // Pause the animation while the tab is hidden to save CPU/battery,
+            // then resume seamlessly when it becomes visible again.
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden) {
+                    pauseSim();
+                } else {
+                    resumeSim();
+                }
+            });
             dom.startBtn.addEventListener("click", () => {
                 showScreen("sim");
                 devInit();
@@ -1607,6 +1632,48 @@
         }
 
         /* --- INIT & RESET --- */
+        function sizeCanvases() {
+            if (!simCanvas || !graphCanvas || !simCtx || !graphCtx) return;
+            const dpr = window.devicePixelRatio || 1;
+
+            const rect = simCanvas.parentElement.getBoundingClientRect();
+            const simW = Math.max(1, rect.width);
+            const simH = Math.max(1, rect.height);
+            simCanvas.width = Math.round(simW * dpr);
+            simCanvas.height = Math.round(simH * dpr);
+            simCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            simCanvas.style.width = simW + 'px';
+            simCanvas.style.height = simH + 'px';
+            simCssW = simW;
+            simCssH = simH;
+
+            const gRect = graphCanvas.getBoundingClientRect();
+            const graphW = Math.max(1, gRect.width);
+            const graphH = Math.max(1, gRect.height);
+            graphCanvas.width = Math.round(graphW * dpr);
+            graphCanvas.height = Math.round(graphH * dpr);
+            graphCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            graphCanvas.style.width = graphW + 'px';
+            graphCanvas.style.height = graphH + 'px';
+            graphCssW = graphW;
+            graphCssH = graphH;
+        }
+
+        function pauseSim() {
+            if (!simRunning) return;
+            simRunning = false;
+            if (simAnimId) cancelAnimationFrame(simAnimId);
+            simAnimId = null;
+        }
+
+        function resumeSim() {
+            // Only restart a sim that was actively running on the sim screen.
+            if (simRunning || state.currentScreen !== "sim" || !simCanvas) return;
+            simRunning = true;
+            lastTime = 0; // avoid a large dt spike from the idle gap
+            simAnimId = requestAnimationFrame(simLoop);
+        }
+
         function devInit() {
             simCanvas = document.getElementById('simCanvas');
             graphCanvas = document.getElementById('graphCanvas');
@@ -1625,27 +1692,7 @@
             simCtx = simCanvas.getContext('2d');
             graphCtx = graphCanvas.getContext('2d');
 
-            // Size canvases
-            const wrap = simCanvas.parentElement;
-            const rect = wrap.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            simCanvas.width = rect.width * dpr;
-            simCanvas.height = rect.height * dpr;
-            simCtx.scale(dpr, dpr);
-            simCanvas.style.width = rect.width + 'px';
-            simCanvas.style.height = rect.height + 'px';
-            simCssW = rect.width;
-            simCssH = rect.height;
-
-            const gWrap = graphCanvas.parentElement;
-            const gRect = graphCanvas.getBoundingClientRect();
-            graphCanvas.width = gRect.width * dpr;
-            graphCanvas.height = gRect.height * dpr;
-            graphCtx.scale(dpr, dpr);
-            graphCanvas.style.width = gRect.width + 'px';
-            graphCanvas.style.height = gRect.height + 'px';
-            graphCssW = gRect.width;
-            graphCssH = gRect.height;
+            sizeCanvases();
 
             // Reset state
             particles = [];
