@@ -1530,7 +1530,7 @@
             ctx.fillStyle = 'rgba(15,18,34,0.8)';
             ctx.fillRect(0, 0, w, h);
 
-            // Y-axis labels and grid lines (Rate shown as a percentage)
+            // Y-axis labels and grid lines (both series are normalised 0-100%)
             const tickMax = 100;
             const tickCount = 5;
             ctx.font = '10px Arial, sans-serif';
@@ -1552,21 +1552,39 @@
             // Y-axis caption
             ctx.textAlign = 'left';
             ctx.fillStyle = 'rgba(255,255,255,0.35)';
-            ctx.fillText('Rate (%)', padL + 4, h - 4);
+            ctx.fillText('Normalised (%)', padL + 4, h - 4);
 
             if (rateHistory.length < 2) return;
 
-            const plotMax = 100;
-            const maxAbsorbed = Math.max(1, ...absorbedHistory);
             const stepX = plotW / (MAX_GRAPH_POINTS - 1);
 
-            // Rate line (plotted on a fixed 0-100% scale so axis labels are truthful)
+            // Normalise a series independently across the plotted window so its
+            // lowest point sits at 0% and its highest at 100%.
+            const normaliseSeries = (values) => {
+                let min = values[0];
+                let max = values[0];
+                for (let i = 1; i < values.length; i++) {
+                    if (values[i] < min) min = values[i];
+                    if (values[i] > max) max = values[i];
+                }
+                const range = max - min;
+                if (range <= 0) {
+                    const flat = max > 0 ? 100 : 0;
+                    return values.map(() => flat);
+                }
+                return values.map((value) => ((value - min) / range) * 100);
+            };
+
+            const rateNorm = normaliseSeries(rateHistory);
+            const absorbedNorm = normaliseSeries(absorbedHistory);
+
+            // Rate line
             ctx.beginPath();
             ctx.strokeStyle = '#7dd3fc';
             ctx.lineWidth = 2.5;
-            for (let i = 0; i < rateHistory.length; i++) {
-                const x = padL + (MAX_GRAPH_POINTS - rateHistory.length + i) * stepX;
-                const y = h - (rateHistory[i] / plotMax) * (h - 10) - 5;
+            for (let i = 0; i < rateNorm.length; i++) {
+                const x = padL + (MAX_GRAPH_POINTS - rateNorm.length + i) * stepX;
+                const y = h - (rateNorm[i] / 100) * (h - 10) - 5;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
@@ -1577,9 +1595,9 @@
             ctx.beginPath();
             ctx.strokeStyle = '#34d399';
             ctx.lineWidth = 2;
-            for (let i = 0; i < absorbedHistory.length; i++) {
-                const x = padL + (MAX_GRAPH_POINTS - absorbedHistory.length + i) * stepX;
-                const y = h - (absorbedHistory[i] / maxAbsorbed) * (h - 10) - 5;
+            for (let i = 0; i < absorbedNorm.length; i++) {
+                const x = padL + (MAX_GRAPH_POINTS - absorbedNorm.length + i) * stepX;
+                const y = h - (absorbedNorm[i] / 100) * (h - 10) - 5;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
