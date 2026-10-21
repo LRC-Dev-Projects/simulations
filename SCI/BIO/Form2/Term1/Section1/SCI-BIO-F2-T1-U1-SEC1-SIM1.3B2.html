@@ -417,12 +417,14 @@
             pointer-events: none;
         }
 
-        /* Sticky state: a round, text-free up-arrow pinned to the bottom-right. */
+        /* Sticky state: a round, text-free up-arrow pinned to the bottom-right.
+           Sits above normal page content but below the modal overlay (z-index
+           60), so it falls back into the background while a modal is open. */
         #backToTopBtn.floating {
             position: fixed;
             right: 20px;
             bottom: 20px;
-            z-index: 80;
+            z-index: 30;
             width: 52px;
             height: 52px;
             padding: 0;
