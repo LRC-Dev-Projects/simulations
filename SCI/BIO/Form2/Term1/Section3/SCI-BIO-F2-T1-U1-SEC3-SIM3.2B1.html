@@ -992,6 +992,20 @@
         /* --- Inhale action --- */
         function doInhale() {
             if (isAnimating) return;
+
+            /* Guard: lungs are already full, so a second inhale would double-count.
+               Exhale first to make room for more air. */
+            if (lungsFilled) {
+                playSound("wrong");
+                announce("Your lungs are already full. Click Exhale before inhaling again.");
+                addLog("blocked", "Cannot inhale yet: lungs are already full. Exhale first to empty them.");
+                updateBreathHint();
+                flashBreathHint();
+                const exhaleBtn = document.getElementById("exhaleBtn");
+                if (exhaleBtn && exhaleBtn.focus) exhaleBtn.focus({ preventScroll: true });
+                return;
+            }
+
             isAnimating = true;
             lungsFilled = true;
             setButtonsDisabled(true);
