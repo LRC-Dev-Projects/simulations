@@ -456,24 +456,33 @@
             right: 18px;
             bottom: 18px;
             width: 46px;
-            height: 46px;
-            border-radius: 50%;
+            height: 56px;
+            border-radius: 12px;
             border: 1px solid var(--border);
             background: color-mix(in srgb, var(--surface) 94%, transparent);
             color: var(--text);
             box-shadow: var(--shadow);
             display: none;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             font-size: 1.4rem;
             font-weight: 700;
+            line-height: 1;
             z-index: 900;
             cursor: pointer;
             transition: opacity 160ms ease, transform 160ms ease;
+            gap: 2px;
         }
 
         .back-to-top.visible {
             display: flex;
+        }
+
+        .back-to-top-key {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--muted);
         }
 
         .back-to-top:hover,
@@ -958,7 +967,7 @@
 
 <body>
     <div class="app-shell">
-        <button type="button" id="backToTop" class="back-to-top" aria-label="Back to top">&#8593;</button>
+        <button type="button" id="backToTop" class="back-to-top" aria-label="Back to top"><span>&#8593;</span><span class="back-to-top-key">Esc</span></button>
         <header class="topbar" id="topbar">
             <div class="brand-wrap">
                 <div class="brand-badge" id="brandBadge">SIM</div>
@@ -1410,6 +1419,14 @@
 
         function bindEvents() {
             if (dom.audioBtn) dom.audioBtn.addEventListener("click", toggleAudio);
+            document.addEventListener("keydown", (event) => {
+                if (event.key !== "Escape") return;
+                if (document.querySelector(".modal.active")) return;
+                if (simState.phase === "running") {
+                    event.preventDefault();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+            });
             dom.startBtn.addEventListener("click", () => {
                 showScreen("sim");
                 devInit();
@@ -1672,6 +1689,7 @@
             simState.pausedTotal = 0;
             simState.phase = "running";
             updatePauseIndicator();
+            updateBackToTopEsc();
 
             const stage = document.querySelector(".pulse-stage");
             if (stage) stage.classList.remove("pre-start");
@@ -1717,6 +1735,24 @@
                 el.classList.add("visible");
             } else {
                 el.classList.remove("visible");
+            }
+            const escKey = document.querySelector(".back-to-top-key");
+            if (escKey) {
+                if (simState.phase === "running") {
+                    escKey.style.display = "block";
+                } else {
+                    escKey.style.display = "none";
+                }
+            }
+        }
+
+        function updateBackToTopEsc() {
+            const escKey = document.querySelector(".back-to-top-key");
+            if (!escKey) return;
+            if (simState.phase === "running") {
+                escKey.style.display = "block";
+            } else {
+                escKey.style.display = "none";
             }
         }
 
@@ -1836,7 +1872,7 @@
         }
 
         function handleTap() {
-            if (simState.phase !== "running") return;
+            if (simState.phase !== "running" || simState.paused) return;
             simState.tapCount++;
             const now = performance.now();
             simState.tapTimes.push(now);
@@ -2067,6 +2103,7 @@
             simState.pausedTotal = 0;
             updatePauseIndicator();
             simState.phase = "results";
+            updateBackToTopEsc();
 
             const circle = document.getElementById("pulseCircle");
             if (circle) circle.classList.remove("beat-pulse");
@@ -2409,6 +2446,7 @@
             simState.pauseStart = 0;
             simState.pausedTotal = 0;
             updatePauseIndicator();
+            updateBackToTopEsc();
             simState.phase = "config";
             simState.tapCount = 0;
             simState.totalBeats = 0;
