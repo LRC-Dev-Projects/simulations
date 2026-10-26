@@ -451,6 +451,83 @@
             font-size: 0.9rem;
         }
 
+        .back-to-top {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--surface) 94%, transparent);
+            color: var(--text);
+            box-shadow: var(--shadow);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            z-index: 900;
+            cursor: pointer;
+            transition: opacity 160ms ease, transform 160ms ease;
+        }
+
+        .back-to-top.visible {
+            display: flex;
+        }
+
+        .back-to-top:hover,
+        .back-to-top:focus-visible {
+            transform: translateY(-2px);
+        }
+
+        .back-to-sim {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--surface) 94%, transparent);
+            color: var(--text);
+            box-shadow: var(--shadow);
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        .back-to-sim.visible {
+            display: inline-flex;
+        }
+
+        .back-to-sim:hover,
+        .back-to-sim:focus-visible {
+            transform: translateY(2px);
+        }
+
+        #simContent {
+            position: relative;
+        }
+
+        .pause-indicator {
+            display: none;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin: -4px 0 6px 0;
+            height: 1.6rem;
+            line-height: 1.6rem;
+        }
+
+        .pause-indicator.visible {
+            display: block;
+        }
+
         @media (max-width: 760px) {
             body {
                 padding: 12px;
@@ -881,7 +958,8 @@
 
 <body>
     <div class="app-shell">
-        <header class="topbar">
+        <button type="button" id="backToTop" class="back-to-top" aria-label="Back to top">&#8593;</button>
+        <header class="topbar" id="topbar">
             <div class="brand-wrap">
                 <div class="brand-badge" id="brandBadge">SIM</div>
                 <div class="brand-copy">
@@ -1293,6 +1371,43 @@
             dom.homeDescription.textContent = SIM_CONFIG.homeDescription;
         }
 
+        let __topbarScrollTicking = false;
+        function setupTopbarScrollBehavior() {
+            const backToTop = document.getElementById("backToTop");
+            const topbar = document.getElementById("topbar");
+            if (!backToTop || !topbar) return;
+            backToTop.addEventListener("click", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+            window.addEventListener("scroll", () => {
+                if (__topbarScrollTicking) return;
+                __topbarScrollTicking = true;
+                requestAnimationFrame(() => {
+                    __topbarScrollTicking = false;
+                    const rect = topbar.getBoundingClientRect();
+                    const centerY = rect.top + rect.height / 2;
+            if (centerY <= 0) {
+                backToTop.classList.add("visible");
+            } else {
+                backToTop.classList.remove("visible");
+            }
+            const backToSimBtn = document.getElementById("backToSim");
+            if (backToSimBtn) {
+                if (simState.phase === "running" && centerY > 0) {
+                    backToSimBtn.classList.add("visible");
+                } else {
+                    backToSimBtn.classList.remove("visible");
+                }
+            }
+            if (simState.phase === "running" && !simState.paused && centerY > 0) {
+                pauseSim();
+            } else if (simState.phase === "running" && simState.paused && centerY <= 0) {
+                resumeSim();
+            }
+                });
+            }, { passive: true });
+        }
+
         function bindEvents() {
             if (dom.audioBtn) dom.audioBtn.addEventListener("click", toggleAudio);
             dom.startBtn.addEventListener("click", () => {
@@ -1476,6 +1591,9 @@
             nextTone: 1,        // next beat index whose tone has been queued
             audioBase: null,    // AudioContext time corresponding to pulseStartTime
             graphFrame: null,
+            paused: false,
+            pauseStart: 0,
+            pausedTotal: 0,
         };
 
         const simContent = document.getElementById("simContent");
@@ -1483,6 +1601,7 @@
         function renderConfigScreen() {
             simState.phase = "config";
             simContent.innerHTML = `
+                <button type="button" id="backToSim" class="back-to-sim" aria-label="Back to sim">Back to Sim &#8595;</button>
                 <div class="pulse-config">
                     <label for="bpmSelect">Pulse rate (BPM):</label>
                     <select id="bpmSelect" class="bpm-select">
@@ -1504,6 +1623,7 @@
                             <span class="legend-item"><span class="legend-swatch legend-taps"></span> Your taps</span>
                         </div>
                     </div>
+                    <div class="pause-indicator" id="pauseIndicator">Paused</div>
                     <div class="timer-display" id="timerDisplay">1:00</div>
                     <div class="pulse-ring-wrap">
                         <div class="pulse-outer-ring"></div>
@@ -1520,6 +1640,15 @@
                 </div>
             `;
 
+            const backToSimBtn = document.getElementById("backToSim");
+            if (backToSimBtn) {
+                backToSimBtn.addEventListener("click", () => {
+                    const stage = document.querySelector(".pulse-stage");
+                    if (stage) {
+                        stage.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                });
+            }
             document.getElementById("simStartBtn").addEventListener("click", startTimer);
             document.getElementById("tapBtn").addEventListener("click", handleTap);
             document.getElementById("bpmSelect").addEventListener("change", (e) => {
@@ -1538,7 +1667,11 @@
             simState.nextBeat = 1;
             simState.nextTone = 1;
             simState.audioBase = null;
+            simState.paused = false;
+            simState.pauseStart = 0;
+            simState.pausedTotal = 0;
             simState.phase = "running";
+            updatePauseIndicator();
 
             const stage = document.querySelector(".pulse-stage");
             if (stage) stage.classList.remove("pre-start");
@@ -1577,7 +1710,45 @@
 
         const BEAT_LOOKAHEAD = 0.1;   // seconds of tones queued ahead of the audio clock
 
+        function updatePauseIndicator() {
+            const el = document.getElementById("pauseIndicator");
+            if (!el) return;
+            if (simState.phase === "running" && simState.paused) {
+                el.classList.add("visible");
+            } else {
+                el.classList.remove("visible");
+            }
+        }
+
+        function pauseSim() {
+            if (simState.phase !== "running" || simState.paused) return;
+            simState.paused = true;
+            simState.pauseStart = performance.now();
+            updatePauseIndicator();
+            try {
+                const ctx = ensureAudioCtx();
+                if (ctx && ctx.state === "running") ctx.suspend();
+            } catch (e) {}
+        }
+
+        function resumeSim() {
+            if (simState.phase !== "running" || !simState.paused) return;
+            const now = performance.now();
+            const pauseDur = now - simState.pauseStart;
+            simState.pausedTotal += pauseDur;
+            /* Shift the beat grid forward so scheduled beats/taps remain consistent. */
+            simState.pulseStartTime += pauseDur;
+            simState.paused = false;
+            simState.pauseStart = 0;
+            updatePauseIndicator();
+            try {
+                const ctx = ensureAudioCtx();
+                if (ctx && ctx.state === "suspended") ctx.resume();
+            } catch (e) {}
+        }
+
         function tickSim() {
+            if (simState.paused) return true;
             const now = performance.now();
             const elapsed = now - simState.pulseStartTime;
             const interval = 60000 / simState.bpm;
@@ -1831,7 +2002,9 @@
             buildGraphScene();
             const loop = () => {
                 if (!tickSim()) return;   // run ended; endTimer() already stopped the loop
-                renderGraph();
+                if (!simState.paused) {
+                    renderGraph();
+                }
                 simState.graphFrame = requestAnimationFrame(loop);
             };
             loop();
@@ -1883,6 +2056,16 @@
 
         function endTimer() {
             stopGraphLoop();
+            if (simState.paused) {
+                try {
+                    const ctx = ensureAudioCtx();
+                    if (ctx && ctx.state === "suspended") ctx.resume();
+                } catch (e) {}
+            }
+            simState.paused = false;
+            simState.pauseStart = 0;
+            simState.pausedTotal = 0;
+            updatePauseIndicator();
             simState.phase = "results";
 
             const circle = document.getElementById("pulseCircle");
@@ -2210,16 +2393,30 @@
 
         function devInit() {
             bindButtonBlurOnClick();
+            setupTopbarScrollBehavior();
             renderConfigScreen();
         }
 
         function devReset() {
             stopGraphLoop();
+            if (simState.paused) {
+                try {
+                    const ctx = ensureAudioCtx();
+                    if (ctx && ctx.state === "suspended") ctx.resume();
+                } catch (e) {}
+            }
+            simState.paused = false;
+            simState.pauseStart = 0;
+            simState.pausedTotal = 0;
+            updatePauseIndicator();
             simState.phase = "config";
             simState.tapCount = 0;
             simState.totalBeats = 0;
             simState.beatTimes = [];
             simState.tapTimes = [];
+            simState.nextBeat = 1;
+            simState.nextTone = 1;
+            simState.audioBase = null;
             simContent.innerHTML = "";
         }
     </script>
