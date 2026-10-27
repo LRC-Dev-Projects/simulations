@@ -525,12 +525,33 @@
         .pause-indicator {
             display: none;
             text-align: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--accent);
-            margin: -4px 0 6px 0;
-            height: 1.6rem;
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--warning, #f59e0b);
+            background: color-mix(in srgb, var(--warning, #f59e0b) 12%, transparent);
+            border: 1px solid color-mix(in srgb, var(--warning, #f59e0b) 40%, transparent);
+            border-radius: 999px;
+            padding: 2px 14px;
+            margin: -4px auto 6px auto;
+            height: 1.8rem;
             line-height: 1.6rem;
+            width: fit-content;
+            box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning, #f59e0b) 25%, transparent);
+            animation: pausePulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes pausePulse {
+            0% {
+                box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning, #f59e0b) 25%, transparent);
+            }
+            70% {
+                box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning, #f59e0b) 0%, transparent);
+            }
+            100% {
+                box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning, #f59e0b) 0%, transparent);
+            }
         }
 
         .pause-indicator.visible {
