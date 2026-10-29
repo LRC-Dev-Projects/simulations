@@ -1412,6 +1412,7 @@
             window.addEventListener("scroll", () => {
                 if (simState.phase === "running" && hasActiveModal()) {
                     window.scrollTo({ top: 0, behavior: "auto" });
+                    updateScrollButtons();
                     return;
                 }
                 if (__topbarScrollTicking) return;
@@ -1420,23 +1421,12 @@
                     __topbarScrollTicking = false;
                     if (simState.phase === "running" && hasActiveModal()) {
                         window.scrollTo({ top: 0, behavior: "auto" });
+                        updateScrollButtons();
                         return;
                     }
+                    updateScrollButtons();
                     const rect = topbar.getBoundingClientRect();
                     const centerY = rect.top + rect.height / 2;
-                    if (centerY <= 0) {
-                        backToTop.classList.add("visible");
-                    } else {
-                        backToTop.classList.remove("visible");
-                    }
-                    const backToSimBtn = document.getElementById("backToSim");
-                    if (backToSimBtn) {
-                        if (simState.phase === "running" && centerY > 0) {
-                            backToSimBtn.classList.add("visible");
-                        } else {
-                            backToSimBtn.classList.remove("visible");
-                        }
-                    }
                     if (simState.phase === "running" && !simState.paused && centerY > 0) {
                         pauseSim();
                     } else if (simState.phase === "running" && simState.paused && centerY <= 0) {
@@ -1461,10 +1451,22 @@
                 devInit();
                 openInstructionsModal();
             });
-            dom.openInstructionsBtn.addEventListener("click", openInstructionsModal);
+            dom.openInstructionsBtn.addEventListener("click", () => {
+                if (simState.phase === "running") {
+                    if (!simState.paused) pauseSim();
+                    window.scrollTo({ top: 0, behavior: "auto" });
+                    updateScrollButtons();
+                }
+                openInstructionsModal();
+            });
             dom.helpBtn.addEventListener("click", () => {
                 dom.helpBtn.classList.remove("pulse-help");
                 storageSet(SIM_CONFIG.simId + "-help-seen", "true");
+                if (simState.phase === "running") {
+                    if (!simState.paused) pauseSim();
+                    window.scrollTo({ top: 0, behavior: "auto" });
+                    updateScrollButtons();
+                }
                 openInstructionsModal();
             });
             dom.closeInstructionsBtn.addEventListener("click", closeInstructionsModal);
@@ -1477,7 +1479,14 @@
 
             dom.themeToggleBtn.addEventListener("click", toggleTheme);
             dom.fullscreenBtn.addEventListener("click", toggleFullscreen);
-            dom.resetBtn.addEventListener("click", openResetConfirmModal);
+            dom.resetBtn.addEventListener("click", () => {
+                if (simState.phase === "running") {
+                    if (!simState.paused) pauseSim();
+                    window.scrollTo({ top: 0, behavior: "auto" });
+                    updateScrollButtons();
+                }
+                openResetConfirmModal();
+            });
             dom.closeResetConfirmBtn.addEventListener("click", closeResetConfirmModal);
             dom.cancelResetBtn.addEventListener("click", closeResetConfirmModal);
             dom.confirmResetBtn.addEventListener("click", () => {
@@ -1512,11 +1521,36 @@
             return !!document.querySelector(".modal.show, .modal.active");
         }
 
-        function openInstructionsModal() {
-            dom.instructionsModal.classList.add("show");
-            if (simState.phase === "running") {
-                window.scrollTo({ top: 0, behavior: "auto" });
+        function updateScrollButtons() {
+            const backToTop = document.getElementById("backToTop");
+            const topbar = document.getElementById("topbar");
+            if (!topbar) return;
+            const rect = topbar.getBoundingClientRect();
+            const centerY = rect.top + rect.height / 2;
+            if (backToTop) {
+                if (centerY <= 0) {
+                    backToTop.classList.add("visible");
+                } else {
+                    backToTop.classList.remove("visible");
+                }
             }
+            const backToSimBtn = document.getElementById("backToSim");
+            if (backToSimBtn) {
+                if (simState.phase === "running" && centerY > 0) {
+                    backToSimBtn.classList.add("visible");
+                } else {
+                    backToSimBtn.classList.remove("visible");
+                }
+            }
+        }
+
+        function openInstructionsModal() {
+            if (simState.phase === "running") {
+                if (!simState.paused) pauseSim();
+                window.scrollTo({ top: 0, behavior: "auto" });
+                updateScrollButtons();
+            }
+            dom.instructionsModal.classList.add("show");
             try { renderVolumeSliders(); } catch (err) { /* audio section removed */ }
         }
 
@@ -1525,10 +1559,12 @@
         }
 
         function openResetConfirmModal() {
-            dom.resetConfirmModal.classList.add("show");
             if (simState.phase === "running") {
+                if (!simState.paused) pauseSim();
                 window.scrollTo({ top: 0, behavior: "auto" });
+                updateScrollButtons();
             }
+            dom.resetConfirmModal.classList.add("show");
         }
 
         function closeResetConfirmModal() {
