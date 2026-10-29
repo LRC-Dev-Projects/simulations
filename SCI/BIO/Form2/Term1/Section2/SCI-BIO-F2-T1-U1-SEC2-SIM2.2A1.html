@@ -469,7 +469,7 @@
             font-size: 1.4rem;
             font-weight: 700;
             line-height: 1;
-            z-index: 900;
+            z-index: 55;
             cursor: pointer;
             transition: opacity 160ms ease, transform 160ms ease;
             gap: 2px;
@@ -1410,30 +1410,38 @@
                 window.scrollTo({ top: 0, behavior: "smooth" });
             });
             window.addEventListener("scroll", () => {
+                if (simState.phase === "running" && hasActiveModal()) {
+                    window.scrollTo({ top: 0, behavior: "auto" });
+                    return;
+                }
                 if (__topbarScrollTicking) return;
                 __topbarScrollTicking = true;
                 requestAnimationFrame(() => {
                     __topbarScrollTicking = false;
+                    if (simState.phase === "running" && hasActiveModal()) {
+                        window.scrollTo({ top: 0, behavior: "auto" });
+                        return;
+                    }
                     const rect = topbar.getBoundingClientRect();
                     const centerY = rect.top + rect.height / 2;
-            if (centerY <= 0) {
-                backToTop.classList.add("visible");
-            } else {
-                backToTop.classList.remove("visible");
-            }
-            const backToSimBtn = document.getElementById("backToSim");
-            if (backToSimBtn) {
-                if (simState.phase === "running" && centerY > 0) {
-                    backToSimBtn.classList.add("visible");
-                } else {
-                    backToSimBtn.classList.remove("visible");
-                }
-            }
-            if (simState.phase === "running" && !simState.paused && centerY > 0) {
-                pauseSim();
-            } else if (simState.phase === "running" && simState.paused && centerY <= 0) {
-                resumeSim();
-            }
+                    if (centerY <= 0) {
+                        backToTop.classList.add("visible");
+                    } else {
+                        backToTop.classList.remove("visible");
+                    }
+                    const backToSimBtn = document.getElementById("backToSim");
+                    if (backToSimBtn) {
+                        if (simState.phase === "running" && centerY > 0) {
+                            backToSimBtn.classList.add("visible");
+                        } else {
+                            backToSimBtn.classList.remove("visible");
+                        }
+                    }
+                    if (simState.phase === "running" && !simState.paused && centerY > 0) {
+                        pauseSim();
+                    } else if (simState.phase === "running" && simState.paused && centerY <= 0) {
+                        resumeSim();
+                    }
                 });
             }, { passive: true });
         }
@@ -1442,7 +1450,7 @@
             if (dom.audioBtn) dom.audioBtn.addEventListener("click", toggleAudio);
             document.addEventListener("keydown", (event) => {
                 if (event.key !== "Escape") return;
-                if (document.querySelector(".modal.active")) return;
+                if (hasActiveModal()) return;
                 if (simState.phase === "running") {
                     event.preventDefault();
                     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1500,8 +1508,15 @@
             dom.instructionsBody.replaceChildren(intro, list);
         }
 
+        function hasActiveModal() {
+            return !!document.querySelector(".modal.show, .modal.active");
+        }
+
         function openInstructionsModal() {
             dom.instructionsModal.classList.add("show");
+            if (simState.phase === "running") {
+                window.scrollTo({ top: 0, behavior: "auto" });
+            }
             try { renderVolumeSliders(); } catch (err) { /* audio section removed */ }
         }
 
@@ -1511,6 +1526,9 @@
 
         function openResetConfirmModal() {
             dom.resetConfirmModal.classList.add("show");
+            if (simState.phase === "running") {
+                window.scrollTo({ top: 0, behavior: "auto" });
+            }
         }
 
         function closeResetConfirmModal() {
