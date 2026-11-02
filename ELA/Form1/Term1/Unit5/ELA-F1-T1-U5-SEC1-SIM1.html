@@ -479,10 +479,18 @@
             gap: 14px;
         }
 
-        .pp-root *:focus-visible {
-            outline: 3px solid var(--focus, #4d9dff);
-            outline-offset: 2px;
+        /* Focus ring (QA 10.2). The chrome sets `outline: none` and a box-shadow,
+           but several sim states (selected card, marked slot) set their own
+           box-shadow and were wiping the ring out. An outline cannot be clobbered
+           that way, and currentColor guarantees contrast in both themes. */
+        .pp-scope button:focus-visible,
+        .pp-scope [tabindex]:focus-visible,
+        .pp-scope button.pp-kbfocus,
+        .pp-scope button:focus {
+            outline: 3px solid currentColor !important;
+            outline-offset: 3px;
         }
+
 
         .pp-hud {
             display: flex;
@@ -502,14 +510,15 @@
         .pp-scene { font-weight: 700; font-size: 1rem; color: var(--text); }
         .pp-rank { font-size: 0.85rem; color: var(--text-soft); }
 
-        .pp-mascot { width: 62px; height: 62px; flex: 0 0 auto; }
+        .pp-mascot { width: 3.9rem; height: 3.9rem; flex: 0 0 auto; }
         .pp-mascot svg { width: 100%; height: 100%; display: block; }
 
         .pp-stat {
             display: flex;
             flex-direction: column;
+            flex: 0 1 auto;
             align-items: center;
-            min-width: 84px;
+            min-width: 5.25rem;
             padding: 6px 10px;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
@@ -532,7 +541,7 @@
         .pp-flow-track {
             flex: 1 1 200px;
             height: 16px;
-            min-width: 160px;
+            min-width: 10rem;
             border: 1px solid var(--border);
             border-radius: 999px;
             background: var(--surface);
@@ -546,7 +555,7 @@
         }
         .pp-flow-pct { font-weight: 800; min-width: 46px; text-align: right; }
 
-        .pp-eq { display: flex; align-items: flex-end; gap: 3px; height: 26px; }
+        .pp-eq { display: flex; align-items: flex-end; gap: 3px; height: 1.65rem; flex: 0 0 auto; }
         .pp-eq span {
             width: 6px;
             height: 4px;
@@ -607,7 +616,7 @@
 
         .pp-columns {
             display: grid;
-            grid-template-columns: minmax(240px, 1fr) minmax(260px, 1.15fr);
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
             gap: 14px;
         }
         @media (max-width: 860px) {
@@ -621,14 +630,15 @@
             padding: 12px;
         }
 
-        .pp-crate { display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
+        .pp-crate { display: flex; flex-direction: column; gap: 8px; min-height: 3.75rem; }
 
         .pp-card {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 10px;
             width: 100%;
-            min-height: 52px;
+            min-height: 3.25rem;
             padding: 10px 12px;
             text-align: left;
             font: inherit;
@@ -652,10 +662,11 @@
 
         .pp-slot {
             display: flex;
+            flex-wrap: wrap;
             align-items: stretch;
             gap: 10px;
             width: 100%;
-            min-height: 60px;
+            min-height: 3.75rem;
             margin-bottom: 8px;
             padding: 8px;
             font: inherit;
@@ -671,7 +682,9 @@
         .pp-slot.is-correct { border-color: var(--success); box-shadow: 0 0 0 2px rgba(46, 160, 96, 0.18); }
         .pp-slot.is-wrong { border-color: var(--danger); }
         .pp-slot-no {
-            flex: 0 0 66px;
+            flex: 0 0 auto;
+            min-width: 4.5rem;
+            max-width: 9rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -682,7 +695,7 @@
         }
         .pp-slot-no b { font-size: 1.05rem; }
         .pp-slot-no span { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); text-align: center; }
-        .pp-slot-body { display: flex; align-items: center; gap: 8px; flex: 1 1 auto; font-size: 0.92rem; }
+        .pp-slot-body { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex: 1 1 12rem; min-width: 0; font-size: 0.92rem; }
         .pp-slot-empty { color: var(--muted); font-style: italic; }
         .pp-mark { font-weight: 800; font-size: 0.78rem; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
         .pp-mark.ok { color: var(--success); border-color: var(--success); }
@@ -704,7 +717,7 @@
             font-size: 0.95rem;
         }
         .pp-gap-slot {
-            min-width: 116px;
+            min-width: 7rem;
             min-height: 44px;
             padding: 8px 12px;
             font: inherit;
@@ -733,6 +746,33 @@
         }
         .pp-tile.is-selected { box-shadow: 0 0 0 3px rgba(90, 140, 255, 0.35); }
         .pp-tile.is-used { opacity: 0.45; cursor: default; }
+
+        .pp-state-chip {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid currentColor;
+            white-space: nowrap;
+        }
+
+        .pp-reward {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            min-height: 2.5rem;
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--accent-2);
+            border-radius: var(--radius-md);
+            background: var(--surface-2);
+            font-size: 0.86rem;
+        }
+        .pp-reward b { color: var(--text); }
+        .pp-reward .pp-reward-empty { color: var(--muted); font-style: italic; }
 
         .pp-feedback {
             min-height: 24px;
@@ -874,6 +914,16 @@
         .pp-reduce .pp-card,
         .pp-reduce .pp-btn { transition: none !important; }
         .pp-reduce .pp-toast { animation: none; }
+        .pp-reduce *,
+        .pp-reduce *::before,
+        .pp-reduce *::after {
+            animation-duration: 0s !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0s !important;
+            scroll-behavior: auto !important;
+        }
+        .pp-reduce button:hover { transform: none !important; }
+        .pp-reduce .pp-toasts { display: none; }
 
     </style>
 </head>
@@ -949,7 +999,11 @@
                             <div class="pp-eq" id="ppEq" aria-hidden="true"></div>
                         </div>
 
-                        <ul class="pp-badges" id="ppBadges"></ul>
+                        <p class="pp-reward" id="ppReward" role="status" aria-live="polite">
+                        <span class="pp-reward-empty">No rewards earned yet — lock in your first playlist.</span>
+                    </p>
+
+                    <ul class="pp-badges" id="ppBadges"></ul>
 
                         <div class="pp-stage" id="ppStage"></div>
 
@@ -986,7 +1040,20 @@
                             </div>
                         </div>
 
-                        <div class="pp-modal" id="ppRetryModal" role="dialog" aria-modal="true" aria-labelledby="ppRetryHead">
+                        <div class="pp-modal" id="ppExitModal" role="dialog" aria-modal="true" aria-labelledby="ppExitHead">
+                        <div class="pp-modal-card">
+                            <h3 id="ppExitHead">Leave the activity?</h3>
+                            <div class="pp-modal-body">
+                                <p>You will go back to the start screen. Your progress is saved, so pressing Start again brings you back to this scene with your XP, badges and published episodes intact.</p>
+                            </div>
+                            <div class="pp-modal-actions">
+                                <button type="button" class="pp-btn" id="ppExitCancelBtn">Stay here</button>
+                                <button type="button" class="pp-btn pp-btn-primary" id="ppExitConfirmBtn">Yes, leave</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pp-modal" id="ppRetryModal" role="dialog" aria-modal="true" aria-labelledby="ppRetryHead">
                             <div class="pp-modal-card">
                                 <h3 id="ppRetryHead">Clear this scene?</h3>
                                 <div class="pp-modal-body">
@@ -1447,6 +1514,79 @@ const PP_ERRORS = {
 };
 
 let pp = null;
+let ppFocusNext = null;
+let ppModalReturn = null;
+const PP_STATE_VERSION = 2;
+
+/* Keyboard focus survives a re-render (QA 10.1). Every interactive element the
+   stage builds carries data-fk; the render records which key had focus and puts
+   focus back on the matching element afterwards. Without this, selecting a card
+   dropped focus to <body> and the keyboard path died mid-task. */
+function ppRestoreFocus(key) {
+    const stage = document.getElementById("ppStage");
+    if (!stage || !key) return;
+    let el = null;
+    try { el = stage.querySelector('[data-fk="' + key + '"]'); } catch (err) { el = null; }
+    if (el && !el.disabled) { try { el.focus(); } catch (err) { /* ignore */ } return; }
+    const fallback = stage.querySelector("button:not([disabled])");
+    if (fallback) { try { fallback.focus(); } catch (err) { /* ignore */ } }
+}
+
+function ppPersist() {
+    if (!pp) return;
+    try { storageSet("state", JSON.stringify(pp)); } catch (err) { /* storage unavailable */ }
+}
+
+/* QA 9.3 — a refresh mid-session used to leave an empty game beside a stale
+   stored report. The whole game state is now saved on every render and restored
+   on Start, so a reload resumes exactly where the student was. */
+function ppLoadState() {
+    let raw = "";
+    try { raw = storageGet("state"); } catch (err) { return null; }
+    if (!raw) return null;
+    let saved = null;
+    try { saved = JSON.parse(raw); } catch (err) { return null; }
+    if (!saved || typeof saved !== "object") return null;
+    if (saved.stateVersion !== PP_STATE_VERSION) return null;
+    if (typeof saved.index !== "number" || saved.index < 0 || saved.index >= PP_SCENES.length) return null;
+    const base = ppDefaultState();
+    Object.keys(base).forEach(function (k) {
+        if (saved[k] === undefined || saved[k] === null) saved[k] = base[k];
+    });
+    if (!Array.isArray(saved.episodes)) saved.episodes = [];
+    if (!Array.isArray(saved.log)) saved.log = [];
+    if (!saved.scenes || typeof saved.scenes !== "object") saved.scenes = {};
+    if (typeof saved.xp !== "number" || saved.xp < 0) saved.xp = 0;
+    return saved;
+}
+
+function ppClearSaved() {
+    try { storageSet("state", ""); } catch (err) { /* storage unavailable */ }
+    try { storageSet("report", ""); } catch (err) { /* storage unavailable */ }
+}
+
+/* A thrown handler used to leave the sim looking frozen. Every bound control is
+   wrapped so a failure reports itself and the activity stays usable (QA 6.7). */
+function ppGuard(fn) {
+    return function (ev) {
+        try { return fn(ev); } catch (err) {
+            try {
+                ppFeedback("bad", [{
+                    label: "Something went wrong.",
+                    text: "That action did not complete, but your progress is safe. Try it again, or press Try Again to clear this scene and rebuild it."
+                }]);
+                ppLog("Recovered from an unexpected error.");
+            } catch (err2) { /* ignore */ }
+        }
+    };
+}
+
+function ppSyncMotionBtn() {
+    const btn = document.getElementById("ppMotionBtn");
+    if (!btn) return;
+    btn.setAttribute("aria-pressed", pp && pp.reduce ? "true" : "false");
+    btn.textContent = pp && pp.reduce ? "Motion: reduced" : "Reduce motion";
+}
 
 function ppDefaultState() {
     return {
@@ -1463,6 +1603,8 @@ function ppDefaultState() {
         episodes: [],
         log: [],
         reduce: false,
+        lastReward: "",
+        stateVersion: PP_STATE_VERSION,
         startedAt: Date.now()
     };
 }
@@ -1558,6 +1700,8 @@ function ppUpdateHud() {
         eq.appendChild(bar);
     }
 
+    ppRenderReward();
+
     const badges = document.getElementById("ppBadges");
     badges.replaceChildren();
     PP_BADGES.forEach(function (b) {
@@ -1597,6 +1741,8 @@ function ppEarnBadge(id) {
 }
 
 function ppToast(text) {
+    pp.lastReward = text;
+    ppRenderReward();
     const host = document.getElementById("ppToasts");
     if (!host) return;
     if (pp.reduce || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -1606,6 +1752,26 @@ function ppToast(text) {
     t.textContent = text;
     host.appendChild(t);
     window.setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 1600);
+}
+
+function ppRenderReward() {
+    const host = document.getElementById("ppReward");
+    if (!host) return;
+    host.replaceChildren();
+    if (!pp.lastReward) {
+        const em = document.createElement("span");
+        em.className = "pp-reward-empty";
+        em.textContent = "No rewards earned yet — lock in your first playlist.";
+        host.appendChild(em);
+        return;
+    }
+    const star = document.createElement("span");
+    star.setAttribute("aria-hidden", "true");
+    star.textContent = "★";
+    const b = document.createElement("b");
+    b.textContent = "Latest reward: " + pp.lastReward;
+    host.appendChild(star);
+    host.appendChild(b);
 }
 
 function ppLog(text) {
@@ -1665,6 +1831,10 @@ function ppErrorFeedback(err) {
 function ppRender() {
     const scene = PP_SCENES[pp.index];
     const stage = document.getElementById("ppStage");
+    const active = document.activeElement;
+    const previousKey = (active && active.dataset && active.dataset.fk) ? active.dataset.fk : null;
+    const wantedKey = ppFocusNext || previousKey;
+    ppFocusNext = null;
     stage.replaceChildren();
 
     if (scene.kind === "mission") ppRenderMission(stage, scene);
@@ -1675,6 +1845,8 @@ function ppRender() {
     ppUpdateHud();
     ppUpdateToolbar();
     ppRenderPreview();
+    ppRestoreFocus(wantedKey);
+    ppPersist();
 }
 
 function ppRenderMission(stage, scene) {
@@ -1846,6 +2018,7 @@ function ppBuildCard(scene, st, card) {
     btn.className = "pp-card" + (st.selected === card.id ? " is-selected" : "");
     btn.setAttribute("draggable", "true");
     btn.dataset.cardId = card.id;
+    btn.dataset.fk = "c:" + card.id;
     btn.setAttribute("aria-pressed", st.selected === card.id ? "true" : "false");
     const grip = document.createElement("span");
     grip.className = "pp-grip";
@@ -1855,6 +2028,12 @@ function ppBuildCard(scene, st, card) {
     txt.textContent = card.text;
     btn.appendChild(grip);
     btn.appendChild(txt);
+    if (st.selected === card.id) {
+        const chip = document.createElement("span");
+        chip.className = "pp-state-chip";
+        chip.textContent = "✓ Selected";
+        btn.appendChild(chip);
+    }
     btn.addEventListener("click", function () { ppSelectCard(scene, card.id); });
     btn.addEventListener("dragstart", function (ev) {
         st.selected = card.id;
@@ -1867,6 +2046,7 @@ function ppBuildSlot(scene, st, index, label, isSkip) {
     const slot = document.createElement("button");
     slot.type = "button";
     slot.className = "pp-slot" + (isSkip ? " pp-skip" : "");
+    slot.dataset.fk = isSkip ? "s:skip" : "s:" + index;
     const heldId = isSkip ? st.skip : st.slots[index];
 
     const no = document.createElement("div");
@@ -1931,6 +2111,7 @@ function ppBuildSlot(scene, st, index, label, isSkip) {
 function ppSelectCard(scene, id) {
     const st = ppSceneState(scene);
     st.selected = st.selected === id ? null : id;
+    ppFocusNext = "c:" + id;
     ppRender();
     const card = ppCardById(scene, id);
     ppFeedback("", [{ text: st.selected ? "Selected: “" + card.text + "” Now choose a slot." : "Selection cleared." }]);
@@ -1945,6 +2126,7 @@ function ppPlace(scene, index, isSkip) {
         if (held) {
             if (isSkip) st.skip = null; else st.slots[index] = null;
             st.marked = false;
+            ppFocusNext = "c:" + held;
             ppRender();
             ppFeedback("", [{ text: "Track returned to the crate." }]);
         } else {
@@ -1960,6 +2142,7 @@ function ppPlace(scene, index, isSkip) {
     if (isSkip) st.skip = movingId; else st.slots[index] = movingId;
     st.selected = null;
     st.marked = false;
+    ppFocusNext = isSkip ? "s:skip" : "s:" + index;
     ppRender();
     ppFeedback("", [{ text: "Track placed. Keep going, then press Check playlist." }]);
     ppSetMood("thinking");
@@ -1990,11 +2173,15 @@ function ppRenderGap(stage, scene) {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "pp-tile" + (used ? " is-used" : "") + (st.selected === word ? " is-selected" : "");
+        btn.dataset.fk = "t:" + word;
         btn.textContent = word;
+        if (used) btn.textContent = word + " — placed";
+        else if (st.selected === word) btn.textContent = word + " — selected";
         btn.setAttribute("draggable", used || st.solved ? "false" : "true");
         btn.disabled = used || st.solved;
         btn.addEventListener("click", function () {
             st.selected = st.selected === word ? null : word;
+            ppFocusNext = "t:" + word;
             ppRender();
             ppFeedback("", [{ text: st.selected ? "Selected “" + word + "”. Now choose a gap." : "Selection cleared." }]);
         });
@@ -2018,6 +2205,7 @@ function ppRenderGap(stage, scene) {
         const slot = document.createElement("button");
         slot.type = "button";
         slot.className = "pp-gap-slot" + (st.slots[i] ? " is-filled" : "");
+        slot.dataset.fk = "g:" + i;
         slot.textContent = st.slots[i] ? st.slots[i] + "," : "— gap —";
         slot.setAttribute("aria-label", "Gap " + (i + 1) + ": " + (st.slots[i] ? "holding " + st.slots[i] : "empty"));
         if (st.marked && st.slots[i]) {
@@ -2058,8 +2246,10 @@ function ppPlaceGap(scene, index) {
     if (st.solved) return;
     if (!st.selected) {
         if (st.slots[index]) {
+            const freed = st.slots[index];
             st.slots[index] = null;
             st.marked = false;
+            ppFocusNext = "t:" + freed;
             ppRender();
             ppFeedback("", [{ text: "Transition returned to the tracks." }]);
         } else {
@@ -2072,6 +2262,7 @@ function ppPlaceGap(scene, index) {
     st.slots[index] = word;
     st.selected = null;
     st.marked = false;
+    ppFocusNext = "g:" + index;
     ppRender();
     ppSetMood("thinking");
     ppFeedback("", [{ text: "Transition placed. Fill every gap, then press Check playlist." }]);
@@ -2336,6 +2527,7 @@ function ppRetryConfirmed() {
 
 function ppFullRestart() {
     const reduce = pp.reduce;
+    ppClearSaved();
     pp = ppDefaultState();
     pp.reduce = reduce;
     ppRender();
@@ -2343,11 +2535,39 @@ function ppFullRestart() {
 }
 
 function ppOpenModal(id) {
-    document.getElementById(id).classList.add("is-open");
+    const modal = document.getElementById(id);
+    if (!modal || modal.classList.contains("is-open")) return;
+    ppModalReturn = document.activeElement;
+    modal.classList.add("is-open");
+    const first = modal.querySelector("button");
+    if (first) { try { first.focus(); } catch (err) { /* ignore */ } }
 }
 
 function ppCloseModal(id) {
-    document.getElementById(id).classList.remove("is-open");
+    const modal = document.getElementById(id);
+    if (!modal || !modal.classList.contains("is-open")) return;
+    modal.classList.remove("is-open");
+    if (ppModalReturn && document.contains(ppModalReturn)) {
+        try { ppModalReturn.focus(); } catch (err) { /* ignore */ }
+    }
+    ppModalReturn = null;
+}
+
+function ppCloseAllModals() {
+    ["ppLogModal", "ppRetryModal", "ppExitModal"].forEach(ppCloseModal);
+}
+
+/* Keep Tab inside an open dialog so a keyboard user cannot tab out behind it. */
+function ppTrapTab(ev) {
+    if (ev.key !== "Tab") return;
+    const modal = document.querySelector(".pp-modal.is-open");
+    if (!modal) return;
+    const items = Array.prototype.slice.call(modal.querySelectorAll("button:not([disabled])"));
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+    else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
 }
 
 function ppShowLog() {
@@ -2372,63 +2592,88 @@ function ppShowLog() {
 function ppToggleMotion() {
     pp.reduce = !pp.reduce;
     document.body.classList.toggle("pp-reduce", pp.reduce);
-    const btn = document.getElementById("ppMotionBtn");
-    btn.setAttribute("aria-pressed", pp.reduce ? "true" : "false");
-    btn.textContent = pp.reduce ? "Motion reduced" : "Reduce motion";
+    ppSyncMotionBtn();
+    ppFeedback("hint", [{
+        label: pp.reduce ? "Motion reduced." : "Motion restored.",
+        text: pp.reduce
+            ? "Animations, sliding meters and pop-up rewards are now switched off. Rewards still appear as text in the Latest reward line, and the flow bar still fills — it just moves straight to its new value."
+            : "Animations, the sliding flow bar and pop-up rewards are switched back on."
+    }]);
+    ppPersist();
 }
 
 function ppBindOnce() {
     if (ppBindOnce.done) return;
     ppBindOnce.done = true;
-    document.getElementById("ppCheckBtn").addEventListener("click", ppCheck);
-    document.getElementById("ppNextBtn").addEventListener("click", ppNext);
-    document.getElementById("ppBackBtn").addEventListener("click", ppBack);
-    document.getElementById("ppHintBtn").addEventListener("click", ppHint);
-    document.getElementById("ppRulesBtn").addEventListener("click", function () {
-        if (dom.helpBtn) dom.helpBtn.click();
-    });
-    document.getElementById("ppExitBtn").addEventListener("click", function () {
+    function on(id, fn) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("click", ppGuard(fn));
+    }
+    on("ppCheckBtn", ppCheck);
+    on("ppNextBtn", ppNext);
+    on("ppBackBtn", ppBack);
+    on("ppHintBtn", ppHint);
+    on("ppRulesBtn", function () { if (dom.helpBtn) dom.helpBtn.click(); });
+    on("ppLogBtn", ppShowLog);
+    on("ppLogCloseBtn", function () { ppCloseModal("ppLogModal"); });
+    on("ppMotionBtn", ppToggleMotion);
+
+    /* QA 3.1 — Exit now confirms first. */
+    on("ppExitBtn", function () { ppOpenModal("ppExitModal"); });
+    on("ppExitCancelBtn", function () { ppCloseModal("ppExitModal"); });
+    on("ppExitConfirmBtn", function () {
+        ppCloseModal("ppExitModal");
         ppSaveReport();
+        ppPersist();
         showScreen("home");
     });
-    document.getElementById("ppLogBtn").addEventListener("click", ppShowLog);
-    document.getElementById("ppLogCloseBtn").addEventListener("click", function () { ppCloseModal("ppLogModal"); });
-    document.getElementById("ppMotionBtn").addEventListener("click", ppToggleMotion);
-    document.getElementById("ppRetryBtn").addEventListener("click", function () { ppOpenModal("ppRetryModal"); });
-    document.getElementById("ppRetryCancelBtn").addEventListener("click", function () { ppCloseModal("ppRetryModal"); });
-    document.getElementById("ppRetryConfirmBtn").addEventListener("click", function () {
+
+    on("ppRetryBtn", function () { ppOpenModal("ppRetryModal"); });
+    on("ppRetryCancelBtn", function () { ppCloseModal("ppRetryModal"); });
+    on("ppRetryConfirmBtn", function () {
         ppCloseModal("ppRetryModal");
         ppRetryConfirmed();
     });
+
+    /* Clicking the backdrop closes a dialog, so it can never strand the page. */
+    ["ppLogModal", "ppRetryModal", "ppExitModal"].forEach(function (id) {
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.addEventListener("click", ppGuard(function (ev) {
+            if (ev.target === modal) ppCloseModal(id);
+        }));
+    });
+
     document.addEventListener("keydown", function (ev) {
-        if (ev.key !== "Escape") return;
-        ppCloseModal("ppLogModal");
-        ppCloseModal("ppRetryModal");
+        if (ev.key === "Escape") { ppCloseAllModals(); return; }
+        ppTrapTab(ev);
     });
 }
 
 function devInit() {
-    pp = ppDefaultState();
-    pp.reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.body.classList.toggle("pp-reduce", pp.reduce);
     ppBindOnce();
-    const motionBtn = document.getElementById("ppMotionBtn");
-    motionBtn.setAttribute("aria-pressed", pp.reduce ? "true" : "false");
-    motionBtn.textContent = pp.reduce ? "Motion reduced" : "Reduce motion";
+    ppCloseAllModals();
+    const saved = ppLoadState();
+    pp = saved || ppDefaultState();
+    if (!saved) pp.reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.body.classList.toggle("pp-reduce", !!pp.reduce);
+    ppSyncMotionBtn();
     ppRender();
+    if (saved) {
+        ppFeedback("", [{
+            label: "Welcome back.",
+            text: "Your session was restored at " + PP_SCENES[pp.index].name + ". Your XP, badges and published episodes are exactly as you left them."
+        }]);
+    }
 }
 
 function devReset() {
-    ppCloseModal("ppLogModal");
-    ppCloseModal("ppRetryModal");
+    ppCloseAllModals();
+    ppClearSaved();
     pp = ppDefaultState();
-    document.body.classList.toggle("pp-reduce", pp.reduce);
-    const motionBtn = document.getElementById("ppMotionBtn");
-    if (motionBtn) {
-        motionBtn.setAttribute("aria-pressed", "false");
-        motionBtn.textContent = "Reduce motion";
-    }
-    try { storageSet("report", ""); } catch (err) { /* storage unavailable */ }
+    pp.reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.body.classList.toggle("pp-reduce", !!pp.reduce);
+    ppSyncMotionBtn();
     ppRender();
     ppFeedback("", [{ text: "Everything has been reset. Press Next to start Episode 1." }]);
 }
