@@ -570,8 +570,9 @@
         .hud-chip {
             display: inline-flex;
             align-items: center;
-            gap: 9px;
-            padding: 9px 16px;
+            gap: 7px;
+            padding: 7px 13px;
+            font-size: 0.94rem;
             border-radius: 999px;
             border: 3px solid var(--border);
             background: var(--surface-2);
@@ -600,8 +601,9 @@
         }
 
         .star-strip {
-            letter-spacing: 0.12em;
-            font-size: 1.02rem;
+            letter-spacing: 0.04em;
+            font-size: 0.98rem;
+            white-space: nowrap;
         }
 
         .reward-float {
@@ -647,6 +649,9 @@
 
         .circuit-wrap {
             position: relative;
+            max-width: 580px;
+            margin-left: auto;
+            margin-right: auto;
             background: linear-gradient(160deg, var(--sim-map-a), var(--sim-map-b));
             border: 3px solid color-mix(in srgb, var(--sim-deoxy) 38%, var(--border));
             border-radius: var(--radius-xl);
@@ -657,9 +662,10 @@
 
         .circuit-map {
             display: block;
-            width: 100%;
+            width: min(100%, 520px);
+            margin: 0 auto;
             height: auto;
-            max-height: 56vh;
+            max-height: 62vh;
         }
 
         .organ-shape {
@@ -735,6 +741,7 @@
 
         .vessel-cool {
             stroke: var(--sim-deoxy);
+            stroke-dasharray: 30 12;
         }
 
         .flow {
@@ -842,14 +849,61 @@
         }
 
         .cargo-orb {
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            transform-box: fill-box;
-            transform-origin: center;
+            transition: opacity 0.35s ease;
         }
 
         .cargo-orb.is-off {
             opacity: 0;
-            transform: scale(0.4);
+        }
+
+        .orb-disc {
+            stroke: var(--sim-ink);
+            stroke-width: 2;
+        }
+
+        .orb-label {
+            fill: var(--sim-ink);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            text-anchor: middle;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            margin: 0 0 14px;
+            color: var(--text-soft);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-swatch {
+            width: 44px;
+            height: 12px;
+            flex: 0 0 44px;
+        }
+
+        .legend-line {
+            fill: none;
+            stroke-width: 7;
+            stroke-linecap: round;
+        }
+
+        .legend-warm {
+            stroke: var(--sim-oxy);
+        }
+
+        .legend-cool {
+            stroke: var(--sim-deoxy);
+            stroke-dasharray: 11 7;
         }
 
         /* ---------- station tracker ---------- */
@@ -857,20 +911,20 @@
         .tracker {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 7px;
             margin-bottom: 14px;
         }
 
         .tracker-chip {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 9px 15px;
+            gap: 7px;
+            padding: 7px 13px;
             border-radius: 999px;
-            border: 3px solid var(--border);
+            border: 2px solid var(--border);
             background: var(--surface-2);
             font-weight: 800;
-            font-size: 0.94rem;
+            font-size: 0.88rem;
             color: var(--text);
         }
 
@@ -899,27 +953,30 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
-            padding: 13px 16px;
-            margin-bottom: 14px;
-            border-radius: var(--radius-lg);
-            background: var(--surface-2);
-            border: 3px solid var(--border);
+            gap: 8px;
+            margin: 0 0 14px;
         }
 
         .hold-title {
             font-weight: 900;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--text-soft);
+            margin-right: 2px;
+        }
+
+        #holdItems {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .hold-pill {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            padding: 7px 14px;
+            gap: 6px;
+            padding: 5px 12px;
             border-radius: 999px;
             font-weight: 800;
             font-size: 0.94rem;
@@ -1100,14 +1157,27 @@
             padding: 15px 28px;
         }
 
-        .cargo-btn:focus-visible,
-        .route-btn:focus-visible,
-        .choice-btn:focus-visible,
-        .check-btn:focus-visible,
-        .exit-btn:focus-visible,
-        .nav-row button:focus-visible {
-            outline: none;
+        /* Accessibility 10.2 — the focus ring must be obvious on every
+           background this sim uses, so it is a solid high-contrast outline
+           with a gap, not just the chrome's soft shadow. */
+        #simContainer button:focus-visible,
+        #simContainer [tabindex]:focus-visible,
+        #simContainer button:focus,
+        #simContainer [tabindex]:focus {
+            outline: 4px solid var(--text);
+            outline-offset: 3px;
             box-shadow: var(--focus);
+            border-radius: var(--radius-md);
+        }
+
+        #simContainer button:focus:not(:focus-visible) {
+            outline-color: var(--accent);
+        }
+
+        #stageTitle:focus,
+        #feedbackBox:focus {
+            outline: 4px solid var(--accent);
+            outline-offset: 4px;
         }
 
         /* ---------- feedback ---------- */
@@ -1410,7 +1480,7 @@
                     <div class="sim-head">
                         <div class="sim-head-copy">
                             <p class="scene-progress" id="sceneProgress">Scene 1 of 6</p>
-                            <h2 id="stageTitle">Mission Briefing</h2>
+                            <h2 id="stageTitle" tabindex="-1">Mission Briefing</h2>
                         </div>
                         <button type="button" class="danger-btn exit-btn" id="exitBtn">Exit</button>
                     </div>
@@ -1447,7 +1517,7 @@
                     </div>
 
                     <div class="circuit-wrap" id="circuitWrap">
-                        <svg class="circuit-map" viewBox="0 0 720 552" role="img"
+                        <svg class="circuit-map" viewBox="0 0 760 614" role="img"
                             aria-labelledby="circuitTitle circuitDesc">
                             <title id="circuitTitle">Map of the double circulation circuit</title>
                             <desc id="circuitDesc">A figure-of-eight diagram. The lungs sit at the top, the heart in
@@ -1458,116 +1528,117 @@
                                 heart. A blood drop travels around this loop.</desc>
 
                             <defs>
-                                <marker id="arrowWarm" viewBox="0 0 16 16" refX="2" refY="8" markerWidth="26"
-                                    markerHeight="26" markerUnits="userSpaceOnUse"
-                                    orient="auto-start-reverse">
+                                <marker id="arrowWarm" viewBox="0 0 16 16" refX="2" refY="8" markerWidth="24"
+                                    markerHeight="24" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
                                     <path class="arrow-warm" d="M 1 1 L 15 8 L 1 15 z" />
                                 </marker>
-                                <marker id="arrowCool" viewBox="0 0 16 16" refX="2" refY="8" markerWidth="26"
-                                    markerHeight="26" markerUnits="userSpaceOnUse"
-                                    orient="auto-start-reverse">
+                                <marker id="arrowCool" viewBox="0 0 16 16" refX="2" refY="8" markerWidth="24"
+                                    markerHeight="24" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
                                     <path class="arrow-cool" d="M 1 1 L 15 8 L 1 15 z" />
                                 </marker>
                             </defs>
 
-                            <text class="vessel-tag cool" x="146" y="196">OXYGEN-POOR</text>
-                            <text class="vessel-tag cool" x="146" y="215">heading up to refuel</text>
-                            <text class="vessel-tag warm" x="592" y="196">OXYGEN-RICH</text>
-                            <text class="vessel-tag warm" x="592" y="215">coming down to the pump</text>
-                            <text class="vessel-tag warm" x="592" y="392">OXYGEN-RICH</text>
-                            <text class="vessel-tag warm" x="592" y="411">shipping out to the body</text>
-                            <text class="vessel-tag cool" x="146" y="392">OXYGEN-POOR</text>
-                            <text class="vessel-tag cool" x="146" y="411">on the way back</text>
-
+                            <!-- LUNGS: shape 26-152, label lane 170-220 -->
                             <g class="organ" id="organLungs">
                                 <g class="breathes">
-                                    <rect class="organ-shape organ-lung" x="353" y="24" width="14" height="44"
+                                    <rect class="organ-shape organ-lung" x="373" y="26" width="14" height="44"
                                         rx="7" />
-                                    <path class="organ-shape organ-lung" d="M 360 62 L 336 84" />
-                                    <path class="organ-shape organ-lung" d="M 360 62 L 384 84" />
+                                    <path class="organ-shape organ-lung" d="M 380 64 L 356 86" />
+                                    <path class="organ-shape organ-lung" d="M 380 64 L 404 86" />
                                     <path class="organ-shape organ-lung"
-                                        d="M 350 78 C 340 58 302 58 294 88 C 284 122 294 148 320 150 C 344 152 350 136 350 114 Z" />
+                                        d="M 362 80 C 352 60 314 60 306 90 C 296 124 306 150 332 152 C 356 154 362 138 362 116 Z" />
                                     <path class="organ-shape organ-lung"
-                                        d="M 370 78 C 380 58 418 58 426 88 C 436 122 426 148 400 150 C 376 152 370 136 370 114 Z" />
+                                        d="M 398 80 C 408 60 446 60 454 90 C 464 124 454 150 428 152 C 404 154 398 138 398 116 Z" />
                                 </g>
-                                <text class="organ-label" x="360" y="184">LUNGS</text>
-                                <text class="organ-flag" id="flagLungs" x="360" y="205"></text>
+                                <text class="organ-label" x="380" y="186">LUNGS</text>
+                                <text class="organ-flag" id="flagLungs" x="380" y="212"></text>
                             </g>
 
-                            <text class="organ-sub" x="360" y="212">THE HEART</text>
+                            <!-- HEART: caption lane 238, shape 252-372, label lane 394-432 -->
+                            <text class="organ-sub" x="380" y="252">THE HEART</text>
                             <g class="organ" id="organRightHeart">
                                 <path class="organ-shape organ-heart beats"
-                                    d="M 360 332 C 286 280 286 228 322 218 C 342 212 358 226 360 240 Z" />
-                                <text class="organ-label" x="296" y="358">RIGHT</text>
-                                <text class="organ-sub" x="296" y="377">side</text>
-                                <text class="organ-flag" id="flagRightHeart" x="296" y="398"></text>
+                                    d="M 380 386 C 300 330 300 276 338 266 C 360 260 378 274 380 288 Z" />
+                                <text class="organ-label" x="306" y="414">RIGHT</text>
+                                <text class="organ-flag" id="flagRightHeart" x="306" y="440"></text>
                             </g>
                             <g class="organ" id="organLeftHeart">
                                 <path class="organ-shape organ-heart beats"
-                                    d="M 360 332 C 434 280 434 228 398 218 C 378 212 362 226 360 240 Z" />
-                                <text class="organ-label" x="426" y="358">LEFT</text>
-                                <text class="organ-sub" x="426" y="377">side</text>
-                                <text class="organ-flag" id="flagLeftHeart" x="426" y="398"></text>
+                                    d="M 380 386 C 460 330 460 276 422 266 C 400 260 382 274 380 288 Z" />
+                                <text class="organ-label" x="454" y="414">LEFT</text>
+                                <text class="organ-flag" id="flagLeftHeart" x="454" y="440"></text>
                             </g>
 
+                            <!-- BODY: shape 460-534, label lane 552-592 -->
                             <g class="organ" id="organBody">
-                                <rect class="organ-shape organ-body" x="288" y="410" width="144" height="72"
+                                <rect class="organ-shape organ-body" x="306" y="474" width="148" height="74"
                                     rx="22" />
-                                <circle class="organ-shape organ-body" cx="360" cy="434" r="12" />
+                                <circle class="organ-shape organ-body" cx="380" cy="500" r="12" />
                                 <path class="organ-shape organ-body"
-                                    d="M 360 448 L 346 470 M 360 448 L 374 470 M 349 456 L 371 456" />
-                                <text class="organ-label" x="360" y="504">BODY TISSUES</text>
-                                <text class="organ-flag" id="flagBody" x="360" y="527"></text>
+                                    d="M 380 514 L 366 536 M 380 514 L 394 536 M 369 522 L 391 522" />
+                                <text class="organ-label" x="380" y="572">BODY TISSUES</text>
+                                <text class="organ-flag" id="flagBody" x="380" y="596"></text>
                             </g>
 
+                            <!-- vessels run outside the central label column -->
                             <g id="vessels">
                                 <path class="vessel vessel-cool" marker-end="url(#arrowCool)"
-                                    d="M 292 218 C 236 196 240 154 274 146" />
-                                <path class="flow" d="M 292 218 C 236 196 240 154 274 146" />
+                                    d="M 312 286 C 222 262 220 152 316 144" />
+                                <path class="flow" d="M 312 286 C 222 262 220 152 316 144" />
                                 <path class="vessel vessel-warm" marker-end="url(#arrowWarm)"
-                                    d="M 438 132 C 480 154 482 192 424 212" />
-                                <path class="flow" d="M 438 132 C 480 154 482 192 424 212" />
+                                    d="M 444 144 C 540 152 538 262 448 286" />
+                                <path class="flow" d="M 444 144 C 540 152 538 262 448 286" />
                                 <path class="vessel vessel-warm" marker-end="url(#arrowWarm)"
-                                    d="M 424 300 C 470 330 470 394 436 416" />
-                                <path class="flow" d="M 424 300 C 470 330 470 394 436 416" />
+                                    d="M 452 366 C 556 406 560 510 466 530" />
+                                <path class="flow" d="M 452 366 C 556 406 560 510 466 530" />
                                 <path class="vessel vessel-cool" marker-end="url(#arrowCool)"
-                                    d="M 284 430 C 250 398 250 336 290 308" />
-                                <path class="flow" d="M 284 430 C 250 398 250 336 290 308" />
+                                    d="M 294 530 C 200 510 204 406 308 366" />
+                                <path class="flow" d="M 294 530 C 200 510 204 406 308 366" />
                             </g>
 
-                            <g id="bloodDrop" transform="translate(360 118)">
+                            <g id="bloodDrop" transform="translate(380 112)">
                                 <g id="dropPulse">
                                     <path class="drop-body"
                                         d="M 0 -22 C 13 -6 20 3 20 10 A 20 20 0 0 1 -20 10 C -20 3 -13 -6 0 -22 Z" />
                                     <circle class="drop-face" cx="-7" cy="7" r="2.6" />
                                     <circle class="drop-face" cx="7" cy="7" r="2.6" />
-                                    <path class="drop-face" d="M -6 15 Q 0 20 6 15" fill="none" stroke="currentColor"
-                                        stroke-width="0" />
                                     <circle class="drop-shine" cx="-9" cy="0" r="3.4" />
                                 </g>
                                 <g id="dropCargo">
-                                    <circle class="cargo-orb is-off icon-oxygen" id="orbOxygen" cx="-26" cy="-20"
-                                        r="8" />
-                                    <circle class="cargo-orb is-off icon-carbonDioxide" id="orbCarbonDioxide" cx="0"
-                                        cy="-32" r="8" />
-                                    <circle class="cargo-orb is-off icon-nutrients" id="orbNutrients" cx="26"
-                                        cy="-20" r="8" />
+                                    <g class="cargo-orb is-off" id="orbOxygen" transform="translate(-36 -32)">
+                                        <circle class="orb-disc icon-oxygen" cx="0" cy="0" r="15" />
+                                        <text class="orb-label" x="0" y="5">O₂</text>
+                                    </g>
+                                    <g class="cargo-orb is-off" id="orbCarbonDioxide" transform="translate(0 -44)">
+                                        <circle class="orb-disc icon-carbonDioxide" cx="0" cy="0" r="15" />
+                                        <text class="orb-label" x="0" y="5">CO₂</text>
+                                    </g>
+                                    <g class="cargo-orb is-off" id="orbNutrients" transform="translate(36 -32)">
+                                        <circle class="orb-disc icon-nutrients" cx="0" cy="0" r="15" />
+                                        <text class="orb-label" x="0" y="5">NUT</text>
+                                    </g>
                                 </g>
                             </g>
                         </svg>
                     </div>
 
-                    <div class="tracker" id="tracker"></div>
+                    <p class="legend">
+                        <span class="legend-item"><svg class="legend-swatch" viewBox="0 0 44 12" aria-hidden="true">
+                                <path class="legend-line legend-warm" d="M 2 6 H 42" /></svg>Oxygen-rich blood —
+                            solid red</span>
+                        <span class="legend-item"><svg class="legend-swatch" viewBox="0 0 44 12" aria-hidden="true">
+                                <path class="legend-line legend-cool" d="M 2 6 H 42" /></svg>Oxygen-poor blood —
+                            dashed blue</span>
+                    </p>
 
-                    <div class="hold" id="hold">
-                        <span class="hold-title">Cargo hold</span>
-                        <span id="holdItems"></span>
-                    </div>
+                    <div class="tracker" id="tracker"></div>
 
                     <p class="status-line" id="statusLine" role="status" aria-live="polite"></p>
 
                     <div class="cargo-panel" id="cargoPanel">
                         <p class="panel-heading" id="cargoHeading">Step 1 — load and unload, then check the hold</p>
+                        <p class="hold" id="hold"><span class="hold-title">In the hold:</span><span
+                                id="holdItems"></span></p>
                         <div class="cargo-row" id="cargoRow"></div>
                         <div class="check-panel" style="margin-top: 14px;">
                             <button type="button" class="primary-btn check-btn" id="checkCargoBtn">Check the
@@ -1585,7 +1656,7 @@
                         <div class="route-row" id="routeRow"></div>
                     </div>
 
-                    <div class="feedback hidden" id="feedbackBox"></div>
+                    <div class="feedback hidden" id="feedbackBox" tabindex="-1" role="status" aria-live="polite"></div>
 
                     <div class="check-panel hidden" id="startPanel">
                         <button type="button" class="primary-btn check-btn" id="beginBtn">Start the Delivery</button>
@@ -1642,7 +1713,7 @@
              Search "DEV-EDIT" to find every place you need to change.
              ============================================================ -->
         <div class="footer-note">
-            SCI-BIO-F2-T1-U1-SEC2-SIM2.1C · Blood Cargo and the Double Circuit · runs offline in a single file.
+            Blood Cargo and the Double Circuit
         </div>
     </div>
 
@@ -1972,10 +2043,10 @@
         };
 
         const DROP_POSITION = {
-            lungs: [360, 118],
-            leftHeart: [400, 262],
-            body: [306, 444],
-            rightHeart: [320, 262]
+            lungs: [380, 112],
+            leftHeart: [418, 324],
+            body: [344, 510],
+            rightHeart: [342, 324]
         };
 
         const NODE_KEYS = ["lungs", "leftHeart", "body", "rightHeart"];
@@ -2233,7 +2304,11 @@
             simDom.backBtn.addEventListener("click", handleBack);
             simDom.hintBtn.addEventListener("click", showHint);
             simDom.tryAgainBtn.addEventListener("click", handleTryAgain);
-            simDom.beginBtn.addEventListener("click", () => { goToStage(1); });
+            simDom.beginBtn.addEventListener("click", () => {
+                goToStage(1);
+                queueFocus("cargo");
+                applyPendingFocus();
+            });
             simDom.playAgainBtn.addEventListener("click", askRestart);
             simDom.checkCargoBtn.addEventListener("click", checkCargo);
             simDom.reviewBtn.addEventListener("click", toggleReview);
@@ -2243,10 +2318,53 @@
                 closeConfirm();
                 if (action) action();
             });
+
+            // Escape backs out of a confirmation without clearing anything.
+            simDom.confirmPanel.addEventListener("keydown", (event) => {
+                if (event.key !== "Escape") return;
+                const back = confirmOpener;
+                closeConfirm();
+                if (back && typeof back.focus === "function") back.focus();
+            });
             simDom.confirmNoBtn.addEventListener("click", () => {
+                const back = confirmOpener;
                 closeConfirm();
                 setFeedback("neutral", "Nothing cleared", ["Your run has been left exactly as it was."]);
+                if (back && typeof back.focus === "function") back.focus();
             });
+        }
+
+        /* ---------- keyboard focus management (checklist 10.1) ---------- */
+
+        /* Set by an action, applied once the next render has run. */
+        let pendingFocus = null;
+
+        function queueFocus(what) {
+            pendingFocus = what;
+        }
+
+        function applyPendingFocus() {
+            const what = pendingFocus;
+            pendingFocus = null;
+            if (!what) return;
+            let target = null;
+            if (what === "stage") {
+                target = simDom.stageTitle;
+            } else if (what === "cargo") {
+                target = simDom.cargoRow.querySelector("button:not([disabled])") || simDom.checkCargoBtn;
+            } else if (what === "question") {
+                target = simDom.questionRow.querySelector("button");
+            } else if (what === "route") {
+                target = simDom.routeRow.querySelector("button");
+            } else if (what === "begin") {
+                target = simDom.beginBtn;
+            } else if (what === "again") {
+                target = simDom.playAgainBtn;
+            }
+            if (target && typeof target.focus === "function") {
+                // Let the browser scroll it into view, so focus is never off-screen.
+                target.focus();
+            }
         }
 
         /* ---------- delivery log (Review) ---------- */
@@ -2269,6 +2387,7 @@
             if (simDom.reviewPanel.classList.contains("hidden")) {
                 renderReview();
                 simDom.reviewPanel.classList.remove("hidden");
+                simDom.reviewPanel.addEventListener("keydown", reviewKeydown);
                 simDom.closeReviewBtn.focus();
             } else {
                 closeReview();
@@ -2276,6 +2395,7 @@
         }
 
         function closeReview() {
+            simDom.reviewPanel.removeEventListener("keydown", reviewKeydown);
             simDom.reviewPanel.classList.add("hidden");
             simDom.reviewBtn.focus();
         }
@@ -2283,9 +2403,11 @@
         /* ---------- confirmation before anything is cleared ---------- */
 
         let pendingConfirm = null;
+        let confirmOpener = null;
 
         function askConfirm(message, action) {
             pendingConfirm = action;
+            confirmOpener = document.activeElement;
             simDom.confirmText.textContent = message;
             simDom.confirmPanel.classList.remove("hidden");
             simDom.confirmYesBtn.focus();
@@ -2296,8 +2418,15 @@
             simDom.confirmPanel.classList.add("hidden");
         }
 
+        /* The Review panel is a disclosure: Escape closes it and focus
+           returns to the Review button that opened it. */
+        function reviewKeydown(event) {
+            if (event.key === "Escape") closeReview();
+        }
+
         function askRestart() {
             askConfirm("Clear your whole run — score, stars and all — and start the circuit again?", () => {
+                queueFocus("begin");
                 resetSimState();
                 renderStage();
                 setFeedback("neutral", "Run cleared", ["Everything is back to the start. Press Start the Delivery to set off from the lungs."]);
@@ -2358,8 +2487,7 @@
         function renderHud() {
             const stars = totalStars();
             simDom.scoreValue.textContent = String(sim.score);
-            simDom.starStrip.textContent = "★".repeat(stars) + "☆".repeat(MAX_STARS - stars) +
-                "  " + stars + " of " + MAX_STARS;
+            simDom.starStrip.textContent = "★ " + stars + " / " + MAX_STARS;
             simDom.rankValue.textContent = rankName();
         }
 
@@ -2382,6 +2510,7 @@
         }
 
         function goToStage(stage) {
+            queueFocus("stage");
             sim.stage = stage;
             const station = currentStation();
             sim.entryCargo = Object.assign({}, sim.cargo);
@@ -2397,6 +2526,7 @@
             }
             const previous = sim.stage - 1;
             if (previous === 0) {
+                queueFocus("stage");
                 sim.stage = 0;
                 sim.cargo = Object.assign({}, START_CARGO);
                 sim.entryCargo = Object.assign({}, START_CARGO);
@@ -2406,6 +2536,7 @@
                 renderStage();
                 return;
             }
+            queueFocus("stage");
             sim.stage = previous;
             sim.visited = STATIONS.slice(0, previous - 1).map((station) => station.key);
             rewindCargoTo(previous);
@@ -2433,6 +2564,7 @@
             }
             if (sim.stage === 0) {
                 askConfirm("Clear your whole run — score, stars and all — and start the briefing fresh?", () => {
+                    queueFocus("begin");
                     resetSimState();
                     renderStage();
                     setFeedback("neutral", "Run cleared", ["Everything is back to the start. Press Start the Delivery to set off from the lungs."]);
@@ -2440,6 +2572,7 @@
                 return;
             }
             askConfirm("Clear your choices at this station and try it again?", () => {
+                queueFocus("cargo");
                 const station = currentStation();
                 sim.cargo = Object.assign({}, sim.entryCargo);
                 sim.cargoConfirmed = false;
@@ -2468,7 +2601,8 @@
             const nodes = [];
             const tagEl = document.createElement("span");
             tagEl.className = "feedback-tag";
-            tagEl.textContent = tag;
+            const mark = kind === "correct" ? "\u2714 " : (kind === "wrong" ? "\u2716 " : "\u2139 ");
+            tagEl.textContent = mark + tag;
             nodes.push(tagEl);
             paragraphs.forEach((line) => {
                 const p = document.createElement("p");
@@ -2520,6 +2654,7 @@
             const chips = NODE_KEYS.map((key, index) => {
                 const chip = document.createElement("span");
                 chip.className = "tracker-chip";
+                chip.setAttribute("role", "listitem");
                 const isCurrent = sim.stage === index + 1;
                 const isVisited = sim.visited.indexOf(key) !== -1;
                 const mark = document.createElement("span");
@@ -2529,20 +2664,22 @@
                     chip.classList.add("is-visited");
                     const stars = sim.stars[key] || 0;
                     mark.textContent = "★".repeat(stars) + "☆".repeat(3 - stars);
-                    label.textContent = NODE_SHORT[key] + " — done, " + stars + " of 3 stars";
+                    label.textContent = NODE_SHORT[key] + " — done";
                 } else if (isCurrent) {
                     chip.classList.add("is-current");
                     mark.textContent = "▶";
-                    label.textContent = NODE_SHORT[key] + " — you are here";
+                    label.textContent = NODE_SHORT[key] + " — here";
                 } else {
                     chip.classList.add("is-pending");
                     mark.textContent = "○";
-                    label.textContent = NODE_SHORT[key] + " — still to do";
+                    label.textContent = NODE_SHORT[key] + " — to do";
                 }
                 chip.appendChild(mark);
                 chip.appendChild(label);
                 return chip;
             });
+            simDom.tracker.setAttribute("role", "list");
+            simDom.tracker.setAttribute("aria-label", "Station progress");
             simDom.tracker.replaceChildren.apply(simDom.tracker, chips);
         }
 
@@ -2572,20 +2709,30 @@
             let place = "waiting at the lungs, ready to set off";
             if (station) place = NODE_NAME[station.key];
             else if (sim.stage > STATIONS.length) place = "back at the lungs — lap complete";
-            simDom.statusLine.textContent = "Location: " + place + ". Cargo on board: " + cargoSentence(sim.cargo) +
-                ". Stations completed: " + sim.visited.length + " of " + STATIONS.length +
-                ". Score: " + sim.score + ". Stars: " + totalStars() + " of " + MAX_STARS + ".";
+            // Score and stars are already on the HUD chips as text; repeating
+            // them here only made the page busier.
+            simDom.statusLine.textContent = "Location: " + place + ". Cargo on board: " +
+                cargoSentence(sim.cargo) + ". Stations completed: " + sim.visited.length +
+                " of " + STATIONS.length + ".";
         }
 
         /* ---------- controls ---------- */
 
         function renderCargoButtons() {
+            // Remember which card the keyboard is on: this row is rebuilt on
+            // every toggle, and without this focus would fall back to <body>.
+            const active = document.activeElement;
+            const activeKey = active && active.dataset ? active.dataset.cargo : null;
             const buttons = CARGO_ORDER.map((key) => {
                 const carried = !!sim.cargo[key];
                 const button = document.createElement("button");
                 button.type = "button";
                 button.className = "cargo-btn";
+                button.dataset.cargo = key;
                 button.setAttribute("aria-pressed", carried ? "true" : "false");
+                button.setAttribute("aria-label",
+                    (carried ? "Drop " : "Load ") + CARGO_LABEL[key] +
+                    (carried ? " — currently on board" : " — not loaded"));
                 button.innerHTML = CARGO_ICON[key];
                 const copy = document.createElement("span");
                 const name = document.createElement("span");
@@ -2610,6 +2757,10 @@
                 return button;
             });
             simDom.cargoRow.replaceChildren.apply(simDom.cargoRow, buttons);
+            if (activeKey) {
+                const again = simDom.cargoRow.querySelector('[data-cargo="' + activeKey + '"]');
+                if (again && !again.disabled) again.focus();
+            }
         }
 
         function renderRouteButtons() {
@@ -2663,6 +2814,7 @@
                     addScore(10, "good call");
                 }
                 setFeedback("correct", "Correct", [choice.message]);
+                queueFocus("route");
                 renderStage(true);
                 return;
             }
@@ -2687,6 +2839,7 @@
                 addScore(10, "cargo sorted");
             }
             setFeedback("correct", "Cargo locked in", [station.cargoCorrect]);
+            queueFocus(station.question && !sim.questionDone ? "question" : "route");
             renderStage(true);
         }
 
@@ -2718,6 +2871,7 @@
 
             const nextStage = sim.stage + 1;
             if (nextStage > STATIONS.length) {
+                queueFocus("again");
                 sim.stage = nextStage;
                 renderStage();
                 setFeedback("correct", "Lap complete", messages);
@@ -2786,6 +2940,7 @@
             renderHud();
             renderStatus();
             if (!keepFeedback) clearFeedback();
+            applyPendingFocus();
         }
 
 function devInit() {
