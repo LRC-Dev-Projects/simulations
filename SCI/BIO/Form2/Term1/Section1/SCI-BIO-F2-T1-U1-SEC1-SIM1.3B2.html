@@ -1532,7 +1532,7 @@
             ctx.fillStyle = 'rgba(15,18,34,0.8)';
             ctx.fillRect(0, 0, w, h);
 
-            // Y-axis labels and grid lines (both series are normalised 0-100%)
+            // Y-axis labels and grid lines (0-100%; Rate uses this true scale)
             const tickMax = 100;
             const tickCount = 5;
             ctx.font = '10px Arial, sans-serif';
@@ -1554,13 +1554,13 @@
             // Y-axis caption
             ctx.textAlign = 'left';
             ctx.fillStyle = 'rgba(255,255,255,0.35)';
-            ctx.fillText('Normalised (%)', padL + 4, h - 4);
+            ctx.fillText('Rate (%)', padL + 4, h - 4);
 
             if (rateHistory.length < 2) return;
 
             const stepX = plotW / (MAX_GRAPH_POINTS - 1);
 
-            // Normalise a series independently across the plotted window so its
+            // Normalise the absorbed series across the plotted window so its
             // lowest point sits at 0% and its highest at 100%.
             const normaliseSeries = (values) => {
                 let min = values[0];
@@ -1577,16 +1577,15 @@
                 return values.map((value) => ((value - min) / range) * 100);
             };
 
-            const rateNorm = normaliseSeries(rateHistory);
             const absorbedNorm = normaliseSeries(absorbedHistory);
 
-            // Rate line
+            // Rate line (fixed 0-100% scale, so a steady rate stays at its true level)
             ctx.beginPath();
             ctx.strokeStyle = '#7dd3fc';
             ctx.lineWidth = 2.5;
-            for (let i = 0; i < rateNorm.length; i++) {
-                const x = padL + (MAX_GRAPH_POINTS - rateNorm.length + i) * stepX;
-                const y = h - (rateNorm[i] / 100) * (h - 10) - 5;
+            for (let i = 0; i < rateHistory.length; i++) {
+                const x = padL + (MAX_GRAPH_POINTS - rateHistory.length + i) * stepX;
+                const y = h - (rateHistory[i] / 100) * (h - 10) - 5;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
