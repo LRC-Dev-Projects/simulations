@@ -1016,6 +1016,9 @@
                         if (!simRunning && simCtx && simCssW && simCssH) {
                             drawSim(simCssW, simCssH, 0, 0, 0);
                         }
+                        if (!simRunning && graphCtx && graphCssW && graphCssH) {
+                            drawGraph();
+                        }
                     }
                 });
             });
@@ -1750,8 +1753,13 @@
             const dpr = window.devicePixelRatio || 1;
 
             const rect = simCanvas.parentElement.getBoundingClientRect();
-            const simW = Math.max(1, rect.width);
-            const simH = Math.max(1, rect.height);
+            const simW = Math.round(rect.width);
+            const simH = Math.round(rect.height);
+            // Skip while the sim screen is not laid out (e.g. it is hidden and a
+            // fullscreen/resize event fires from the home screen). Returning
+            // leaves the last good sizes untouched instead of collapsing to 1px.
+            if (simW < 2 || simH < 2) return;
+
             simCanvas.width = Math.round(simW * dpr);
             simCanvas.height = Math.round(simH * dpr);
             simCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1760,14 +1768,17 @@
             simCssW = simW;
             simCssH = simH;
 
+            // Measure the graph canvas from its CSS-driven size (width:100%,
+            // height:120px) and never pin it with inline styles. That keeps it
+            // fluid and prevents a bad (0 -> 1px) measurement from sticking.
             const gRect = graphCanvas.getBoundingClientRect();
-            const graphW = Math.max(1, gRect.width);
-            const graphH = Math.max(1, gRect.height);
+            const graphW = Math.round(gRect.width);
+            const graphH = Math.round(gRect.height);
+            if (graphW < 2 || graphH < 2) return;
+
             graphCanvas.width = Math.round(graphW * dpr);
             graphCanvas.height = Math.round(graphH * dpr);
             graphCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            graphCanvas.style.width = graphW + 'px';
-            graphCanvas.style.height = graphH + 'px';
             graphCssW = graphW;
             graphCssH = graphH;
         }
