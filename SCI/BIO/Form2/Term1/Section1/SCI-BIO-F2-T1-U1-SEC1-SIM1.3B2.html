@@ -1527,6 +1527,11 @@
 
             const padL = 34;
             const plotW = w - padL;
+            // Plot area, leaving a strip at the top for the axis title so it
+            // never collides with the plotted lines.
+            const plotTop = 18;
+            const plotBottom = h - 5;
+            const plotH = plotBottom - plotTop;
 
             // Background
             ctx.fillStyle = 'rgba(15,18,34,0.8)';
@@ -1540,7 +1545,7 @@
             ctx.textBaseline = 'middle';
             for (let i = 0; i <= tickCount; i++) {
                 const frac = i / tickCount;
-                const y = h - frac * (h - 10) - 5;
+                const y = plotBottom - frac * plotH;
                 ctx.strokeStyle = 'rgba(255,255,255,0.06)';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
@@ -1551,10 +1556,11 @@
                 ctx.fillText(Math.round(frac * tickMax) + '%', padL - 5, y);
             }
 
-            // Y-axis caption
+            // Y-axis caption, centred in the top strip above the plot area
             ctx.textAlign = 'left';
-            ctx.fillStyle = 'rgba(255,255,255,0.35)';
-            ctx.fillText('Rate (%)', padL + 4, h - 4);
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'rgba(255,255,255,0.45)';
+            ctx.fillText('Rate (%)', padL, plotTop / 2 + 1);
 
             if (rateHistory.length < 2) return;
 
@@ -1578,6 +1584,7 @@
             };
 
             const absorbedNorm = normaliseSeries(absorbedHistory);
+            const yFor = (percent) => plotBottom - (percent / 100) * plotH;
 
             // Rate line (fixed 0-100% scale, so a steady rate stays at its true level)
             ctx.beginPath();
@@ -1585,7 +1592,7 @@
             ctx.lineWidth = 2.5;
             for (let i = 0; i < rateHistory.length; i++) {
                 const x = padL + (MAX_GRAPH_POINTS - rateHistory.length + i) * stepX;
-                const y = h - (rateHistory[i] / 100) * (h - 10) - 5;
+                const y = yFor(rateHistory[i]);
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
@@ -1598,7 +1605,7 @@
             ctx.lineWidth = 2;
             for (let i = 0; i < absorbedNorm.length; i++) {
                 const x = padL + (MAX_GRAPH_POINTS - absorbedNorm.length + i) * stepX;
-                const y = h - (absorbedNorm[i] / 100) * (h - 10) - 5;
+                const y = yFor(absorbedNorm[i]);
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
