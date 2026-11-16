@@ -1530,10 +1530,10 @@
 
             const padL = 34;
             const plotW = w - padL;
-            // Plot area, leaving a strip at the top for the axis title so it
-            // never collides with the plotted lines.
+            // Plot area, leaving strips at the top and bottom for the axis
+            // captions so they never collide with the plotted lines.
             const plotTop = 18;
-            const plotBottom = h - 5;
+            const plotBottom = h - 14;
             const plotH = plotBottom - plotTop;
 
             // Background
@@ -1564,6 +1564,12 @@
             ctx.textBaseline = 'middle';
             ctx.fillStyle = 'rgba(255,255,255,0.45)';
             ctx.fillText('Rate (%)', padL, plotTop / 2 + 1);
+
+            // X-axis caption, right-aligned in the bottom strip below the plot
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'rgba(255,255,255,0.45)';
+            ctx.fillText('Time', w - 4, plotBottom + (h - plotBottom) / 2);
 
             if (rateHistory.length < 2) return;
 
