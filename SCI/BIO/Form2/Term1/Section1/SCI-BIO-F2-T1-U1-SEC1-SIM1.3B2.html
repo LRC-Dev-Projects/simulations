@@ -1317,7 +1317,7 @@
             const foldT = foldValue / 100;
             const thickT = thicknessValue / 100;
             const surfaceQuality = 0.35 + 0.65 * foldT;
-            const thicknessQuality = 0.35 + 0.65 * thickT;
+            const thicknessQuality = 0.15 + 0.85 * Math.pow(thickT, 2.5);
             const rate = surfaceQuality * thicknessQuality * 100;
             return Math.round(rate);
         }
