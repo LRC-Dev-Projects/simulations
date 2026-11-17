@@ -1869,18 +1869,22 @@
         function tickSim() {
             if (simState.paused) return true;
             const now = performance.now();
-            const elapsed = now - simState.pulseStartTime;
             const interval = 60000 / simState.bpm;
+            const endTime = simState.pulseStartTime + simState.duration * 1000;
+            /* A delayed frame (background tab, throttled rAF) can jump well past
+               the end of the run. Never emit beats scheduled after endTime --
+               otherwise the results show more beats than the BPM allows. */
+            const dueLimit = Math.min(now, endTime);
+            const elapsed = dueLimit - simState.pulseStartTime;
 
-            /* Emit every beat whose scheduled time has arrived. */
-            while (simState.pulseStartTime + simState.nextBeat * interval <= now) {
+            while (simState.pulseStartTime + simState.nextBeat * interval <= dueLimit) {
                 simState.beatTimes.push(simState.pulseStartTime + simState.nextBeat * interval);
                 simState.nextBeat++;
                 simState.totalBeats++;
                 flashPulse();
             }
 
-            scheduleBeatTones(interval);
+            if (now < endTime) scheduleBeatTones(interval);
 
             const timeLeft = Math.max(0, Math.ceil((simState.duration * 1000 - elapsed) / 1000));
             if (timeLeft !== simState.timeLeft) {
@@ -1888,7 +1892,7 @@
                 updateTimerDisplay();
             }
 
-            if (elapsed >= simState.duration * 1000) {
+            if (now >= endTime) {
                 endTimer();
                 return false;
             }
@@ -2199,34 +2203,26 @@
             window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
         }
 
-        /* Timing accuracy: for each recorded tap, how close it landed to the
-           actual beat. Each beat triggers at pulseStartTime + k * beatInterval,
-           so we measure the offset of every tap from its nearest scheduled beat
-           and convert it to a percentage (100% = tap landed exactly on the beat;
-           0% = tap was off by half a beat or more). Returns null when there is
-           no timing data to judge. */
-        /* Green-tap accuracy: a tap counts as "green" when it lands within the
-           same tolerance handleTap uses to flash the pulse green (beatInterval/3
-           of the nearest scheduled beat), so the score matches exactly what the
-           student saw on screen. The figure is then the share of those synced
-           taps against how many beats actually occurred:
-           greenTaps / totalBeats * 100. Returns null when there is no timing
-           data to judge. */
+        /* Timing accuracy: a beat is credited at most once, when a tap lands
+           within the same tolerance handleTap uses to flash green
+           (beatInterval/3 of the nearest scheduled beat). The score is the
+           share of credited beats against the larger of the number of beats
+           and the number of taps, so neither missed beats nor extra taps can
+           inflate it. Returns null when there is no timing data to judge. */
         function computeTimingAccuracy() {
             if (!simState.tapTimes.length || !simState.totalBeats) return null;
             const beatInterval = 60000 / simState.bpm;
             const tolerance = beatInterval / 3;
-            let greenTaps = 0;
+            const credited = new Set();
             for (const t of simState.tapTimes) {
-                const elapsed = t - simState.pulseStartTime;
-                const beatIndex = Math.floor(elapsed / beatInterval);
-                const nextBeatTime = simState.pulseStartTime + (beatIndex + 1) * beatInterval;
-                const prevBeatTime = simState.pulseStartTime + beatIndex * beatInterval;
-                if (Math.abs(t - prevBeatTime) <= tolerance || Math.abs(t - nextBeatTime) <= tolerance) {
-                    greenTaps++;
+                const beatIndex = Math.round((t - simState.pulseStartTime) / beatInterval);
+                const beatTime = simState.pulseStartTime + beatIndex * beatInterval;
+                if (Math.abs(t - beatTime) <= tolerance) {
+                    credited.add(beatIndex);
                 }
             }
-            const pct = Math.round((greenTaps / simState.totalBeats) * 100);
+            const maxCount = Math.max(simState.totalBeats, simState.tapTimes.length);
+            const pct = Math.round((credited.size / maxCount) * 100);
             return Math.max(0, Math.min(100, pct));
         }
 
