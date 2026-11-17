@@ -1014,7 +1014,7 @@
                     if (simCanvas) {
                         sizeCanvases();
                         if (!simRunning && simCtx && simCssW && simCssH) {
-                            drawSim(simCssW, simCssH, 0, 0, 0);
+                            drawSim(simCssW, simCssH, 0, 0, 0, null);
                         }
                         if (!simRunning && graphCtx && graphCssW && graphCssH) {
                             drawGraph();
@@ -1278,6 +1278,8 @@
         let simCssW = 0, simCssH = 0;
         let graphCssW = 0, graphCssH = 0;
         let shapeSlider, thicknessSlider;
+        let lastFoldValue = null, lastThicknessValue = null;
+        let canvasHighlight = null;
         let rateValueEl, feedbackPanelEl, feedbackMsgEl, playAgainFeedbackBtn, shapeStatusEl, thicknessStatusEl;
         let particles = [];
         let absorbedCount = 0;
@@ -1375,7 +1377,7 @@
         }
 
         /* --- DRAWING --- */
-        function drawSim(canvasW, canvasH, foldValue, thicknessValue, rate) {
+        function drawSim(canvasW, canvasH, foldValue, thicknessValue, rate, highlight) {
             const ctx = simCtx;
             ctx.clearRect(0, 0, canvasW, canvasH);
 
@@ -1462,6 +1464,50 @@
                     ctx.arc(fingerX0, y, fingerR, Math.PI / 2, Math.PI * 1.5);
                     ctx.closePath();
                     ctx.fill();
+                }
+            }
+
+            if (highlight) {
+                const a = 1 - (performance.now() - highlight.start) / 700;
+                if (a > 0) {
+                    ctx.save();
+                    if (highlight.kind !== 'fold') {
+                        ctx.fillStyle = `rgba(167, 139, 250, ${0.22 * a})`;
+                        ctx.beginPath();
+                        for (let y = 0; y <= canvasH; y += 2) {
+                            const wx = getWallX(y, canvasW, canvasH, foldValue);
+                            if (y === 0) ctx.moveTo(wx, y);
+                            else ctx.lineTo(wx, y);
+                        }
+                        for (let y = canvasH; y >= 0; y -= 2) {
+                            ctx.lineTo(getWallX(y, canvasW, canvasH, foldValue) + wallThickness, y);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                    ctx.strokeStyle = `rgba(167, 139, 250, ${a})`;
+                    ctx.lineWidth = 3;
+                    ctx.shadowColor = `rgba(167, 139, 250, ${0.9 * a})`;
+                    ctx.shadowBlur = 14;
+                    ctx.beginPath();
+                    for (let y = 0; y <= canvasH; y += 2) {
+                        const wx = getWallX(y, canvasW, canvasH, foldValue);
+                        if (y === 0) ctx.moveTo(wx, y);
+                        else ctx.lineTo(wx, y);
+                    }
+                    ctx.stroke();
+                    if (highlight.kind !== 'fold') {
+                        ctx.beginPath();
+                        for (let y = 0; y <= canvasH; y += 2) {
+                            const wx = getWallX(y, canvasW, canvasH, foldValue) + wallThickness;
+                            if (y === 0) ctx.moveTo(wx, y);
+                            else ctx.lineTo(wx, y);
+                        }
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                } else {
+                    canvasHighlight = null;
                 }
             }
 
@@ -1724,13 +1770,25 @@
 
             const foldValue = Number(shapeSlider.value);
             const thicknessValue = Number(thicknessSlider.value);
+            const foldChanged = foldValue !== lastFoldValue;
+            const thicknessChanged = thicknessValue !== lastThicknessValue;
+            if (foldChanged || thicknessChanged) {
+                if (lastFoldValue !== null) {
+                    canvasHighlight = {
+                        kind: foldChanged && thicknessChanged ? 'both' : (foldChanged ? 'fold' : 'thickness'),
+                        start: performance.now()
+                    };
+                }
+                lastFoldValue = foldValue;
+                lastThicknessValue = thicknessValue;
+            }
             const rate = computeAbsorptionRate(foldValue, thicknessValue);
 
             const cw = simCssW || simCanvas.width;
             const ch = simCssH || simCanvas.height;
 
             updateParticles(dt, cw, ch, foldValue, thicknessValue, rate);
-            drawSim(cw, ch, foldValue, thicknessValue, rate);
+            drawSim(cw, ch, foldValue, thicknessValue, rate, canvasHighlight);
 
             // Update rate display
             rateValueEl.textContent = rate + '%';
@@ -1835,6 +1893,9 @@
 
             shapeSlider.value = 0;
             thicknessSlider.value = 0;
+            lastFoldValue = 0;
+            lastThicknessValue = 0;
+            canvasHighlight = null;
 
             simAnimId = requestAnimationFrame(simLoop);
         }
@@ -1852,6 +1913,9 @@
 
             if (shapeSlider) shapeSlider.value = 0;
             if (thicknessSlider) thicknessSlider.value = 0;
+            lastFoldValue = 0;
+            lastThicknessValue = 0;
+            canvasHighlight = null;
 
             if (rateValueEl) rateValueEl.textContent = '0%';
             if (feedbackMsgEl) feedbackMsgEl.innerHTML = 'Adjust the sliders to explore how wall structure affects nutrient absorption.';
@@ -1861,7 +1925,7 @@
             if (thicknessStatusEl) { thicknessStatusEl.textContent = ''; thicknessStatusEl.classList.remove('optimal'); }
 
             if (simCtx && simCssW && simCssH) {
-                drawSim(simCssW, simCssH, 0, 0, 0);
+                drawSim(simCssW, simCssH, 0, 0, 0, null);
             }
             if (graphCtx) {
                 drawGraph();
