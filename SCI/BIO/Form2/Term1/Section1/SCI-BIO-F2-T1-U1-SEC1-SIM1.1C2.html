@@ -872,11 +872,20 @@
             }
         }
 
-        .confetti-piece {
-            position: fixed;
-            border-radius: 2px;
+        .confetti-layer {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 0;
             pointer-events: none;
             z-index: 9999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            border-radius: 2px;
+            pointer-events: none;
             opacity: 0;
             animation: confetti-burst 1.6s ease-out var(--delay) forwards;
         }
@@ -1492,16 +1501,24 @@
             if (!btn) return;
             var rect = btn.getBoundingClientRect();
             if (!rect.width || !rect.height) return;
-            var originX = rect.left + rect.width / 2;
-            var originY = rect.top + rect.height / 2;
+            var layer = document.createElement("div");
+            layer.className = "confetti-layer";
+            function positionLayer() {
+                var r = btn.getBoundingClientRect();
+                if (!r.width || !r.height) return;
+                layer.style.left = (r.left + window.scrollX + r.width / 2) + "px";
+                layer.style.top = (r.top + window.scrollY + r.height / 2) + "px";
+            }
+            positionLayer();
+            window.addEventListener("resize", positionLayer);
             var colors = ["#f59e0b", "#8b5cf6", "#10b981", "#ef4444", "#3b82f6", "#ec4899", "#14b8a6"];
             var count = big ? 60 : 26;
             var dur = big ? 2.2 : 1.6;
             for (var i = 0; i < count; i++) {
                 var piece = document.createElement("div");
                 piece.className = "confetti-piece";
-                piece.style.left = originX + "px";
-                piece.style.top = originY + "px";
+                piece.style.left = "0px";
+                piece.style.top = "0px";
                 piece.style.backgroundColor = colors[i % colors.length];
                 piece.style.width = (6 + Math.random() * (big ? 10 : 6)) + "px";
                 piece.style.height = (8 + Math.random() * (big ? 12 : 8)) + "px";
@@ -1510,11 +1527,13 @@
                 piece.style.setProperty("--spin", (Math.random() * (big ? 1440 : 720) - (big ? 720 : 360)) + "deg");
                 piece.style.setProperty("--delay", (Math.random() * (big ? 0.3 : 0.15)) + "s");
                 piece.style.animationDuration = dur + "s";
-                document.body.appendChild(piece);
-                (function (el) {
-                    setTimeout(function () { el.remove(); }, dur * 1000 + 600);
-                })(piece);
+                layer.appendChild(piece);
             }
+            document.body.appendChild(layer);
+            setTimeout(function () {
+                window.removeEventListener("resize", positionLayer);
+                layer.remove();
+            }, dur * 1000 + 600);
         }
 
         function getSimHeaderTop() {
