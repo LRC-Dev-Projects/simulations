@@ -1143,12 +1143,11 @@
             homeDescription:
                 "Explore how diet affects health, growth, and physical activity. Add food blocks and activity blocks to the seesaw scale and observe how energy intake and output must balance for a healthy body.",
             instructions: [
-                "Click Start to begin the simulation.",
                 "The scale starts perfectly balanced with food blocks on one side and activity blocks on the other.",
                 "Use the '+ Add More Food' button to add more food blocks to the Energy Intake side.",
                 "Use the '+ Increase Activity' button to add more activity blocks to the Energy Output side.",
                 "Watch how the scale tips when intake and output do not match.",
-                "Try to restore balance by adding or removing blocks from each side.",
+                "Try to restore balance by adding or removing blocks from each side. To complete a round, finish with a different total number of blocks than the round started with — simply undoing your last move will not count.",
                 "A health warning appears when you have too much food without enough activity.",
                 "An exhaustion warning appears when you have too much activity without enough food.",
                 "Your goal is to understand that energy intake must match energy output for a healthy balance.",
@@ -1693,6 +1692,7 @@
         var previouslyImbalanced = false;
         var hasRebalanced = false;
         var firstStatusRender = true;
+        var returnedToStart = false;
         var TOTAL_ROUNDS = 3;
         var currentRound = 1;
 
@@ -1709,9 +1709,12 @@
 
         function buildStartingState() {
             var count = 2 + Math.floor(Math.random() * 4);
+            var foodBlocks = pickStartingTypes(FOOD_TYPES, count);
+            var activityBlocks = pickStartingTypes(ACTIVITY_TYPES, count);
             return {
-                foodBlocks: pickStartingTypes(FOOD_TYPES, count),
-                activityBlocks: pickStartingTypes(ACTIVITY_TYPES, count),
+                foodBlocks: foodBlocks,
+                activityBlocks: activityBlocks,
+                startingTotalBlocks: foodBlocks.length + activityBlocks.length,
                 pendingSuggestion: null
             };
         }
@@ -1884,6 +1887,7 @@
             var statusBox = document.getElementById("statusBox");
             if (!statusBox) return;
             var totalBlocks = foodCount + activityCount;
+            returnedToStart = false;
 
             statusBox.classList.remove("status-balanced", "status-surplus", "status-deficit");
 
@@ -1900,15 +1904,20 @@
                 statusBox.classList.add("status-balanced");
                 simState.pendingSuggestion = null;
                 if (previouslyImbalanced) {
-                    message = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
-                    if (currentRound >= TOTAL_ROUNDS) {
-                        message += " Remember: your body uses energy not only for daily activity but also for growth and repair, so a balanced intake supports both active days and healthy development.";
+                    if (totalBlocks === simState.startingTotalBlocks) {
+                        message = "The scale is balanced again, but this is the same number of blocks you started with. To complete the round, restore balance with a different number of blocks — try adding one food and one activity block.";
+                        returnedToStart = true;
+                    } else {
+                        message = "Excellent observation! You have demonstrated that to maintain a healthy balance, the energy you take in from your diet must match the energy your body uses for daily activity and growth.";
+                        if (currentRound >= TOTAL_ROUNDS) {
+                            message += " Remember: your body uses energy not only for daily activity but also for growth and repair, so a balanced intake supports both active days and healthy development.";
+                        }
+                        playSound("correct");
+                        hasRebalanced = true;
+                        celebrate = true;
+                        var playBtn = document.getElementById("playAgainBtn");
+                        if (playBtn) playBtn.textContent = currentRound >= TOTAL_ROUNDS ? "Finish" : "Next Round";
                     }
-                    playSound("correct");
-                    hasRebalanced = true;
-                    celebrate = true;
-                    var playBtn = document.getElementById("playAgainBtn");
-                    if (playBtn) playBtn.textContent = currentRound >= TOTAL_ROUNDS ? "Finish" : "Next Round";
                 } else {
                     message = "The scale is perfectly balanced! Energy intake matches energy output.";
                 }
@@ -1978,6 +1987,9 @@
                 text = "The scale is perfectly balanced with no blocks. Add food or activity blocks to explore energy balance.";
             } else if (diff === 0) {
                 text = "The scale is perfectly balanced with " + foodCount + " food block" + (foodCount !== 1 ? "s" : "") + " and " + activityCount + " activity block" + (activityCount !== 1 ? "s" : "") + ". Energy intake matches energy output.";
+                if (returnedToStart) {
+                    text += " This is the same number of blocks the round started with, so restore balance with a different total to complete the round.";
+                }
             } else if (diff > 0) {
                 text = "The scale is tipped to the left, the Energy Intake side. There are " + foodCount + " food blocks and " + activityCount + " activity blocks. This shows an energy surplus of " + diff + " block" + (diff !== 1 ? "s" : "") + ".";
             } else {
