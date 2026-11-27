@@ -33,6 +33,11 @@
             --cue-exhale-halo: #b45309;
             /* Breathing hint: distinct from the green/amber cue colours */
             --hint-color: #fcd34d;
+            /* Air-flow dashes: a brighter, more saturated green that separates
+               from the blue tubes, with a dark casing for crisp edges */
+            --flow-inhale: #4ade80;
+            --flow-exhale: #fbbf24;
+            --flow-outline: rgba(0, 0, 0, 0.8);
             --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
             --radius-xl: 24px;
             --radius-lg: 18px;
@@ -63,6 +68,11 @@
             --cue-exhale-halo: #fde68a;
             /* Breathing hint: distinct from the green/amber cue colours */
             --hint-color: #e06114;
+            /* Air-flow dashes: deeper tones that read on the light surface,
+               with a light casing to lift them off the blue tubes */
+            --flow-inhale: #047857;
+            --flow-exhale: #b45309;
+            --flow-outline: rgba(255, 255, 255, 0.95);
             --shadow: 0 18px 40px rgba(46, 64, 112, 0.14);
             --focus: 0 0 0 3px rgba(14, 165, 233, 0.22);
         }
@@ -364,6 +374,42 @@
         .lung-inhale { animation: inhaleLung 1.2s ease-in-out forwards; }
         .lung-exhale { animation: exhaleLung 1.2s ease-in-out forwards; }
 
+        /* Air-flow highlight: bright dashes travel along the tubes in the
+           direction the air moves while a breath is in progress */
+        .flow-line {
+            fill: none;
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            stroke-dasharray: 5 11;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .flow-inhale { stroke: var(--flow-inhale); }
+        .flow-exhale { stroke: var(--flow-exhale); }
+        /* Wider casing drawn under each dash so the bright colour never merges
+           with the tube it sits on */
+        .flow-casing { stroke: var(--flow-outline); stroke-width: 7; }
+        #inhaleFlow.flow-active .flow-line,
+        #exhaleFlow.flow-active .flow-line {
+            opacity: 1;
+            animation: flowDash 0.65s linear infinite;
+        }
+        @keyframes flowDash {
+            from { stroke-dashoffset: 0; }
+            to { stroke-dashoffset: -16; }
+        }
+
+        /* Limewater definition: a theme-aware outline plus a soft shadow keeps the
+           liquid readable against the apparatus panel in both themes — especially
+           the near-white milky liquid in light mode */
+        #flaskALiquid, #flaskBLiquid {
+            stroke: color-mix(in srgb, var(--text) 32%, transparent);
+            stroke-width: 1.5;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.22));
+        }
+
         /* Reduce motion: drop looping/pulsing animations and shorten transitions,
            but keep a brief state change so the cue is still perceivable. */
         @media (prefers-reduced-motion: reduce) {
@@ -372,6 +418,9 @@
             .hint-nudge { animation: none; }
             .bubble-anim { animation-duration: 0.01s; }
             .lung-inhale, .lung-exhale { animation-duration: 0.01s; }
+            /* Keep the flow highlight visible as static dashes */
+            #inhaleFlow.flow-active .flow-line,
+            #exhaleFlow.flow-active .flow-line { animation: none; }
             #inhaleArrow, #inhaleLabel, #exhaleArrow, #exhaleLabel,
             #leftLungAir, #rightLungAir, #lungStatus {
                 transition-duration: 0.01s;
@@ -665,7 +714,7 @@
         function openResetConfirmModal() { dom.resetConfirmModal.classList.add("show"); }
         function closeResetConfirmModal() { dom.resetConfirmModal.classList.remove("show"); }
         function showScreen(screenName) { state.currentScreen = screenName; dom.homeScreen.classList.toggle("active", screenName === "home"); dom.simScreen.classList.toggle("active", screenName === "sim"); window.scrollTo({ top: 0, left: 0, behavior: "auto" }); updateSimGear(); }
-        function toggleTheme() { state.theme = state.theme === "dark" ? "light" : "dark"; dom.html.setAttribute("data-theme", state.theme); updateThemeToggleLabel(); storageSet(SIM_CONFIG.simId + "-theme", state.theme); }
+        function toggleTheme() { state.theme = state.theme === "dark" ? "light" : "dark"; dom.html.setAttribute("data-theme", state.theme); updateThemeToggleLabel(); storageSet(SIM_CONFIG.simId + "-theme", state.theme); if (typeof updateFlaskB === "function") updateFlaskB(); }
         function loadTheme() { const saved = storageGet(SIM_CONFIG.simId + "-theme"); if (saved === "light" || saved === "dark") { state.theme = saved; } else { const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches; state.theme = prefersLight ? "light" : "dark"; } dom.html.setAttribute("data-theme", state.theme); updateThemeToggleLabel(); }
         function updateThemeToggleLabel() { const switchToLight = state.theme === "dark"; dom.themeToggleBtn.textContent = switchToLight ? "\u2600\uFE0F Light Mode" : "\uD83C\uDF19 Dark Mode"; dom.themeToggleBtn.setAttribute("aria-label", switchToLight ? "Switch to light mode" : "Switch to dark mode"); }
         async function toggleFullscreen() { try { if (!document.fullscreenElement) { await document.documentElement.requestFullscreen(); } else { await document.exitFullscreen(); } } catch (error) {} }
@@ -824,6 +873,25 @@
 
                             <!-- Connection: mouthpiece down to lungs -->
                             <line x1="350" y1="36" x2="350" y2="250" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+
+                            <!-- Air-flow highlight overlays: bright dashes travel along the
+                                 tubes in the direction the air moves during each breath -->
+                            <g id="inhaleFlow" aria-hidden="true">
+                                <path class="flow-line flow-casing flow-inhale" d="M 95 130 Q 108 130, 108 170 L 108 192 Q 108 202, 170 202"/>
+                                <path class="flow-line flow-casing flow-inhale" d="M 170 40 L 170 32 Q 170 20, 180 20 L 300 20"/>
+                                <path class="flow-line flow-casing flow-inhale" d="M 350 36 L 350 250"/>
+                                <path class="flow-line flow-inhale" d="M 95 130 Q 108 130, 108 170 L 108 192 Q 108 202, 170 202"/>
+                                <path class="flow-line flow-inhale" d="M 170 40 L 170 32 Q 170 20, 180 20 L 300 20"/>
+                                <path class="flow-line flow-inhale" d="M 350 36 L 350 250"/>
+                            </g>
+                            <g id="exhaleFlow" aria-hidden="true">
+                                <path class="flow-line flow-casing flow-exhale" d="M 350 250 L 350 36"/>
+                                <path class="flow-line flow-casing flow-exhale" d="M 400 20 L 526 20 Q 526 20, 526 32 L 526 203"/>
+                                <path class="flow-line flow-casing flow-exhale" d="M 533 56 L 533 30 Q 533 24, 546 24 L 636 24"/>
+                                <path class="flow-line flow-exhale" d="M 350 250 L 350 36"/>
+                                <path class="flow-line flow-exhale" d="M 400 20 L 526 20 Q 526 20, 526 32 L 526 203"/>
+                                <path class="flow-line flow-exhale" d="M 533 56 L 533 30 Q 533 24, 546 24 L 636 24"/>
+                            </g>
 
                             <!-- Labels -->
                             <text x="350" y="412" fill="var(--muted)" font-size="12" text-anchor="middle" font-style="italic">Click Inhale or Exhale below</text>
@@ -989,6 +1057,19 @@
             }
         }
 
+        /* --- Highlight air flow travelling through the tubes for the active breath --- */
+        function setFlow(mode) {
+            const inhale = document.getElementById("inhaleFlow");
+            const exhale = document.getElementById("exhaleFlow");
+            if (inhale) inhale.classList.toggle("flow-active", mode === "inhale");
+            if (exhale) exhale.classList.toggle("flow-active", mode === "exhale");
+        }
+
+        function flashFlow(mode) {
+            setFlow(mode);
+            setTimeout(() => setFlow(null), 1150);
+        }
+
         /* --- Inhale action --- */
         function doInhale() {
             if (isAnimating) return;
@@ -1014,6 +1095,7 @@
             document.getElementById("inhaleCountDisplay").textContent = inhaleCount;
             playSound("click");
             flashFlowCue("inhaleArrow", "inhaleLabel", "inhale");
+            flashFlow("inhale");
 
             /* Animate lungs expanding — target the ellipses, not the translated group */
             ["leftLung", "rightLung"].forEach(id => {
@@ -1058,6 +1140,7 @@
             document.getElementById("exhaleCountDisplay").textContent = exhaleCount;
             playSound("click");
             flashFlowCue("exhaleArrow", "exhaleLabel", "exhale");
+            flashFlow("exhale");
 
             /* Animate lungs contracting — target the ellipses, not the translated group */
             ["leftLung", "rightLung"].forEach(id => {
@@ -1101,19 +1184,30 @@
             const liquid = document.getElementById("flaskBLiquid");
             if (!liquid) return;
 
+            /* Before any exhale the limewater is still clear — leave it untouched
+               (this also covers a theme toggle before the first exhale). */
+            if (exhaleCount === 0) return;
+
+            /* Light mode sits on a pale blue panel, so the milky liquid needs
+               deeper, more opaque tones to stand out; dark mode keeps the
+               near-white glow. */
+            const light = state.theme === "light";
+
             /* After 1 exhale: slightly cloudy. After 2: more. After 3+: milky. */
             let opacity, color;
             if (exhaleCount <= 1) {
-                opacity = 0.6;
-                color = "rgba(210, 225, 240,";
+                opacity = light ? 0.82 : 0.6;
+                color = light ? "rgba(198, 214, 230," : "rgba(210, 225, 240,";
             } else if (exhaleCount === 2) {
-                opacity = 0.72;
-                color = "rgba(225, 230, 235,";
+                opacity = light ? 0.9 : 0.72;
+                color = light ? "rgba(216, 222, 228," : "rgba(225, 230, 235,";
             } else {
                 /* Each extra exhale increases whiteness */
                 const extra = Math.min(exhaleCount - 3, 4);
-                opacity = Math.min(0.85 + extra * 0.03, 0.97);
-                color = "rgba(240, 242, 244,";
+                opacity = light
+                    ? Math.min(0.95 + extra * 0.01, 0.99)
+                    : Math.min(0.85 + extra * 0.03, 0.97);
+                color = light ? "rgba(232, 234, 235," : "rgba(240, 242, 244,";
             }
             liquid.setAttribute("fill", color + opacity + ")");
 
